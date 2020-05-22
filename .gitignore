@@ -1,4 +1,16 @@
 Binaries/
-Intermediate/
+Build/
 Saved/
+DerivedDataCache/
 .vs/
+Intermediate/AssetRegistryCache/
+Intermediate/Build/
+Intermediate/Config/CoalescedSourceConfigs/Crypto.ini
+Intermediate/Config/
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.pro.user
+Intermediate/CachedAssetRegistry.bin
+Intermediate/TargetInfo.json
+Intermediate/ReimportCache/
