@@ -42,5 +42,9 @@ void ADFLCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
     PlayerInputComponent->BindAxis("MoveForward", this, &ADFLCharacter::move_forward);
     PlayerInputComponent->BindAxis("MoveRight", this, &ADFLCharacter::move_right);
 
+    PlayerInputComponent->BindAxis("LookUp", this, &ADFLCharacter::AddControllerPitchInput);
+    PlayerInputComponent->BindAxis("Turn", this, &ADFLCharacter::AddControllerYawInput);
+
+
 }
 
