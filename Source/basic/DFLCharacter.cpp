@@ -1,5 +1,7 @@
 #include "DFLCharacter.h"
 
+#include "Components/InputComponent.h"
+
 // Sets default values
 ADFLCharacter::ADFLCharacter()
 {
@@ -22,10 +24,23 @@ void ADFLCharacter::Tick(float DeltaTime)
 
 }
 
+void ADFLCharacter::move_forward(float value)
+{
+    AddMovementInput(GetActorForwardVector() * value);
+}
+
+void ADFLCharacter::move_right(float value)
+{
+    AddMovementInput(GetActorRightVector() * value);
+}
+
 // Called to bind functionality to input
 void ADFLCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+    PlayerInputComponent->BindAxis("MoveForward", this, &ADFLCharacter::move_forward);
+    PlayerInputComponent->BindAxis("MoveRight", this, &ADFLCharacter::move_right);
 
 }
 
