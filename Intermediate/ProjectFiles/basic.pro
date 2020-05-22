@@ -9,10 +9,12 @@ CONFIG += c++17
 include(defines.pri)
 
 HEADERS +=  ../../Source/basic/basic.h \
-    ../../Source/basic/basicGameModeBase.h
+    ../../Source/basic/basicGameModeBase.h \
+    ../../Source/basic/DFLCharacter.h
 
 SOURCES +=  ../../Source/basic/basic.cpp \
-    ../../Source/basic/basicGameModeBase.cpp 
+    ../../Source/basic/basicGameModeBase.cpp \
+    ../../Source/basic/DFLCharacter.cpp
 
 # All your generated includes will go in this file
 # You can not put this on the repository as this contains hardcoded paths
