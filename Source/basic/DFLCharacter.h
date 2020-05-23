@@ -30,4 +30,21 @@ public:
     // Called to bind functionality to input
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+    //************************************************************************
+    //  Object Interaction                                                   *
+    //************************************************************************
+
+    /* Use the usable actor currently in focus, if any */
+    virtual void use_actor();
+
+    class ADFLUsableActor* get_usable_actor_in_view();
+
+    /*Max distance to use/focus on actors. */
+    UPROPERTY(EditInstanceOnly, Category = "ObjectInteraction")
+    float max_use_distance{ 200 };
+
+    /* True only in first frame when focused on a new usable actor. */
+    bool is_usable_actor_has_new_focus{ true };
+
+    class ADFLUsableActor* focused_usable_actor;
 };
