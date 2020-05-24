@@ -4,11 +4,12 @@
 #include "GameFramework/Controller.h"
 #include "DrawDebugHelpers.h"
 #include "DFLUsableActor.h"
+#include "Blueprint/UserWidget.h"
 
 // Sets default values
 ADFLCharacter::ADFLCharacter()
 {
-    // Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+    // Set this character to call Tick() every frame.
     PrimaryActorTick.bCanEverTick = true;
 
 }
@@ -113,7 +114,7 @@ ADFLUsableActor *ADFLCharacter::get_usable_actor_in_view()
     FHitResult Hit(ForceInit);
     GetWorld()->LineTraceSingleByChannel(Hit, TraceStart, TraceEnd, ECC_Visibility, TraceParams);
 
-    DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 1.0f);
+//    DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 1.0f);
 
     return Cast<ADFLUsableActor>(Hit.GetActor());
 }

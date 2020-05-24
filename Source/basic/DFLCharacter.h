@@ -46,5 +46,5 @@ public:
     /* True only in first frame when focused on a new usable actor. */
     bool is_usable_actor_has_new_focus{ true };
 
-    class ADFLUsableActor* focused_usable_actor;
+    class ADFLUsableActor* focused_usable_actor{ nullptr };
 };

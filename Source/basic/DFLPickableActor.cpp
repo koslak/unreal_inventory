@@ -3,11 +3,15 @@
 #include "Components/StaticMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
+#include "Components/WidgetComponent.h"
 
 ADFLPickableActor::ADFLPickableActor()
 {
-    /* Ignore Pawn - this is to prevent objects shooting through the level or pawns glitching on top of small items. */
-    mesh_component->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+    if (mesh_component)
+    {
+        /* Ignore Pawn - this is to prevent objects shooting through the level or pawns glitching on top of small items. */
+        mesh_component->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+    }
 
     is_active = false;
     is_start_active = true;
@@ -16,6 +20,12 @@ ADFLPickableActor::ADFLPickableActor()
 void ADFLPickableActor::BeginPlay()
 {
     Super::BeginPlay();
+
+    if(widget_component)
+    {
+        widget_component->SetVisibility(false);
+        widget_component->SetRelativeLocation(FVector(0.0f, 0.0f, widget_height));
+    }
 }
 
 void ADFLPickableActor::OnPickedUp()

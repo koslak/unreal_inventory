@@ -16,7 +16,7 @@ class BASIC_API ADFLPickableActor : public ADFLUsableActor
 
     void BeginPlay() override;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Sound")
+    UPROPERTY(EditAnywhere, DisplayName="Pick Up Sound", Category = "Sound")
     class USoundCue* pickup_sound;
 
 protected:
@@ -27,7 +27,6 @@ protected:
 
     UPROPERTY(Transient)
     bool is_active;
-
 
 public:
 

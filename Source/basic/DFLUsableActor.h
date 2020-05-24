@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "DFLUsableActor.generated.h"
 
+class UUserWidget;
+
 UCLASS()
 class BASIC_API ADFLUsableActor : public AActor
 {
@@ -15,6 +17,12 @@ protected:
 
     UPROPERTY(VisibleAnywhere, Category = "Mesh")
     UStaticMeshComponent* mesh_component;
+
+    UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Widget Configuration")
+    class UWidgetComponent* widget_component;
+
+    UPROPERTY(EditAnywhere, DisplayName="Widget Height", Category = "Widget Configuration")
+    float widget_height{ 100.0f };
 
 public:
     ADFLUsableActor();
@@ -33,4 +41,10 @@ public:
     {
         return mesh_component;
     }
+
+    FORCEINLINE UWidgetComponent* get_widget_component() const
+    {
+        return widget_component;
+    }
+
 };
