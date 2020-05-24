@@ -82,8 +82,6 @@ void ADFLCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 void ADFLCharacter::use_actor()
 {
-    UE_LOG(LogTemp, Warning, TEXT("use_actor being called") );
-
     ADFLUsableActor* usable_actor = get_usable_actor_in_view();
     if (usable_actor)
     {
