@@ -14,3 +14,5 @@ Intermediate/Config/
 Intermediate/CachedAssetRegistry.bin
 Intermediate/TargetInfo.json
 Intermediate/ReimportCache/
+*.xcodeproj
+*.xcworkspace
