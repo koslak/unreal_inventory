@@ -31,6 +31,18 @@ public:
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
     //************************************************************************
+    //  Inventory                                                            *
+    //************************************************************************
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inventory")
+    class UDFLInventoryComponent *inventory_component;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Health")
+    float health{ 100.0f };
+
+    UFUNCTION(BlueprintCallable, Category = "Items")
+    void use_item(class UDFLItem *item);
+
+    //************************************************************************
     //  Object Interaction                                                   *
     //************************************************************************
 

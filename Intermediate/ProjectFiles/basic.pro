@@ -12,13 +12,19 @@ HEADERS +=  ../../Source/basic/basic.h \
     ../../Source/basic/basicGameModeBase.h \
     ../../Source/basic/DFLCharacter.h \
     ../../Source/basic/DFLUsableActor.h \
-    ../../Source/basic/DFLPickableActor.h
+    ../../Source/basic/DFLPickableActor.h \
+    ../../Source/basic/items/DFLInventoryComponent.h \
+    ../../Source/basic/items/DFLItem.h \
+    ../../Source/basic/items/DFLFoodItem.h
 
 SOURCES +=  ../../Source/basic/basic.cpp \
     ../../Source/basic/basicGameModeBase.cpp \
     ../../Source/basic/DFLCharacter.cpp \
     ../../Source/basic/DFLUsableActor.cpp \
-    ../../Source/basic/DFLPickableActor.cpp
+    ../../Source/basic/DFLPickableActor.cpp \
+    ../../Source/basic/items/DFLInventoryComponent.cpp \
+    ../../Source/basic/items/DFLItem.cpp \
+    ../../Source/basic/items/DFLFoodItem.cpp
 
 # All your generated includes will go in this file
 # You can not put this on the repository as this contains hardcoded paths

@@ -5,6 +5,8 @@
 #include "DrawDebugHelpers.h"
 #include "DFLUsableActor.h"
 #include "Blueprint/UserWidget.h"
+#include "items/DFLItem.h"
+#include "items/DFLInventoryComponent.h"
 
 // Sets default values
 ADFLCharacter::ADFLCharacter()
@@ -12,6 +14,8 @@ ADFLCharacter::ADFLCharacter()
     // Set this character to call Tick() every frame.
     PrimaryActorTick.bCanEverTick = true;
 
+    inventory_component = CreateDefaultSubobject<UDFLInventoryComponent>("Inventory");
+    inventory_component->capacity = 20;
 }
 
 // Called when the game starts or when spawned
@@ -78,6 +82,12 @@ void ADFLCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
     PlayerInputComponent->BindAxis("Turn", this, &ADFLCharacter::AddControllerYawInput);
 
     PlayerInputComponent->BindAction("Use", IE_Pressed, this, &ADFLCharacter::use_actor);
+}
+
+void ADFLCharacter::use_item(UDFLItem *item)
+{
+    item->use(this);
+    item->on_use(this); // This is the Blueprint event.
 }
 
 void ADFLCharacter::use_actor()
