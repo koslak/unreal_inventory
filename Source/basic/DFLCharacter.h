@@ -59,4 +59,6 @@ public:
     bool is_usable_actor_has_new_focus{ true };
 
     class ADFLUsableActor* focused_usable_actor{ nullptr };
+
+    TSubclassOf<class UDFLItem> UDFLItemClass;
 };

@@ -6,7 +6,10 @@
 #include "DFLUsableActor.h"
 #include "Blueprint/UserWidget.h"
 #include "items/DFLItem.h"
+#include "items/DFLFoodItem.h"
 #include "items/DFLInventoryComponent.h"
+
+#include "UObject/ConstructorHelpers.h"
 
 // Sets default values
 ADFLCharacter::ADFLCharacter()
@@ -16,6 +19,9 @@ ADFLCharacter::ADFLCharacter()
 
     inventory_component = CreateDefaultSubobject<UDFLInventoryComponent>("Inventory");
     inventory_component->capacity = 20;
+
+    ConstructorHelpers::FClassFinder<UDFLItem> UDFLItemBP(TEXT("/Game/Blueprints/Items/Food_Item_BP"));
+    UDFLItemClass = UDFLItemBP.Class;
 }
 
 // Called when the game starts or when spawned
@@ -96,6 +102,9 @@ void ADFLCharacter::use_actor()
     if (usable_actor)
     {
         usable_actor->OnUsed(this);
+
+        UDFLFoodItem *food_item = NewObject<UDFLFoodItem>(this, UDFLItemClass, TEXT("food_item"));
+        inventory_component->add_item(UDFLItemClass.GetDefaultObject());
     }
 }
 
