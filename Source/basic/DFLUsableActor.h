@@ -13,17 +13,6 @@ class BASIC_API ADFLUsableActor : public AActor
 {
     GENERATED_BODY()
 
-protected:
-
-    UPROPERTY(VisibleAnywhere, Category = "Mesh")
-    UStaticMeshComponent* mesh_component;
-
-    UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Widget Configuration")
-    class UWidgetComponent* widget_component;
-
-    UPROPERTY(EditAnywhere, DisplayName="Widget Height", Category = "Widget Configuration")
-    float widget_height{ 100.0f };
-
 public:
     ADFLUsableActor();
 
@@ -42,9 +31,36 @@ public:
         return mesh_component;
     }
 
-    FORCEINLINE UWidgetComponent* get_widget_component() const
+    FORCEINLINE class UWidgetComponent* get_widget_component() const
     {
         return widget_component;
     }
 
+    FORCEINLINE class UDFLInventoryItemWidget* get_inventory_item_widget() const
+    {
+        return inventory_item_widget;
+    }
+
+protected:
+
+    UPROPERTY(VisibleAnywhere, Category = "Mesh")
+    UStaticMeshComponent* mesh_component;
+
+    UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Widget Configuration")
+    class UWidgetComponent* widget_component;
+
+    UPROPERTY(EditAnywhere, DisplayName="Widget Height", Category = "Widget Configuration")
+    float widget_height{ 100.0f };
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widget Configuration")
+    class UTexture2D *thumbnail_image;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widget Configuration")
+    FText item_widget_display_name;
+
+    class UDFLInventoryItemWidget *inventory_item_widget;
+
+private:
+
+    TSubclassOf<class UUserWidget> DFLInventory_item_widget_class;
 };

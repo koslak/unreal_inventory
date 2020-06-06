@@ -15,7 +15,11 @@ HEADERS +=  ../../Source/basic/basic.h \
     ../../Source/basic/DFLPickableActor.h \
     ../../Source/basic/items/DFLInventoryComponent.h \
     ../../Source/basic/items/DFLItem.h \
-    ../../Source/basic/items/DFLFoodItem.h
+    ../../Source/basic/items/DFLFoodItem.h \
+    ../../Source/basic/item/DFLInventory.h \
+    ../../Source/basic/item/DFLInventoryItem.h \
+    ../../Source/basic/inventory/DFLInventoryWidget.h \
+    ../../Source/basic/inventory/DFLInventoryItemWidget.h
 
 SOURCES +=  ../../Source/basic/basic.cpp \
     ../../Source/basic/basicGameModeBase.cpp \
@@ -24,7 +28,11 @@ SOURCES +=  ../../Source/basic/basic.cpp \
     ../../Source/basic/DFLPickableActor.cpp \
     ../../Source/basic/items/DFLInventoryComponent.cpp \
     ../../Source/basic/items/DFLItem.cpp \
-    ../../Source/basic/items/DFLFoodItem.cpp
+    ../../Source/basic/items/DFLFoodItem.cpp \
+    ../../Source/basic/item/DFLInventory.cpp \
+    ../../Source/basic/item/DFLInventoryItem.cpp \
+    ../../Source/basic/inventory/DFLInventoryWidget.cpp \
+    ../../Source/basic/inventory/DFLInventoryItemWidget.cpp
 
 # All your generated includes will go in this file
 # You can not put this on the repository as this contains hardcoded paths

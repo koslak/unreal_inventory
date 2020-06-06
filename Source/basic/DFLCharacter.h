@@ -61,4 +61,13 @@ public:
     class ADFLUsableActor* focused_usable_actor{ nullptr };
 
     TSubclassOf<class UDFLItem> UDFLItemClass;
+
+    TSubclassOf<class UUserWidget> DFLInventory_widget_class;
+    class UDFLInventoryWidget *inventory_widget{ nullptr };
+    bool is_inventory_widget_displayed{ false };
+
+    void process_inventory_visualization();
+    void show_inventory();
+    void hide_inventory();
+
 };

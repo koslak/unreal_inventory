@@ -8,8 +8,10 @@
 #include "items/DFLItem.h"
 #include "items/DFLFoodItem.h"
 #include "items/DFLInventoryComponent.h"
+#include "inventory/DFLInventoryWidget.h"
 
 #include "UObject/ConstructorHelpers.h"
+#include "GameFramework/PlayerController.h"
 
 // Sets default values
 ADFLCharacter::ADFLCharacter()
@@ -20,6 +22,12 @@ ADFLCharacter::ADFLCharacter()
     inventory_component = CreateDefaultSubobject<UDFLInventoryComponent>("Inventory");
     inventory_component->capacity = 20;
 
+    ConstructorHelpers::FClassFinder<UDFLInventoryWidget> DFLInventory_widget_BP(TEXT("/Game/Blueprints/inventory/inventory_WBP"));
+    if(DFLInventory_widget_BP.Class)
+    {
+        DFLInventory_widget_class = DFLInventory_widget_BP.Class;
+    }
+
     ConstructorHelpers::FClassFinder<UDFLItem> UDFLItemBP(TEXT("/Game/Blueprints/Items/Food_Item_BP"));
     UDFLItemClass = UDFLItemBP.Class;
 }
@@ -29,6 +37,16 @@ void ADFLCharacter::BeginPlay()
 {
     Super::BeginPlay();
 
+    UUserWidget *general_widget{ nullptr };
+    general_widget = CreateWidget<UUserWidget>(GetWorld(), DFLInventory_widget_class);
+    if(general_widget && general_widget->IsA(UDFLInventoryWidget::StaticClass()))
+    {
+        inventory_widget = Cast<UDFLInventoryWidget>(general_widget);
+
+        UE_LOG(LogTemp, Warning, TEXT("Inventory Widget Created Successfully"));
+        inventory_widget->SetVisibility(ESlateVisibility::Hidden);
+        inventory_widget->AddToViewport();
+    }
 }
 
 // Called every frame
@@ -88,6 +106,7 @@ void ADFLCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
     PlayerInputComponent->BindAxis("Turn", this, &ADFLCharacter::AddControllerYawInput);
 
     PlayerInputComponent->BindAction("Use", IE_Pressed, this, &ADFLCharacter::use_actor);
+    PlayerInputComponent->BindAction("Inventory", IE_Pressed, this, &ADFLCharacter::process_inventory_visualization);
 }
 
 void ADFLCharacter::use_item(UDFLItem *item)
@@ -103,8 +122,16 @@ void ADFLCharacter::use_actor()
     {
         usable_actor->OnUsed(this);
 
-        UDFLFoodItem *food_item = NewObject<UDFLFoodItem>(this, UDFLItemClass, TEXT("food_item"));
-        inventory_component->add_item(UDFLItemClass.GetDefaultObject());
+        UE_LOG(LogTemp, Warning, TEXT("use_actor.........."));
+        UDFLInventoryItemWidget *item = usable_actor->get_inventory_item_widget();
+        if(item)
+        {
+            inventory_widget->add_item(item);
+        }else {
+            UE_LOG(LogTemp, Warning, TEXT("item widget is null.........."));
+        }
+//        UDFLFoodItem *food_item = NewObject<UDFLFoodItem>(this, UDFLItemClass, TEXT("food_item"));
+//        inventory_component->add_item(UDFLItemClass.GetDefaultObject());
     }
 }
 
@@ -115,7 +142,7 @@ ADFLUsableActor *ADFLCharacter::get_usable_actor_in_view()
 
     if (Controller == nullptr)
     {
-        UE_LOG(LogTemp, Error, TEXT("ADFLCharacter::get_usable_actor_in_view -> Controller is null") );
+        UE_LOG(LogTemp, Error, TEXT("ADFLCharacter::get_usable_actor_in_view -> Controller is null"));
         return nullptr;
     }
 
@@ -135,4 +162,76 @@ ADFLUsableActor *ADFLCharacter::get_usable_actor_in_view()
 
     return Cast<ADFLUsableActor>(Hit.GetActor());
 }
+
+void ADFLCharacter::process_inventory_visualization()
+{
+    if(is_inventory_widget_displayed)
+    {
+        hide_inventory();
+
+    }else{
+        show_inventory();
+    }
+
+    is_inventory_widget_displayed = !is_inventory_widget_displayed;
+}
+
+void ADFLCharacter::show_inventory()
+{
+    UE_LOG(LogTemp, Warning, TEXT("Show Inventory"));
+
+    if(inventory_widget)
+    {
+        APlayerController* player_controller = static_cast<APlayerController*>(this->GetController());
+        if(player_controller)
+        {
+            FInputModeGameAndUI input_mode_game_and_UI;
+            input_mode_game_and_UI.SetWidgetToFocus(inventory_widget->TakeWidget());
+            input_mode_game_and_UI.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+
+            player_controller->SetInputMode(input_mode_game_and_UI);
+            player_controller->bShowMouseCursor = true;
+
+            inventory_widget->SetVisibility(ESlateVisibility::Visible);
+
+        }else{
+            UE_LOG(LogTemp, Error, TEXT("player_controller variable is null"));
+        }
+    }else{
+        UE_LOG(LogTemp, Error, TEXT("Inventory_widget variable is null"));
+    }
+}
+
+void ADFLCharacter::hide_inventory()
+{
+    UE_LOG(LogTemp, Warning, TEXT("Hide Inventory"));
+
+    if(inventory_widget)
+    {
+        APlayerController* player_controller = static_cast<APlayerController*>(this->GetController());
+        if(player_controller)
+        {
+            FInputModeGameOnly input_mode_game;
+
+            player_controller->SetInputMode(input_mode_game);
+            player_controller->bShowMouseCursor = false;
+
+            inventory_widget->SetVisibility(ESlateVisibility::Hidden);
+
+        }else{
+            UE_LOG(LogTemp, Error, TEXT("player_controller variable is null"));
+        }
+    }else{
+        UE_LOG(LogTemp, Error, TEXT("Inventory_widget variable is null"));
+    }
+}
+
+
+
+
+
+
+
+
+
 
