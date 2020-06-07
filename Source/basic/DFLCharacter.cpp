@@ -86,12 +86,55 @@ void ADFLCharacter::Tick(float DeltaTime)
 
 void ADFLCharacter::move_forward(float value)
 {
-    AddMovementInput(GetActorForwardVector() * value);
+    if(player_can_move())
+    {
+        AddMovementInput(GetActorForwardVector() * value);
+    }
 }
 
 void ADFLCharacter::move_right(float value)
 {
-    AddMovementInput(GetActorRightVector() * value);
+    if(player_can_move())
+    {
+        AddMovementInput(GetActorRightVector() * value);
+    }
+}
+
+void ADFLCharacter::lookup(float value)
+{
+    if(player_can_move())
+    {
+        AddControllerPitchInput(value);
+    }
+}
+
+void ADFLCharacter::turn(float value)
+{
+    if(player_can_move())
+    {
+        AddControllerYawInput(value);
+    }
+}
+
+void ADFLCharacter::move_widget_left()
+{
+    if(!player_can_move())
+    {
+        UE_LOG(LogTemp, Warning, TEXT("to the left KEY"));
+    }
+}
+
+void ADFLCharacter::move_widget_right()
+{
+    if(!player_can_move())
+    {
+        UE_LOG(LogTemp, Warning, TEXT("to the right KEY"));
+    }
+}
+
+bool ADFLCharacter::player_can_move()
+{
+    return !is_inventory_widget_displayed;
 }
 
 // Called to bind functionality to input
@@ -102,11 +145,13 @@ void ADFLCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
     PlayerInputComponent->BindAxis("MoveForward", this, &ADFLCharacter::move_forward);
     PlayerInputComponent->BindAxis("MoveRight", this, &ADFLCharacter::move_right);
 
-    PlayerInputComponent->BindAxis("LookUp", this, &ADFLCharacter::AddControllerPitchInput);
-    PlayerInputComponent->BindAxis("Turn", this, &ADFLCharacter::AddControllerYawInput);
+    PlayerInputComponent->BindAxis("LookUp", this, &ADFLCharacter::lookup);
+    PlayerInputComponent->BindAxis("Turn", this, &ADFLCharacter::turn);
 
     PlayerInputComponent->BindAction("Use", IE_Pressed, this, &ADFLCharacter::use_actor);
     PlayerInputComponent->BindAction("Inventory", IE_Pressed, this, &ADFLCharacter::process_inventory_visualization);
+    PlayerInputComponent->BindAction("WidgetLeft", IE_Pressed, this, &ADFLCharacter::move_widget_left);
+    PlayerInputComponent->BindAction("WidgetRight", IE_Pressed, this, &ADFLCharacter::move_widget_right);
 }
 
 void ADFLCharacter::use_item(UDFLItem *item)
@@ -185,13 +230,14 @@ void ADFLCharacter::show_inventory()
         APlayerController* player_controller = static_cast<APlayerController*>(this->GetController());
         if(player_controller)
         {
+            /*
             FInputModeGameAndUI input_mode_game_and_UI;
             input_mode_game_and_UI.SetWidgetToFocus(inventory_widget->TakeWidget());
             input_mode_game_and_UI.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
 
-            player_controller->SetInputMode(input_mode_game_and_UI);
             player_controller->bShowMouseCursor = true;
-
+            player_controller->SetInputMode(input_mode_game_and_UI);
+            */
             inventory_widget->SetVisibility(ESlateVisibility::Visible);
 
         }else{
@@ -211,11 +257,12 @@ void ADFLCharacter::hide_inventory()
         APlayerController* player_controller = static_cast<APlayerController*>(this->GetController());
         if(player_controller)
         {
+            /*
             FInputModeGameOnly input_mode_game;
 
             player_controller->SetInputMode(input_mode_game);
             player_controller->bShowMouseCursor = false;
-
+            */
             inventory_widget->SetVisibility(ESlateVisibility::Hidden);
 
         }else{

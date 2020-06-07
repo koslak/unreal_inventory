@@ -20,8 +20,12 @@ protected:
     virtual void BeginPlay() override;
 
     void move_forward(float value);
-
     void move_right(float value);
+    void lookup(float value);
+    void turn(float value);
+    void move_widget_left();
+    void move_widget_right();
+    bool player_can_move();
 
 public:
     // Called every frame
