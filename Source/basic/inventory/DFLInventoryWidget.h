@@ -20,6 +20,11 @@ public:
 
     bool add_item(class UDFLInventoryItemWidget *item);
 
+    void show_inventory();
+    void hide_inventory();
+    void select_item_to_the_right();
+    void select_item_to_the_left();
+
 private:
 
     UPROPERTY(meta = (BindWidget))
@@ -33,6 +38,8 @@ private:
 
     TSubclassOf<class UUserWidget> DFLInventory_item_widget_class;
     TArray<class UDFLInventoryItemWidget*> item_widget_array;
+
+    int current_item_selected_index{ 0 };
 
 protected:
 

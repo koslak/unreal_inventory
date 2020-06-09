@@ -121,6 +121,7 @@ void ADFLCharacter::move_widget_left()
     if(!player_can_move())
     {
         UE_LOG(LogTemp, Warning, TEXT("to the left KEY"));
+        inventory_widget->select_item_to_the_left();
     }
 }
 
@@ -129,6 +130,7 @@ void ADFLCharacter::move_widget_right()
     if(!player_can_move())
     {
         UE_LOG(LogTemp, Warning, TEXT("to the right KEY"));
+        inventory_widget->select_item_to_the_right();
     }
 }
 
@@ -238,7 +240,7 @@ void ADFLCharacter::show_inventory()
             player_controller->bShowMouseCursor = true;
             player_controller->SetInputMode(input_mode_game_and_UI);
             */
-            inventory_widget->SetVisibility(ESlateVisibility::Visible);
+            inventory_widget->show_inventory();
 
         }else{
             UE_LOG(LogTemp, Error, TEXT("player_controller variable is null"));
@@ -263,7 +265,7 @@ void ADFLCharacter::hide_inventory()
             player_controller->SetInputMode(input_mode_game);
             player_controller->bShowMouseCursor = false;
             */
-            inventory_widget->SetVisibility(ESlateVisibility::Hidden);
+            inventory_widget->hide_inventory();
 
         }else{
             UE_LOG(LogTemp, Error, TEXT("player_controller variable is null"));

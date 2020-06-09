@@ -53,6 +53,7 @@ void ADFLUsableActor::OnUsed(APawn *)
         {
             inventory_item_widget->Thumbnail->SetBrushFromTexture(this->thumbnail_image);
             inventory_item_widget->ItemName->SetText(this->item_widget_display_name);
+            inventory_item_widget->FrameSelector->SetOpacity(0.0f);
         }
     }else{
         UE_LOG(LogTemp, Error, TEXT("ADFLUsableActor inventory item widget is null"));

@@ -5,6 +5,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Components/TextBlock.h"
 #include "Components/WrapBox.h"
+#include "Components/Image.h"
 
 UDFLInventoryWidget::UDFLInventoryWidget(const FObjectInitializer &ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -84,6 +85,104 @@ bool UDFLInventoryWidget::add_item(UDFLInventoryItemWidget *item)
     }
 
     return true;
+}
+
+void UDFLInventoryWidget::show_inventory()
+{
+    this->SetVisibility(ESlateVisibility::Visible);
+    current_item_selected_index = 0;
+
+    // Highlight the first inventory item
+    if(item_widget_array.Num() > 0)
+    {
+        UDFLInventoryItemWidget *item = item_widget_array[ current_item_selected_index ];
+        if(item)
+        {
+            item->FrameSelector->SetOpacity(1.0f);
+        }
+    }
+}
+
+void UDFLInventoryWidget::hide_inventory()
+{
+    this->SetVisibility(ESlateVisibility::Hidden);
+    current_item_selected_index = 0;
+
+    // TODO: Clear the highlight from all items in the inventory except for the first item.
+    int first_index{ 0 };
+    for (auto& item : item_widget_array)
+    {
+        if(first_index == 0)
+        {
+            item->FrameSelector->SetOpacity(1.0f);
+            first_index++;
+        }else{
+            item->FrameSelector->SetOpacity(0.0f);
+        }
+    }
+}
+
+void UDFLInventoryWidget::select_item_to_the_right()
+{
+    // Remove highlight from current inventory item
+    if(current_item_selected_index < item_widget_array.Num())
+    {
+        UDFLInventoryItemWidget *item = item_widget_array[ current_item_selected_index ];
+        if(item)
+        {
+            item->FrameSelector->SetOpacity(0.0f);
+        }
+    }
+
+    current_item_selected_index++;
+    if(current_item_selected_index < item_widget_array.Num())
+    {
+        UDFLInventoryItemWidget *item = item_widget_array[ current_item_selected_index ];
+        if(item)
+        {
+            item->FrameSelector->SetOpacity(1.0f);
+        }
+    }else{
+        // Highlight the last element
+        current_item_selected_index = item_widget_array.Num() - 1;
+        UDFLInventoryItemWidget *item = item_widget_array[ current_item_selected_index ];
+        if(item)
+        {
+            item->FrameSelector->SetOpacity(1.0f);
+        }
+    }
+}
+
+void UDFLInventoryWidget::select_item_to_the_left()
+{
+    // Remove highlight from current inventory item
+    if(current_item_selected_index >= 0)
+    {
+        UDFLInventoryItemWidget *item = item_widget_array[ current_item_selected_index ];
+        if(item)
+        {
+            item->FrameSelector->SetOpacity(0.0f);
+        }
+    }
+
+    current_item_selected_index--;
+    if(current_item_selected_index >= 0)
+    {
+        UDFLInventoryItemWidget *item = item_widget_array[ current_item_selected_index ];
+        if(item)
+        {
+            item->FrameSelector->SetOpacity(1.0f);
+        }
+    }else{
+        // Highlight the first element
+        current_item_selected_index = 0;
+        UDFLInventoryItemWidget *item = item_widget_array[ current_item_selected_index ];
+        if(item)
+        {
+            item->FrameSelector->SetOpacity(1.0f);
+        }
+    }
+
 }
 
 

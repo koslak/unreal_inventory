@@ -24,4 +24,7 @@ public:
 
     UPROPERTY(meta = (BindWidget))
     class UImage *Thumbnail;
+
+    UPROPERTY(meta = (BindWidget))
+    class UImage *FrameSelector;
 };
