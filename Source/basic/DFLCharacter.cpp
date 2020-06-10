@@ -120,8 +120,10 @@ void ADFLCharacter::move_widget_left()
 {
     if(!player_can_move())
     {
-        UE_LOG(LogTemp, Warning, TEXT("to the left KEY"));
-        inventory_widget->select_item_to_the_left();
+        if(!is_action_menu_displayed)
+        {
+            inventory_widget->select_item_to_the_west();
+        }
     }
 }
 
@@ -129,8 +131,51 @@ void ADFLCharacter::move_widget_right()
 {
     if(!player_can_move())
     {
-        UE_LOG(LogTemp, Warning, TEXT("to the right KEY"));
-        inventory_widget->select_item_to_the_right();
+        if(!is_action_menu_displayed)
+        {
+            inventory_widget->select_item_to_the_east();
+        }
+    }
+}
+
+void ADFLCharacter::move_widget_up()
+{
+    if(!player_can_move())
+    {
+        if(!is_action_menu_displayed)
+        {
+            inventory_widget->select_item_to_the_north();
+        }else{
+            // Move action menu options up
+        }
+    }
+}
+
+void ADFLCharacter::move_widget_down()
+{
+    if(!player_can_move())
+    {
+        if(!is_action_menu_displayed)
+        {
+            inventory_widget->select_item_to_the_south();
+        }else{
+            // Move action menu options up
+        }
+    }
+}
+
+void ADFLCharacter::menu_action()
+{
+    if(!player_can_move())
+    {
+        if(is_action_menu_displayed)
+        {
+            inventory_widget->hide_action_menu();
+        }else{
+            inventory_widget->show_action_menu();
+        }
+
+        is_action_menu_displayed = !is_action_menu_displayed;
     }
 }
 
@@ -154,6 +199,9 @@ void ADFLCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
     PlayerInputComponent->BindAction("Inventory", IE_Pressed, this, &ADFLCharacter::process_inventory_visualization);
     PlayerInputComponent->BindAction("WidgetLeft", IE_Pressed, this, &ADFLCharacter::move_widget_left);
     PlayerInputComponent->BindAction("WidgetRight", IE_Pressed, this, &ADFLCharacter::move_widget_right);
+    PlayerInputComponent->BindAction("WidgetUp", IE_Pressed, this, &ADFLCharacter::move_widget_up);
+    PlayerInputComponent->BindAction("WidgetDown", IE_Pressed, this, &ADFLCharacter::move_widget_down);
+    PlayerInputComponent->BindAction("Action", IE_Pressed, this, &ADFLCharacter::menu_action);
 }
 
 void ADFLCharacter::use_item(UDFLItem *item)

@@ -25,6 +25,10 @@ protected:
     void turn(float value);
     void move_widget_left();
     void move_widget_right();
+    void move_widget_up();
+    void move_widget_down();
+    void menu_action();
+
     bool player_can_move();
 
 public:
@@ -69,6 +73,7 @@ public:
     TSubclassOf<class UUserWidget> DFLInventory_widget_class;
     class UDFLInventoryWidget *inventory_widget{ nullptr };
     bool is_inventory_widget_displayed{ false };
+    bool is_action_menu_displayed{ false };
 
     void process_inventory_visualization();
     void show_inventory();

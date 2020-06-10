@@ -22,16 +22,25 @@ public:
 
     void show_inventory();
     void hide_inventory();
-    void select_item_to_the_right();
-    void select_item_to_the_left();
+    void show_action_menu();
+    void hide_action_menu();
+    void select_item_to_the_east();
+    void select_item_to_the_west();
+    void select_item_to_the_north();
+    void select_item_to_the_south();
+
 
 private:
+    FVector2D get_inventory_item_widget_position();
 
     UPROPERTY(meta = (BindWidget))
     class UButton *CloseButton;
 
     UPROPERTY(meta = (BindWidget))
     class UWrapBox *InventoryBox;
+
+    UPROPERTY(meta = (BindWidget))
+    class UVerticalBox *VerticalBox_Menu;
 
     UFUNCTION()
     void close_inventory();
