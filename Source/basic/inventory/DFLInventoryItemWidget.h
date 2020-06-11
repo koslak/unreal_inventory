@@ -27,4 +27,7 @@ public:
 
     UPROPERTY(meta = (BindWidget))
     class UImage *FrameSelector;
+
+    UPROPERTY(meta = (BindWidget))
+    class UVerticalBox *VerticalBox_Item;
 };

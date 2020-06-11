@@ -121,26 +121,16 @@ void UDFLInventoryWidget::hide_inventory()
 
 void UDFLInventoryWidget::show_action_menu()
 {
-   UE_LOG(LogTemp, Warning, TEXT("show_action_menu.....0"));
    if(VerticalBox_Menu)
    {
-       UE_LOG(LogTemp, Warning, TEXT("show_action_menu.....1"));
        UPanelSlot *slot = VerticalBox_Menu->Slot;
        if(slot)
        {
-           UE_LOG(LogTemp, Warning, TEXT("show_action_menu.....2"));
            UCanvasPanelSlot *vertical_box_canvas_panel_slot = Cast<UCanvasPanelSlot>(slot);
            if(vertical_box_canvas_panel_slot)
            {
-               UE_LOG(LogTemp, Warning, TEXT("show_action_menu.....3"));
                FVector2D item_widget_position = get_inventory_item_widget_position();
-
-               if(!item_widget_position.IsZero())
-               {
-                   UE_LOG(LogTemp, Warning, TEXT("show_action_menu.....4"));
-                   FVector2D action_menu_position{ FVector2D(item_widget_position.X + 60.0, item_widget_position.Y + 60.0f) };
-                   vertical_box_canvas_panel_slot->SetPosition(action_menu_position);
-               }
+               vertical_box_canvas_panel_slot->SetPosition(item_widget_position);
            }
        }
 
@@ -225,25 +215,15 @@ FVector2D UDFLInventoryWidget::get_inventory_item_widget_position()
 {
     int item_widget_array_size = item_widget_array.Num();
 
-    UE_LOG(LogTemp, Warning, TEXT("get_inventory_item_widget_position.....0"));
     if(item_widget_array_size > 0 && current_item_selected_index >= 0 && current_item_selected_index < item_widget_array_size)
     {
-        UE_LOG(LogTemp, Warning, TEXT("get_inventory_item_widget_position....1"));
         UDFLInventoryItemWidget *item = item_widget_array[ current_item_selected_index ];
-        item->FrameSelector->SetOpacity(1.0f);
 
-        UPanelSlot *slot = item->Slot;
-        if(slot)
+        UPanelWidget* panel_widget_parent = VerticalBox_Menu->GetParent();
+        if(panel_widget_parent)
         {
-            UE_LOG(LogTemp, Warning, TEXT("get_inventory_item_widget_position....2"));
-            UCanvasPanelSlot *item_canvas_panel_slot = Cast<UCanvasPanelSlot>(slot);
-            if(item_canvas_panel_slot)
-            {
-                UE_LOG(LogTemp, Warning, TEXT("get_inventory_item_widget_position....3"));
-                FVector2D item_widget_position = item_canvas_panel_slot->GetPosition();
-                UE_LOG(LogTemp, Warning, TEXT("item_widget_position X: %d, Y: %d"), item_widget_position.X, item_widget_position.Y);
-                return item_widget_position;
-            }
+            FVector2D Position1 = panel_widget_parent->GetCachedGeometry().AbsoluteToLocal(item->VerticalBox_Item->GetCachedGeometry().GetAbsolutePosition()) + item->VerticalBox_Item->GetCachedGeometry().GetLocalSize(); // / 2.0f;
+            return Position1;
         }
     }
 
