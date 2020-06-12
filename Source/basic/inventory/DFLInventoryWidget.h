@@ -28,10 +28,13 @@ public:
     void select_item_to_the_west();
     void select_item_to_the_north();
     void select_item_to_the_south();
-
+    void select_action_menu_up();
+    void select_action_menu_down();
+    void execute_action_menu_command();
 
 private:
     FVector2D get_inventory_item_widget_position();
+    void update_action_menu_selection(int action_menu_index_value);
 
     UPROPERTY(meta = (BindWidget))
     class UButton *CloseButton;
@@ -42,6 +45,15 @@ private:
     UPROPERTY(meta = (BindWidget))
     class UVerticalBox *VerticalBox_Menu;
 
+    UPROPERTY(meta = (BindWidget))
+    class UImage *Image_Frame;
+
+    UPROPERTY(meta = (BindWidget))
+    class UImage *Image_Frame_1;
+
+    UPROPERTY(meta = (BindWidget))
+    class UImage *Image_Frame_2;
+
     UFUNCTION()
     void close_inventory();
 
@@ -49,6 +61,8 @@ private:
     TArray<class UDFLInventoryItemWidget*> item_widget_array;
 
     int current_item_selected_index{ 0 };
+    bool is_action_menu_displayed{ false };
+    int action_menu_index{ 0 };
 
 protected:
 

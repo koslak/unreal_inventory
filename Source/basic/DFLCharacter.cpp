@@ -147,6 +147,7 @@ void ADFLCharacter::move_widget_up()
             inventory_widget->select_item_to_the_north();
         }else{
             // Move action menu options up
+            inventory_widget->select_action_menu_up();
         }
     }
 }
@@ -159,7 +160,8 @@ void ADFLCharacter::move_widget_down()
         {
             inventory_widget->select_item_to_the_south();
         }else{
-            // Move action menu options up
+            // Move action menu options down
+            inventory_widget->select_action_menu_down();
         }
     }
 }
@@ -170,6 +172,7 @@ void ADFLCharacter::menu_action()
     {
         if(is_action_menu_displayed)
         {
+            inventory_widget->execute_action_menu_command();
             inventory_widget->hide_action_menu();
         }else{
             inventory_widget->show_action_menu();
@@ -217,16 +220,11 @@ void ADFLCharacter::use_actor()
     {
         usable_actor->OnUsed(this);
 
-        UE_LOG(LogTemp, Warning, TEXT("use_actor.........."));
         UDFLInventoryItemWidget *item = usable_actor->get_inventory_item_widget();
         if(item)
         {
             inventory_widget->add_item(item);
-        }else {
-            UE_LOG(LogTemp, Warning, TEXT("item widget is null.........."));
         }
-//        UDFLFoodItem *food_item = NewObject<UDFLFoodItem>(this, UDFLItemClass, TEXT("food_item"));
-//        inventory_component->add_item(UDFLItemClass.GetDefaultObject());
     }
 }
 
@@ -253,8 +251,6 @@ ADFLUsableActor *ADFLCharacter::get_usable_actor_in_view()
     FHitResult Hit(ForceInit);
     GetWorld()->LineTraceSingleByChannel(Hit, TraceStart, TraceEnd, ECC_Visibility, TraceParams);
 
-//    DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 1.0f);
-
     return Cast<ADFLUsableActor>(Hit.GetActor());
 }
 
@@ -268,6 +264,7 @@ void ADFLCharacter::process_inventory_visualization()
         show_inventory();
     }
 
+    is_action_menu_displayed = false;
     is_inventory_widget_displayed = !is_inventory_widget_displayed;
 }
 
@@ -280,14 +277,6 @@ void ADFLCharacter::show_inventory()
         APlayerController* player_controller = static_cast<APlayerController*>(this->GetController());
         if(player_controller)
         {
-            /*
-            FInputModeGameAndUI input_mode_game_and_UI;
-            input_mode_game_and_UI.SetWidgetToFocus(inventory_widget->TakeWidget());
-            input_mode_game_and_UI.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
-
-            player_controller->bShowMouseCursor = true;
-            player_controller->SetInputMode(input_mode_game_and_UI);
-            */
             inventory_widget->show_inventory();
 
         }else{
@@ -307,12 +296,6 @@ void ADFLCharacter::hide_inventory()
         APlayerController* player_controller = static_cast<APlayerController*>(this->GetController());
         if(player_controller)
         {
-            /*
-            FInputModeGameOnly input_mode_game;
-
-            player_controller->SetInputMode(input_mode_game);
-            player_controller->bShowMouseCursor = false;
-            */
             inventory_widget->hide_inventory();
 
         }else{

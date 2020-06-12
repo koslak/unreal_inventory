@@ -105,6 +105,11 @@ void UDFLInventoryWidget::show_inventory()
         UDFLInventoryItemWidget *item = item_widget_array[ current_item_selected_index ];
         item->FrameSelector->SetOpacity(1.0f);
     }
+
+//    action_menu_index = 0;
+//    update_action_menu_selection(action_menu_index);
+    VerticalBox_Menu->SetVisibility(ESlateVisibility::Hidden);
+//    this->hide_action_menu();
 }
 
 void UDFLInventoryWidget::hide_inventory()
@@ -134,6 +139,10 @@ void UDFLInventoryWidget::show_action_menu()
            }
        }
 
+       action_menu_index = 0;
+       is_action_menu_displayed = true;
+       update_action_menu_selection(action_menu_index);
+
        VerticalBox_Menu->SetVisibility(ESlateVisibility::Visible);
    }
 }
@@ -143,7 +152,35 @@ void UDFLInventoryWidget::hide_action_menu()
    if(VerticalBox_Menu)
    {
        VerticalBox_Menu->SetVisibility(ESlateVisibility::Hidden);
+
+       is_action_menu_displayed = false;
+       action_menu_index = 0;
+       update_action_menu_selection(action_menu_index);
    }
+}
+
+void UDFLInventoryWidget::update_action_menu_selection(int action_menu_index_value)
+{
+    switch(action_menu_index_value)
+    {
+    case 0:
+        Image_Frame->SetOpacity(0.4f);
+        Image_Frame_1->SetOpacity(0.0f);
+        Image_Frame_2->SetOpacity(0.0f);
+        break;
+
+    case 1:
+        Image_Frame->SetOpacity(0.0f);
+        Image_Frame_1->SetOpacity(0.4f);
+        Image_Frame_2->SetOpacity(0.0f);
+        break;
+
+    case 2:
+        Image_Frame->SetOpacity(0.0f);
+        Image_Frame_1->SetOpacity(0.0f);
+        Image_Frame_2->SetOpacity(0.4f);
+        break;
+    }
 }
 
 void UDFLInventoryWidget::select_item_to_the_east()
@@ -211,6 +248,53 @@ void UDFLInventoryWidget::select_item_to_the_south()
 
 }
 
+void UDFLInventoryWidget::select_action_menu_up()
+{
+    if(is_action_menu_displayed)
+    {
+        action_menu_index--;
+        if(action_menu_index <= 0)
+        {
+            action_menu_index = 0;
+        }
+
+        update_action_menu_selection(action_menu_index);
+    }
+}
+
+void UDFLInventoryWidget::select_action_menu_down()
+{
+    if(is_action_menu_displayed)
+    {
+        action_menu_index++;
+        if(action_menu_index >= 2)
+        {
+            action_menu_index = 2;
+        }
+
+        update_action_menu_selection(action_menu_index);
+    }
+}
+
+void UDFLInventoryWidget::execute_action_menu_command()
+{
+    switch(action_menu_index)
+    {
+    case 0:
+        UE_LOG(LogTemp, Warning, TEXT("ACTION 0!!!!!!!!!!!!!!!!!!!!!!!!!"));
+        break;
+
+    case 1:
+        UE_LOG(LogTemp, Warning, TEXT("ACTION 1!!!!!!!!!!!!!!!!!!!!!!!!!"));
+        break;
+
+    case 2:
+        UE_LOG(LogTemp, Warning, TEXT("ACTION 2!!!!!!!!!!!!!!!!!!!!!!!!!"));
+        break;
+    }
+
+}
+
 FVector2D UDFLInventoryWidget::get_inventory_item_widget_position()
 {
     int item_widget_array_size = item_widget_array.Num();
@@ -222,7 +306,8 @@ FVector2D UDFLInventoryWidget::get_inventory_item_widget_position()
         UPanelWidget* panel_widget_parent = VerticalBox_Menu->GetParent();
         if(panel_widget_parent)
         {
-            FVector2D Position1 = panel_widget_parent->GetCachedGeometry().AbsoluteToLocal(item->VerticalBox_Item->GetCachedGeometry().GetAbsolutePosition()) + item->VerticalBox_Item->GetCachedGeometry().GetLocalSize(); // / 2.0f;
+            FVector2D Position1 = panel_widget_parent->GetCachedGeometry().AbsoluteToLocal(item->VerticalBox_Item->GetCachedGeometry().GetAbsolutePosition()); // / 2.0f;
+            Position1.X = Position1.X + item->VerticalBox_Item->GetCachedGeometry().GetLocalSize().X + 10;
             return Position1;
         }
     }
