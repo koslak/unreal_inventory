@@ -46,9 +46,9 @@ void ADFLUsableActor::OnUsed(APawn *)
 
     if(general_widget && general_widget->IsA(UDFLInventoryItemWidget::StaticClass()))
     {
-        UE_LOG(LogTemp, Warning, TEXT("Widget is a UDFLInventoryItemWidget"));
-
         inventory_item_widget = Cast<UDFLInventoryItemWidget>(general_widget);
+        inventory_item_widget->parent_actor = this;
+
         if(inventory_item_widget)
         {
             inventory_item_widget->Thumbnail->SetBrushFromTexture(this->thumbnail_image);
@@ -58,6 +58,12 @@ void ADFLUsableActor::OnUsed(APawn *)
     }else{
         UE_LOG(LogTemp, Error, TEXT("ADFLUsableActor inventory item widget is null"));
     }
+}
+
+void ADFLUsableActor::rotate_actor()
+{
+    control_rotation = GetWorld()->GetFirstPlayerController()->GetControlRotation();
+    SetActorRotation(FQuat(control_rotation));
 }
 
 

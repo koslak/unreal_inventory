@@ -27,6 +27,7 @@ bool UDFLInventoryWidget::Initialize()
         return false;
     }
 
+    /*
    if(CloseButton)
    {
        CloseButton->OnClicked.AddDynamic(this, &UDFLInventoryWidget::close_inventory);
@@ -34,6 +35,7 @@ bool UDFLInventoryWidget::Initialize()
    } else {
        return false;
    }
+   */
 
    if(VerticalBox_Menu)
    {
@@ -75,7 +77,6 @@ void UDFLInventoryWidget::close_inventory()
 
 bool UDFLInventoryWidget::add_item(UDFLInventoryItemWidget *item)
 {
-    UE_LOG(LogTemp, Warning, TEXT("Add.................."));
     if(!item)
     {
         return false;
@@ -106,10 +107,7 @@ void UDFLInventoryWidget::show_inventory()
         item->FrameSelector->SetOpacity(1.0f);
     }
 
-//    action_menu_index = 0;
-//    update_action_menu_selection(action_menu_index);
     VerticalBox_Menu->SetVisibility(ESlateVisibility::Hidden);
-//    this->hide_action_menu();
 }
 
 void UDFLInventoryWidget::hide_inventory()
@@ -186,7 +184,7 @@ void UDFLInventoryWidget::update_action_menu_selection(int action_menu_index_val
 void UDFLInventoryWidget::select_item_to_the_east()
 {
     int item_widget_array_size = item_widget_array.Num();
-    UE_LOG(LogTemp, Warning, TEXT("Right: current: %d, Array Size: %d"), current_item_selected_index, item_widget_array_size);
+//    UE_LOG(LogTemp, Warning, TEXT("Right: current: %d, Array Size: %d"), current_item_selected_index, item_widget_array_size);
 
     // Remove highlight from current inventory item
     if(current_item_selected_index >= 0 && current_item_selected_index < item_widget_array_size)
@@ -280,19 +278,39 @@ void UDFLInventoryWidget::execute_action_menu_command()
 {
     switch(action_menu_index)
     {
-    case 0:
-        UE_LOG(LogTemp, Warning, TEXT("ACTION 0!!!!!!!!!!!!!!!!!!!!!!!!!"));
+        case 0:
+            UE_LOG(LogTemp, Warning, TEXT("ACTION 0!!!!!!!!!!!!!!!!!!!!!!!!!"));
         break;
 
-    case 1:
-        UE_LOG(LogTemp, Warning, TEXT("ACTION 1!!!!!!!!!!!!!!!!!!!!!!!!!"));
+        case 1:
+        {
+            UE_LOG(LogTemp, Warning, TEXT("ACTION 1!!!!!!!!!!!!!!!!!!!!!!!!!"));
+        }
         break;
 
-    case 2:
-        UE_LOG(LogTemp, Warning, TEXT("ACTION 2!!!!!!!!!!!!!!!!!!!!!!!!!"));
+        case 2:
+            UE_LOG(LogTemp, Warning, TEXT("ACTION 2!!!!!!!!!!!!!!!!!!!!!!!!!"));
         break;
     }
 
+}
+
+UDFLInventoryItemWidget *UDFLInventoryWidget::get_current_item_widget_selected()
+{
+    int item_widget_array_size = item_widget_array.Num();
+
+    if(item_widget_array_size > 0)
+    {
+        current_item_selected_index = 0;
+        UDFLInventoryItemWidget *item = item_widget_array[ current_item_selected_index ];
+
+        if(item)
+        {
+            return item;
+        }
+    }
+
+    return nullptr;
 }
 
 FVector2D UDFLInventoryWidget::get_inventory_item_widget_position()

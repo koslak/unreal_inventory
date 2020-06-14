@@ -47,5 +47,5 @@ void ADFLPickableActor::OnUsed(APawn *InstigatorPawn)
     is_active = false;
     OnPickedUp();
 
-    Destroy();
+//    Destroy();
 }

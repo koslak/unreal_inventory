@@ -16,6 +16,8 @@ class BASIC_API UDFLInventoryItemWidget : public UUserWidget
 	
 public:
 
+    class ADFLUsableActor *parent_actor{ nullptr };
+
     UPROPERTY(meta = (BindWidget))
     class UButton *UseButton;
 

@@ -31,13 +31,11 @@ public:
     void select_action_menu_up();
     void select_action_menu_down();
     void execute_action_menu_command();
+    UDFLInventoryItemWidget *get_current_item_widget_selected();
 
 private:
     FVector2D get_inventory_item_widget_position();
     void update_action_menu_selection(int action_menu_index_value);
-
-    UPROPERTY(meta = (BindWidget))
-    class UButton *CloseButton;
 
     UPROPERTY(meta = (BindWidget))
     class UWrapBox *InventoryBox;

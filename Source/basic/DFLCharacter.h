@@ -38,6 +38,11 @@ public:
     // Called to bind functionality to input
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+//    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+    class UCameraComponent *camera_component;
+
     //************************************************************************
     //  Inventory                                                            *
     //************************************************************************
@@ -74,6 +79,7 @@ public:
     class UDFLInventoryWidget *inventory_widget{ nullptr };
     bool is_inventory_widget_displayed{ false };
     bool is_action_menu_displayed{ false };
+    bool is_actor_to_be_examined{ false };
 
     void process_inventory_visualization();
     void show_inventory();

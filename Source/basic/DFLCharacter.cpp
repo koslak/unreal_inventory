@@ -9,15 +9,32 @@
 #include "items/DFLFoodItem.h"
 #include "items/DFLInventoryComponent.h"
 #include "inventory/DFLInventoryWidget.h"
+#include "inventory/DFLInventoryItemWidget.h"
 
 #include "UObject/ConstructorHelpers.h"
 #include "GameFramework/PlayerController.h"
+#include "Camera/CameraComponent.h"
+#include "Components/CapsuleComponent.h"
 
 // Sets default values
 ADFLCharacter::ADFLCharacter()
 {
     // Set this character to call Tick() every frame.
     PrimaryActorTick.bCanEverTick = true;
+
+    camera_component = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+    camera_component->SetupAttachment(GetCapsuleComponent());
+    camera_component->SetRelativeLocation(FVector(-39.56f, 1.75f, 64.f)); // Position the camera
+    camera_component->bUsePawnControlRotation = true;
+
+    /*
+    // Don't use any post processing effect for the camera
+    camera_component->PostProcessBlendWeight = 0.0f;
+
+    camera_component->PostProcessSettings.DepthOfFieldFstop = 1.0f;
+    camera_component->PostProcessSettings.DepthOfFieldMinFstop = 1.2f;
+    camera_component->PostProcessSettings.DepthOfFieldFocalDistance = 50.0f;
+    */
 
     inventory_component = CreateDefaultSubobject<UDFLInventoryComponent>("Inventory");
     inventory_component->capacity = 20;
@@ -81,6 +98,44 @@ void ADFLCharacter::Tick(float DeltaTime)
                 is_usable_actor_has_new_focus = false;
             }
         }
+    }
+
+    if(is_actor_to_be_examined)
+    {
+        UDFLInventoryItemWidget *current_item_widget_selected = inventory_widget->get_current_item_widget_selected();
+        if(current_item_widget_selected)
+        {
+            /*
+            camera_component->PostProcessBlendWeight = 1.0f;
+            camera_component->PostProcessSettings.DepthOfFieldFstop = 1.2f;
+            camera_component->PostProcessSettings.DepthOfFieldMinFstop = 1.2f;
+            camera_component->PostProcessSettings.DepthOfFieldFocalDistance = 60.0f;
+            */
+
+            ADFLUsableActor *current_item_widget_actor = current_item_widget_selected->parent_actor;
+//            current_item_widget_actor->SetActorScale3D(FVector(0.1f, 0.1f, 0.1f));
+            UStaticMeshComponent *actor_mesh_component = current_item_widget_actor->get_mesh_component();
+//            actor_mesh_component->SetWorldScale3D(FVector(0.05f, 0.05f, 0.05f));
+            actor_mesh_component->SetVisibility(true);
+
+            current_item_widget_actor->AttachToComponent(GetCapsuleComponent(), FAttachmentTransformRules::KeepWorldTransform);
+
+            FVector Start = camera_component->GetComponentLocation();
+            FVector ForwardVector = camera_component->GetForwardVector();
+            FVector End = ((ForwardVector * 70.0f) + Start);
+
+//            current_item_widget_actor->SetActorRelativeLocation(FVector(0.0f, 50.0f, 50.0f));
+            current_item_widget_actor->SetActorLocation(End);
+
+//            GetWorld()->GetFirstPlayerController()->PlayerCameraManager->ViewPitchMax = 179.9000002f;
+//            GetWorld()->GetFirstPlayerController()->PlayerCameraManager->ViewPitchMin = -179.9000002f;
+            current_item_widget_actor->rotate_actor();
+
+        }else{
+            UE_LOG(LogTemp, Error, TEXT("ADFLCharacter::menu_action -> current_item_widget_selected is null"));
+        }
+
+
     }
 }
 
@@ -172,6 +227,10 @@ void ADFLCharacter::menu_action()
     {
         if(is_action_menu_displayed)
         {
+            is_actor_to_be_examined = true;
+            camera_component->bUsePawnControlRotation = !camera_component->bUsePawnControlRotation;
+            bUseControllerRotationYaw = !bUseControllerRotationYaw;
+
             inventory_widget->execute_action_menu_command();
             inventory_widget->hide_action_menu();
         }else{
@@ -270,8 +329,6 @@ void ADFLCharacter::process_inventory_visualization()
 
 void ADFLCharacter::show_inventory()
 {
-    UE_LOG(LogTemp, Warning, TEXT("Show Inventory"));
-
     if(inventory_widget)
     {
         APlayerController* player_controller = static_cast<APlayerController*>(this->GetController());
@@ -289,8 +346,6 @@ void ADFLCharacter::show_inventory()
 
 void ADFLCharacter::hide_inventory()
 {
-    UE_LOG(LogTemp, Warning, TEXT("Hide Inventory"));
-
     if(inventory_widget)
     {
         APlayerController* player_controller = static_cast<APlayerController*>(this->GetController());

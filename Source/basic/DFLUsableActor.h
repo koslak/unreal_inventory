@@ -25,8 +25,10 @@ public:
     /* Called when player interacts with object */
     virtual void OnUsed(APawn* InstigatorPawn);
 
+    void rotate_actor();
+
     /* Public accessor to the mesh component. With FORCEINLINE we are allowed to define the function in the header, use this only for simple accessors! */
-    FORCEINLINE UStaticMeshComponent* GetMeshComponent() const
+    FORCEINLINE UStaticMeshComponent* get_mesh_component() const
     {
         return mesh_component;
     }
@@ -63,4 +65,5 @@ protected:
 private:
 
     TSubclassOf<class UUserWidget> DFLInventory_item_widget_class;
+    FRotator control_rotation;
 };
