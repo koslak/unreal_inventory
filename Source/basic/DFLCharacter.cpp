@@ -15,6 +15,8 @@
 #include "GameFramework/PlayerController.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 ADFLCharacter::ADFLCharacter()
@@ -27,15 +29,6 @@ ADFLCharacter::ADFLCharacter()
     camera_component->SetRelativeLocation(FVector(-39.56f, 1.75f, 64.f)); // Position the camera
     camera_component->bUsePawnControlRotation = true;
 
-    /*
-    // Don't use any post processing effect for the camera
-    camera_component->PostProcessBlendWeight = 0.0f;
-
-    camera_component->PostProcessSettings.DepthOfFieldFstop = 1.0f;
-    camera_component->PostProcessSettings.DepthOfFieldMinFstop = 1.2f;
-    camera_component->PostProcessSettings.DepthOfFieldFocalDistance = 50.0f;
-    */
-
     inventory_component = CreateDefaultSubobject<UDFLInventoryComponent>("Inventory");
     inventory_component->capacity = 20;
 
@@ -47,12 +40,22 @@ ADFLCharacter::ADFLCharacter()
 
     ConstructorHelpers::FClassFinder<UDFLItem> UDFLItemBP(TEXT("/Game/Blueprints/Items/Food_Item_BP"));
     UDFLItemClass = UDFLItemBP.Class;
+
 }
 
 // Called when the game starts or when spawned
 void ADFLCharacter::BeginPlay()
 {
     Super::BeginPlay();
+
+    GetWorld()->bIsCameraMoveableWhenPaused = true;
+    GetWorld()->GetFirstPlayerController()->SetTickableWhenPaused(true);
+    this->SetTickableWhenPaused(true);
+    camera_component->SetTickableWhenPaused(true);
+    this->GetCharacterMovement()->SetTickableWhenPaused(true);
+    this->GetCapsuleComponent()->SetTickableWhenPaused(true);
+    Controller->SetTickableWhenPaused(true);
+    Controller->GetCharacter()->SetTickableWhenPaused(true);
 
     UUserWidget *general_widget{ nullptr };
     general_widget = CreateWidget<UUserWidget>(GetWorld(), DFLInventory_widget_class);
@@ -103,39 +106,28 @@ void ADFLCharacter::Tick(float DeltaTime)
     if(is_actor_to_be_examined)
     {
         UDFLInventoryItemWidget *current_item_widget_selected = inventory_widget->get_current_item_widget_selected();
+
         if(current_item_widget_selected)
         {
-            /*
-            camera_component->PostProcessBlendWeight = 1.0f;
-            camera_component->PostProcessSettings.DepthOfFieldFstop = 1.2f;
-            camera_component->PostProcessSettings.DepthOfFieldMinFstop = 1.2f;
-            camera_component->PostProcessSettings.DepthOfFieldFocalDistance = 60.0f;
-            */
-
             ADFLUsableActor *current_item_widget_actor = current_item_widget_selected->parent_actor;
-//            current_item_widget_actor->SetActorScale3D(FVector(0.1f, 0.1f, 0.1f));
-            UStaticMeshComponent *actor_mesh_component = current_item_widget_actor->get_mesh_component();
-//            actor_mesh_component->SetWorldScale3D(FVector(0.05f, 0.05f, 0.05f));
-            actor_mesh_component->SetVisibility(true);
+            examined_actor = current_item_widget_actor;
+            current_item_widget_actor->SetTickableWhenPaused(true);
+            current_item_widget_actor->get_mesh_component()->SetTickableWhenPaused(true);
 
+            UStaticMeshComponent *actor_mesh_component = current_item_widget_actor->get_mesh_component();
+            actor_mesh_component->SetVisibility(true);
             current_item_widget_actor->AttachToComponent(GetCapsuleComponent(), FAttachmentTransformRules::KeepWorldTransform);
 
             FVector Start = camera_component->GetComponentLocation();
             FVector ForwardVector = camera_component->GetForwardVector();
             FVector End = ((ForwardVector * 70.0f) + Start);
 
-//            current_item_widget_actor->SetActorRelativeLocation(FVector(0.0f, 50.0f, 50.0f));
             current_item_widget_actor->SetActorLocation(End);
-
-//            GetWorld()->GetFirstPlayerController()->PlayerCameraManager->ViewPitchMax = 179.9000002f;
-//            GetWorld()->GetFirstPlayerController()->PlayerCameraManager->ViewPitchMin = -179.9000002f;
             current_item_widget_actor->rotate_actor();
 
         }else{
             UE_LOG(LogTemp, Error, TEXT("ADFLCharacter::menu_action -> current_item_widget_selected is null"));
         }
-
-
     }
 }
 
@@ -143,7 +135,25 @@ void ADFLCharacter::move_forward(float value)
 {
     if(player_can_move())
     {
-        AddMovementInput(GetActorForwardVector() * value);
+        if(!is_game_paused)
+        {
+            AddMovementInput(GetActorForwardVector() * value);
+        }else{
+            if(examined_actor)
+            {
+            UE_LOG(LogTemp, Warning, TEXT("----------------------------"));
+//            examined_actor->SetActorRelativeRotation(FRotator(10.0f, 10.0f, 0.0f));
+            FVector xx = examined_actor->GetActorLocation();
+            UE_LOG(LogTemp, Warning, TEXT("Location..... %s"), *xx.ToString());
+            UE_LOG(LogTemp, Warning, TEXT("Rotation..... %s"), *examined_actor->GetActorRotation().ToString());
+            UE_LOG(LogTemp, Warning, TEXT("RotationXX..... %s"), *GetActorRotation().ToString());
+            UE_LOG(LogTemp, Warning, TEXT("----------------------------"));
+            examined_actor->SetActorLocation(FVector(2.113f, -216.0f, 157.0f));
+            examined_actor->SetActorRotation(FRotator(examined_actor->GetActorLocation().X, 10.0f, 0.0f));
+            examined_actor->get_mesh_component()->SetRelativeRotation(FRotator(examined_actor->GetActorLocation().X, 10.0f, 0.0f));
+//            examined_actor->get_mesh_component()->SetWorldRotation(FRotator(examined_actor->GetActorLocation().X, 10.0f, 0.0f));
+            }
+        }
     }
 }
 
@@ -168,6 +178,7 @@ void ADFLCharacter::turn(float value)
     if(player_can_move())
     {
         AddControllerYawInput(value);
+//        AddControllerYawInput(value * 45.0f * GetWorld()->GetDeltaSeconds());
     }
 }
 
@@ -241,6 +252,12 @@ void ADFLCharacter::menu_action()
     }
 }
 
+void ADFLCharacter::pause_game(bool pause_game)
+{
+    is_game_paused = pause_game;
+    UGameplayStatics::SetGamePaused(GetWorld(), pause_game);
+}
+
 bool ADFLCharacter::player_can_move()
 {
     return !is_inventory_widget_displayed;
@@ -251,19 +268,20 @@ void ADFLCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-    PlayerInputComponent->BindAxis("MoveForward", this, &ADFLCharacter::move_forward);
-    PlayerInputComponent->BindAxis("MoveRight", this, &ADFLCharacter::move_right);
+    PlayerInputComponent->BindAxis("MoveForward", this, &ADFLCharacter::move_forward).bExecuteWhenPaused = true;
+    PlayerInputComponent->BindAxis("MoveRight", this, &ADFLCharacter::move_right).bExecuteWhenPaused = true;
 
-    PlayerInputComponent->BindAxis("LookUp", this, &ADFLCharacter::lookup);
-    PlayerInputComponent->BindAxis("Turn", this, &ADFLCharacter::turn);
+    PlayerInputComponent->BindAxis("LookUp", this, &ADFLCharacter::lookup).bExecuteWhenPaused = true;
+    PlayerInputComponent->BindAxis("Turn", this, &ADFLCharacter::turn).bExecuteWhenPaused = true;
 
-    PlayerInputComponent->BindAction("Use", IE_Pressed, this, &ADFLCharacter::use_actor);
-    PlayerInputComponent->BindAction("Inventory", IE_Pressed, this, &ADFLCharacter::process_inventory_visualization);
-    PlayerInputComponent->BindAction("WidgetLeft", IE_Pressed, this, &ADFLCharacter::move_widget_left);
-    PlayerInputComponent->BindAction("WidgetRight", IE_Pressed, this, &ADFLCharacter::move_widget_right);
-    PlayerInputComponent->BindAction("WidgetUp", IE_Pressed, this, &ADFLCharacter::move_widget_up);
-    PlayerInputComponent->BindAction("WidgetDown", IE_Pressed, this, &ADFLCharacter::move_widget_down);
-    PlayerInputComponent->BindAction("Action", IE_Pressed, this, &ADFLCharacter::menu_action);
+    PlayerInputComponent->BindAction("Use", IE_Pressed, this, &ADFLCharacter::use_actor).bExecuteWhenPaused = true;
+
+    PlayerInputComponent->BindAction("Inventory", IE_Pressed, this, &ADFLCharacter::process_inventory_visualization).bExecuteWhenPaused = true;
+    PlayerInputComponent->BindAction("WidgetLeft", IE_Pressed, this, &ADFLCharacter::move_widget_left).bExecuteWhenPaused = true;
+    PlayerInputComponent->BindAction("WidgetRight", IE_Pressed, this, &ADFLCharacter::move_widget_right).bExecuteWhenPaused = true;
+    PlayerInputComponent->BindAction("WidgetUp", IE_Pressed, this, &ADFLCharacter::move_widget_up).bExecuteWhenPaused = true;
+    PlayerInputComponent->BindAction("WidgetDown", IE_Pressed, this, &ADFLCharacter::move_widget_down).bExecuteWhenPaused = true;
+    PlayerInputComponent->BindAction("Action", IE_Pressed, this, &ADFLCharacter::menu_action).bExecuteWhenPaused = true;
 }
 
 void ADFLCharacter::use_item(UDFLItem *item)
@@ -318,9 +336,12 @@ void ADFLCharacter::process_inventory_visualization()
     if(is_inventory_widget_displayed)
     {
         hide_inventory();
+//        pause_game(false);
 
     }else{
+
         show_inventory();
+        pause_game(true);
     }
 
     is_action_menu_displayed = false;

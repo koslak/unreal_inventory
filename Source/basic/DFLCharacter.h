@@ -28,6 +28,7 @@ protected:
     void move_widget_up();
     void move_widget_down();
     void menu_action();
+    void pause_game(bool pause_game);
 
     bool player_can_move();
 
@@ -37,8 +38,6 @@ public:
 
     // Called to bind functionality to input
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-//    UPROPERTY(EditAnywhere, BlueprintReadOnly)
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
     class UCameraComponent *camera_component;
@@ -72,6 +71,7 @@ public:
     bool is_usable_actor_has_new_focus{ true };
 
     class ADFLUsableActor* focused_usable_actor{ nullptr };
+    class ADFLUsableActor* examined_actor{ nullptr };
 
     TSubclassOf<class UDFLItem> UDFLItemClass;
 
@@ -80,6 +80,7 @@ public:
     bool is_inventory_widget_displayed{ false };
     bool is_action_menu_displayed{ false };
     bool is_actor_to_be_examined{ false };
+    bool is_game_paused{ false };
 
     void process_inventory_visualization();
     void show_inventory();
