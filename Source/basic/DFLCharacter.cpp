@@ -118,11 +118,17 @@ void ADFLCharacter::Tick(float DeltaTime)
 
             current_item_widget_actor->SetActorLocation(End);
 
-            if(!is_reset_examine_rotation)
+            if(is_reset_examine_rotation)
             {
-                current_item_widget_actor->rotate_actor();
+                current_item_widget_actor->reset_actor_rotation(FRotator{ 0.0f, 0.0f, 0.0f });
+
+                float tolerance_for_nearly_zero_calculations{ 2.0f };
+                if(current_item_widget_actor->GetActorRotation().IsNearlyZero(tolerance_for_nearly_zero_calculations))
+                {
+                    is_reset_examine_rotation = !is_reset_examine_rotation;
+                }
             }else{
-                current_item_widget_actor->SetActorRotation(FRotator(0.0f, 0.0f, 0.0f));
+                current_item_widget_actor->rotate_actor();
             }
 
         }else{
@@ -259,7 +265,7 @@ void ADFLCharacter::menu_action()
 void ADFLCharacter::escape_current_state()
 {
     UE_LOG(LogTemp, Warning, TEXT("The Escape Key has been pressed"));
-    is_reset_examine_rotation = true;
+    is_reset_examine_rotation = !is_reset_examine_rotation;
 
 }
 

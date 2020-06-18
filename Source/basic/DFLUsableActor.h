@@ -26,6 +26,7 @@ public:
     virtual void OnUsed(APawn* InstigatorPawn);
 
     void rotate_actor();
+    void reset_actor_rotation(const FRotator &new_rotation);
 
     /* Public accessor to the mesh component. With FORCEINLINE we are allowed to define the function in the header, use this only for simple accessors! */
     FORCEINLINE UStaticMeshComponent* get_mesh_component() const
