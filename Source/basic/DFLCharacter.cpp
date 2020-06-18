@@ -48,24 +48,20 @@ void ADFLCharacter::BeginPlay()
 {
     Super::BeginPlay();
 
-    GetWorld()->bIsCameraMoveableWhenPaused = true;
-    GetWorld()->GetFirstPlayerController()->SetTickableWhenPaused(true);
-    this->SetTickableWhenPaused(true);
-    camera_component->SetTickableWhenPaused(true);
-    this->GetCharacterMovement()->SetTickableWhenPaused(true);
-    this->GetCapsuleComponent()->SetTickableWhenPaused(true);
-    Controller->SetTickableWhenPaused(true);
-    Controller->GetCharacter()->SetTickableWhenPaused(true);
-
     UUserWidget *general_widget{ nullptr };
     general_widget = CreateWidget<UUserWidget>(GetWorld(), DFLInventory_widget_class);
     if(general_widget && general_widget->IsA(UDFLInventoryWidget::StaticClass()))
     {
         inventory_widget = Cast<UDFLInventoryWidget>(general_widget);
 
-        UE_LOG(LogTemp, Warning, TEXT("Inventory Widget Created Successfully"));
-        inventory_widget->SetVisibility(ESlateVisibility::Hidden);
-        inventory_widget->AddToViewport();
+        if(inventory_widget)
+        {
+            inventory_widget->action_menu_delegate.BindUObject(this, &ADFLCharacter::action_menu_delegate_slot);
+
+            UE_LOG(LogTemp, Warning, TEXT("Inventory Widget Created Successfully"));
+            inventory_widget->SetVisibility(ESlateVisibility::Hidden);
+            inventory_widget->AddToViewport();
+        }
     }
 }
 
@@ -111,8 +107,6 @@ void ADFLCharacter::Tick(float DeltaTime)
         {
             ADFLUsableActor *current_item_widget_actor = current_item_widget_selected->parent_actor;
             examined_actor = current_item_widget_actor;
-            current_item_widget_actor->SetTickableWhenPaused(true);
-            current_item_widget_actor->get_mesh_component()->SetTickableWhenPaused(true);
 
             UStaticMeshComponent *actor_mesh_component = current_item_widget_actor->get_mesh_component();
             actor_mesh_component->SetVisibility(true);
@@ -120,10 +114,16 @@ void ADFLCharacter::Tick(float DeltaTime)
 
             FVector Start = camera_component->GetComponentLocation();
             FVector ForwardVector = camera_component->GetForwardVector();
-            FVector End = ((ForwardVector * 70.0f) + Start);
+            FVector End = ((ForwardVector * actor_examined_distance) + Start);
 
             current_item_widget_actor->SetActorLocation(End);
-            current_item_widget_actor->rotate_actor();
+
+            if(!is_reset_examine_rotation)
+            {
+                current_item_widget_actor->rotate_actor();
+            }else{
+                current_item_widget_actor->SetActorRotation(FRotator(0.0f, 0.0f, 0.0f));
+            }
 
         }else{
             UE_LOG(LogTemp, Error, TEXT("ADFLCharacter::menu_action -> current_item_widget_selected is null"));
@@ -135,23 +135,18 @@ void ADFLCharacter::move_forward(float value)
 {
     if(player_can_move())
     {
-        if(!is_game_paused)
+        if(!is_actor_to_be_examined)
         {
             AddMovementInput(GetActorForwardVector() * value);
         }else{
+
             if(examined_actor)
             {
-            UE_LOG(LogTemp, Warning, TEXT("----------------------------"));
-//            examined_actor->SetActorRelativeRotation(FRotator(10.0f, 10.0f, 0.0f));
-            FVector xx = examined_actor->GetActorLocation();
-            UE_LOG(LogTemp, Warning, TEXT("Location..... %s"), *xx.ToString());
-            UE_LOG(LogTemp, Warning, TEXT("Rotation..... %s"), *examined_actor->GetActorRotation().ToString());
-            UE_LOG(LogTemp, Warning, TEXT("RotationXX..... %s"), *GetActorRotation().ToString());
-            UE_LOG(LogTemp, Warning, TEXT("----------------------------"));
-            examined_actor->SetActorLocation(FVector(2.113f, -216.0f, 157.0f));
-            examined_actor->SetActorRotation(FRotator(examined_actor->GetActorLocation().X, 10.0f, 0.0f));
-            examined_actor->get_mesh_component()->SetRelativeRotation(FRotator(examined_actor->GetActorLocation().X, 10.0f, 0.0f));
-//            examined_actor->get_mesh_component()->SetWorldRotation(FRotator(examined_actor->GetActorLocation().X, 10.0f, 0.0f));
+                actor_examined_distance += value;
+                if(actor_examined_distance >= MAX_ACTOR_EXAMINED_DISTANCE)
+                {
+                    actor_examined_distance = MAX_ACTOR_EXAMINED_DISTANCE;
+                }
             }
         }
     }
@@ -161,7 +156,20 @@ void ADFLCharacter::move_right(float value)
 {
     if(player_can_move())
     {
-        AddMovementInput(GetActorRightVector() * value);
+        if(!is_actor_to_be_examined)
+        {
+            AddMovementInput(GetActorRightVector() * value);
+        }else{
+
+            if(examined_actor)
+            {
+                actor_examined_distance -= value;
+                if(actor_examined_distance <= MIN_ACTOR_EXAMINED_DISTANCE)
+                {
+                    actor_examined_distance = MIN_ACTOR_EXAMINED_DISTANCE;
+                }
+            }
+        }
     }
 }
 
@@ -238,10 +246,6 @@ void ADFLCharacter::menu_action()
     {
         if(is_action_menu_displayed)
         {
-            is_actor_to_be_examined = true;
-            camera_component->bUsePawnControlRotation = !camera_component->bUsePawnControlRotation;
-            bUseControllerRotationYaw = !bUseControllerRotationYaw;
-
             inventory_widget->execute_action_menu_command();
             inventory_widget->hide_action_menu();
         }else{
@@ -250,6 +254,13 @@ void ADFLCharacter::menu_action()
 
         is_action_menu_displayed = !is_action_menu_displayed;
     }
+}
+
+void ADFLCharacter::escape_current_state()
+{
+    UE_LOG(LogTemp, Warning, TEXT("The Escape Key has been pressed"));
+    is_reset_examine_rotation = true;
+
 }
 
 void ADFLCharacter::pause_game(bool pause_game)
@@ -268,20 +279,56 @@ void ADFLCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-    PlayerInputComponent->BindAxis("MoveForward", this, &ADFLCharacter::move_forward).bExecuteWhenPaused = true;
-    PlayerInputComponent->BindAxis("MoveRight", this, &ADFLCharacter::move_right).bExecuteWhenPaused = true;
+    PlayerInputComponent->BindAxis("MoveForward", this, &ADFLCharacter::move_forward);
+    PlayerInputComponent->BindAxis("MoveRight", this, &ADFLCharacter::move_right);
 
-    PlayerInputComponent->BindAxis("LookUp", this, &ADFLCharacter::lookup).bExecuteWhenPaused = true;
-    PlayerInputComponent->BindAxis("Turn", this, &ADFLCharacter::turn).bExecuteWhenPaused = true;
+    PlayerInputComponent->BindAxis("LookUp", this, &ADFLCharacter::lookup);
+    PlayerInputComponent->BindAxis("Turn", this, &ADFLCharacter::turn);
 
-    PlayerInputComponent->BindAction("Use", IE_Pressed, this, &ADFLCharacter::use_actor).bExecuteWhenPaused = true;
+    PlayerInputComponent->BindAction("Use", IE_Pressed, this, &ADFLCharacter::use_actor);
 
-    PlayerInputComponent->BindAction("Inventory", IE_Pressed, this, &ADFLCharacter::process_inventory_visualization).bExecuteWhenPaused = true;
-    PlayerInputComponent->BindAction("WidgetLeft", IE_Pressed, this, &ADFLCharacter::move_widget_left).bExecuteWhenPaused = true;
-    PlayerInputComponent->BindAction("WidgetRight", IE_Pressed, this, &ADFLCharacter::move_widget_right).bExecuteWhenPaused = true;
-    PlayerInputComponent->BindAction("WidgetUp", IE_Pressed, this, &ADFLCharacter::move_widget_up).bExecuteWhenPaused = true;
-    PlayerInputComponent->BindAction("WidgetDown", IE_Pressed, this, &ADFLCharacter::move_widget_down).bExecuteWhenPaused = true;
-    PlayerInputComponent->BindAction("Action", IE_Pressed, this, &ADFLCharacter::menu_action).bExecuteWhenPaused = true;
+    PlayerInputComponent->BindAction("Inventory", IE_Pressed, this, &ADFLCharacter::process_inventory_visualization);
+    PlayerInputComponent->BindAction("WidgetLeft", IE_Pressed, this, &ADFLCharacter::move_widget_left);
+    PlayerInputComponent->BindAction("WidgetRight", IE_Pressed, this, &ADFLCharacter::move_widget_right);
+    PlayerInputComponent->BindAction("WidgetUp", IE_Pressed, this, &ADFLCharacter::move_widget_up);
+    PlayerInputComponent->BindAction("WidgetDown", IE_Pressed, this, &ADFLCharacter::move_widget_down);
+    PlayerInputComponent->BindAction("Action", IE_Pressed, this, &ADFLCharacter::menu_action);
+    PlayerInputComponent->BindAction("EscapeCurrentState", IE_Pressed, this, &ADFLCharacter::escape_current_state);
+}
+
+void ADFLCharacter::action_menu_delegate_slot(int action_menu_index)
+{
+    /*
+    if(is_inventory_widget_displayed)
+    {
+        hide_inventory();
+    }
+    **/
+    process_inventory_visualization();
+
+    switch(action_menu_index)
+    {
+        case 0: // Use menu
+        {
+            UE_LOG(LogTemp, Warning, TEXT("action_menu_delegate_slot called. action menu index: %d"), action_menu_index);
+        }
+        break;
+
+        case 1: // Examine menu
+        {
+            UE_LOG(LogTemp, Warning, TEXT("action_menu_delegate_slot called. action menu index: %d"), action_menu_index);
+            is_actor_to_be_examined = true;
+            camera_component->bUsePawnControlRotation = !camera_component->bUsePawnControlRotation;
+            bUseControllerRotationYaw = !bUseControllerRotationYaw;
+        }
+        break;
+
+        case 2: // Combine menu
+        {
+            UE_LOG(LogTemp, Warning, TEXT("action_menu_delegate_slot called. action menu index: %d"), action_menu_index);
+        }
+        break;
+    }
 }
 
 void ADFLCharacter::use_item(UDFLItem *item)
@@ -336,12 +383,9 @@ void ADFLCharacter::process_inventory_visualization()
     if(is_inventory_widget_displayed)
     {
         hide_inventory();
-//        pause_game(false);
 
     }else{
-
         show_inventory();
-        pause_game(true);
     }
 
     is_action_menu_displayed = false;

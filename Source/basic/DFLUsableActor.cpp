@@ -12,6 +12,7 @@ ADFLUsableActor::ADFLUsableActor()
 {
     mesh_component = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
     RootComponent = mesh_component;
+    mesh_component->SetMobility(EComponentMobility::Movable);
 
     widget_component = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetComponent"));
     widget_component->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
@@ -25,6 +26,8 @@ ADFLUsableActor::ADFLUsableActor()
     }else{
         UE_LOG(LogTemp, Error, TEXT("DFLInventory_item_widget_BP is null"));
     }
+
+    this->SetActorTickEnabled(true);
 }
 
 void ADFLUsableActor::OnBeginFocus()

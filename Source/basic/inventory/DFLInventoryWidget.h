@@ -6,9 +6,8 @@
 #include "Blueprint/UserWidget.h"
 #include "DFLInventoryWidget.generated.h"
 
-/**
- * 
- */
+DECLARE_DELEGATE_OneParam(FParamDelegateSignature, int)
+
 UCLASS()
 class BASIC_API UDFLInventoryWidget : public UUserWidget
 {
@@ -17,6 +16,8 @@ class BASIC_API UDFLInventoryWidget : public UUserWidget
 public:
 
     UDFLInventoryWidget(const FObjectInitializer& ObjectInitializer);
+
+    FParamDelegateSignature action_menu_delegate;
 
     bool add_item(class UDFLInventoryItemWidget *item);
 

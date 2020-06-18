@@ -15,6 +15,8 @@ ADFLPickableActor::ADFLPickableActor()
 
     is_active = false;
     is_start_active = true;
+
+    this->SetActorTickEnabled(true);
 }
 
 void ADFLPickableActor::BeginPlay()

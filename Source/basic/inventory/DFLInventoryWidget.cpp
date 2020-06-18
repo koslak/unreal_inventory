@@ -161,22 +161,28 @@ void UDFLInventoryWidget::update_action_menu_selection(int action_menu_index_val
 {
     switch(action_menu_index_value)
     {
-    case 0:
-        Image_Frame->SetOpacity(0.4f);
-        Image_Frame_1->SetOpacity(0.0f);
-        Image_Frame_2->SetOpacity(0.0f);
+        case 0:
+        {
+            Image_Frame->SetOpacity(0.4f);
+            Image_Frame_1->SetOpacity(0.0f);
+            Image_Frame_2->SetOpacity(0.0f);
+        }
         break;
 
-    case 1:
-        Image_Frame->SetOpacity(0.0f);
-        Image_Frame_1->SetOpacity(0.4f);
-        Image_Frame_2->SetOpacity(0.0f);
+        case 1:
+        {
+            Image_Frame->SetOpacity(0.0f);
+            Image_Frame_1->SetOpacity(0.4f);
+            Image_Frame_2->SetOpacity(0.0f);
+        }
         break;
 
-    case 2:
-        Image_Frame->SetOpacity(0.0f);
-        Image_Frame_1->SetOpacity(0.0f);
-        Image_Frame_2->SetOpacity(0.4f);
+        case 2:
+        {
+            Image_Frame->SetOpacity(0.0f);
+            Image_Frame_1->SetOpacity(0.0f);
+            Image_Frame_2->SetOpacity(0.4f);
+        }
         break;
     }
 }
@@ -276,23 +282,7 @@ void UDFLInventoryWidget::select_action_menu_down()
 
 void UDFLInventoryWidget::execute_action_menu_command()
 {
-    switch(action_menu_index)
-    {
-        case 0:
-            UE_LOG(LogTemp, Warning, TEXT("ACTION 0!!!!!!!!!!!!!!!!!!!!!!!!!"));
-        break;
-
-        case 1:
-        {
-            UE_LOG(LogTemp, Warning, TEXT("ACTION 1!!!!!!!!!!!!!!!!!!!!!!!!!"));
-        }
-        break;
-
-        case 2:
-            UE_LOG(LogTemp, Warning, TEXT("ACTION 2!!!!!!!!!!!!!!!!!!!!!!!!!"));
-        break;
-    }
-
+    action_menu_delegate.ExecuteIfBound(action_menu_index);
 }
 
 UDFLInventoryItemWidget *UDFLInventoryWidget::get_current_item_widget_selected()
