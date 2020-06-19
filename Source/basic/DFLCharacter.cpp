@@ -38,6 +38,12 @@ ADFLCharacter::ADFLCharacter()
         DFLInventory_widget_class = DFLInventory_widget_BP.Class;
     }
 
+    ConstructorHelpers::FClassFinder<UUserWidget> UWidget_Examined_BP(TEXT("/Game/Blueprints/inventory/examine_WBP"));
+    if(UWidget_Examined_BP.Class)
+    {
+        UWidget_Examined_BP_class = UWidget_Examined_BP.Class;
+    }
+
     ConstructorHelpers::FClassFinder<UDFLItem> UDFLItemBP(TEXT("/Game/Blueprints/Items/Food_Item_BP"));
     UDFLItemClass = UDFLItemBP.Class;
 
@@ -62,6 +68,14 @@ void ADFLCharacter::BeginPlay()
             inventory_widget->SetVisibility(ESlateVisibility::Hidden);
             inventory_widget->AddToViewport();
         }
+    }
+
+    UWidget_examine = CreateWidget<UUserWidget>(GetWorld(), UWidget_Examined_BP_class);
+    if(UWidget_examine)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("UWidget_examine Widget Created Successfully"));
+        UWidget_examine->SetVisibility(ESlateVisibility::Hidden);
+        UWidget_examine->AddToViewport();
     }
 }
 
@@ -265,8 +279,26 @@ void ADFLCharacter::menu_action()
 void ADFLCharacter::escape_current_state()
 {
     UE_LOG(LogTemp, Warning, TEXT("The Escape Key has been pressed"));
-    is_reset_examine_rotation = !is_reset_examine_rotation;
 
+    if(is_actor_to_be_examined)
+    {
+        UWidget_examine->SetVisibility(ESlateVisibility::Hidden);
+
+        if(examined_actor)
+        {
+            UStaticMeshComponent *actor_mesh_component = examined_actor->get_mesh_component();
+            actor_mesh_component->SetVisibility(false);
+
+            is_actor_to_be_examined = !is_actor_to_be_examined;
+
+            process_inventory_visualization();
+
+            Controller->SetControlRotation(camera_last_rotation);
+
+            camera_component->bUsePawnControlRotation = !camera_component->bUsePawnControlRotation;
+            bUseControllerRotationYaw = !bUseControllerRotationYaw;
+        }
+    }
 }
 
 void ADFLCharacter::pause_game(bool pause_game)
@@ -304,12 +336,7 @@ void ADFLCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 void ADFLCharacter::action_menu_delegate_slot(int action_menu_index)
 {
-    /*
-    if(is_inventory_widget_displayed)
-    {
-        hide_inventory();
-    }
-    **/
+    camera_last_rotation = Controller->GetControlRotation();
     process_inventory_visualization();
 
     switch(action_menu_index)
@@ -322,6 +349,8 @@ void ADFLCharacter::action_menu_delegate_slot(int action_menu_index)
 
         case 1: // Examine menu
         {
+            UWidget_examine->SetVisibility(ESlateVisibility::Visible);
+
             UE_LOG(LogTemp, Warning, TEXT("action_menu_delegate_slot called. action menu index: %d"), action_menu_index);
             is_actor_to_be_examined = true;
             camera_component->bUsePawnControlRotation = !camera_component->bUsePawnControlRotation;
@@ -345,16 +374,21 @@ void ADFLCharacter::use_item(UDFLItem *item)
 
 void ADFLCharacter::use_actor()
 {
-    ADFLUsableActor* usable_actor = get_usable_actor_in_view();
-    if (usable_actor)
+    if(!is_actor_to_be_examined)
     {
-        usable_actor->OnUsed(this);
-
-        UDFLInventoryItemWidget *item = usable_actor->get_inventory_item_widget();
-        if(item)
+        ADFLUsableActor* usable_actor = get_usable_actor_in_view();
+        if (usable_actor)
         {
-            inventory_widget->add_item(item);
+            usable_actor->OnUsed(this);
+
+            UDFLInventoryItemWidget *item = usable_actor->get_inventory_item_widget();
+            if(item)
+            {
+                inventory_widget->add_item(item);
+            }
         }
+    }else{
+        is_reset_examine_rotation = !is_reset_examine_rotation;
     }
 }
 
@@ -386,16 +420,19 @@ ADFLUsableActor *ADFLCharacter::get_usable_actor_in_view()
 
 void ADFLCharacter::process_inventory_visualization()
 {
-    if(is_inventory_widget_displayed)
+    if(!is_actor_to_be_examined)
     {
-        hide_inventory();
+        if(is_inventory_widget_displayed)
+        {
+            hide_inventory();
 
-    }else{
-        show_inventory();
+        }else{
+            show_inventory();
+        }
+
+        is_action_menu_displayed = false;
+        is_inventory_widget_displayed = !is_inventory_widget_displayed;
     }
-
-    is_action_menu_displayed = false;
-    is_inventory_widget_displayed = !is_inventory_widget_displayed;
 }
 
 void ADFLCharacter::show_inventory()

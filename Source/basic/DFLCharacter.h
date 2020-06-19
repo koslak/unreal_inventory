@@ -78,8 +78,10 @@ public:
     class ADFLUsableActor* examined_actor{ nullptr };
 
     TSubclassOf<class UDFLItem> UDFLItemClass;
-
     TSubclassOf<class UUserWidget> DFLInventory_widget_class;
+    TSubclassOf<class UUserWidget> UWidget_Examined_BP_class;
+    class UUserWidget *UWidget_examine{ nullptr };
+
     class UDFLInventoryWidget *inventory_widget{ nullptr };
     bool is_inventory_widget_displayed{ false };
     bool is_action_menu_displayed{ false };
@@ -87,6 +89,7 @@ public:
     bool is_game_paused{ false };
     bool is_reset_examine_rotation{ false };
 
+    FRotator camera_last_rotation{ 0.0f, 0.0f, 0.0f };
     float actor_examined_distance{ 70.0f };
     const float MAX_ACTOR_EXAMINED_DISTANCE{ 90.0f };
     const float MIN_ACTOR_EXAMINED_DISTANCE{ 50.0f };

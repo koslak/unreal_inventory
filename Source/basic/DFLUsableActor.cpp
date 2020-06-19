@@ -72,7 +72,7 @@ void ADFLUsableActor::rotate_actor()
 void ADFLUsableActor::reset_actor_rotation(const FRotator &new_rotation)
 {
     control_rotation = GetWorld()->GetFirstPlayerController()->GetControlRotation();
-    GetWorld()->GetFirstPlayerController()->SetControlRotation(FMath::Lerp(control_rotation, new_rotation, 0.1f));
+    GetWorld()->GetFirstPlayerController()->SetControlRotation(FMath::Lerp(control_rotation, new_rotation, 0.15f));
     control_rotation = GetWorld()->GetFirstPlayerController()->GetControlRotation();
     SetActorRotation(control_rotation);
 }
