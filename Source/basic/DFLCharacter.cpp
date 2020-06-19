@@ -167,6 +167,11 @@ void ADFLCharacter::move_forward(float value)
                 {
                     actor_examined_distance = MAX_ACTOR_EXAMINED_DISTANCE;
                 }
+
+                if(actor_examined_distance <= MIN_ACTOR_EXAMINED_DISTANCE)
+                {
+                    actor_examined_distance = MIN_ACTOR_EXAMINED_DISTANCE;
+                }
             }
         }
     }
@@ -176,20 +181,7 @@ void ADFLCharacter::move_right(float value)
 {
     if(player_can_move())
     {
-        if(!is_actor_to_be_examined)
-        {
-            AddMovementInput(GetActorRightVector() * value);
-        }else{
-
-            if(examined_actor)
-            {
-                actor_examined_distance -= value;
-                if(actor_examined_distance <= MIN_ACTOR_EXAMINED_DISTANCE)
-                {
-                    actor_examined_distance = MIN_ACTOR_EXAMINED_DISTANCE;
-                }
-            }
-        }
+        AddMovementInput(GetActorRightVector() * value);
     }
 }
 
