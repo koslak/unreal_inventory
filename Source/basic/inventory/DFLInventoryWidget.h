@@ -60,8 +60,10 @@ private:
     TArray<class UDFLInventoryItemWidget*> item_widget_array;
 
     int current_item_selected_index{ 0 };
-    bool is_action_menu_displayed{ false };
     int action_menu_index{ 0 };
+
+    bool is_action_menu_displayed{ false };
+    bool is_item_widget_being_examined{ false };
 
 protected:
 

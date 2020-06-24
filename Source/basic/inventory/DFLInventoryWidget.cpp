@@ -113,7 +113,6 @@ void UDFLInventoryWidget::show_inventory()
 void UDFLInventoryWidget::hide_inventory()
 {
     this->SetVisibility(ESlateVisibility::Hidden);
-    current_item_selected_index = 0;
 
     // Clear the highlight from all items in the inventory.
     for (auto& item : item_widget_array)
@@ -213,6 +212,7 @@ void UDFLInventoryWidget::select_item_to_the_east()
         UDFLInventoryItemWidget *item = item_widget_array[ current_item_selected_index ];
         item->FrameSelector->SetOpacity(1.0f);
     }
+    UE_LOG(LogTemp, Warning, TEXT("select_item_to_the_east: %d"), current_item_selected_index);
 }
 
 void UDFLInventoryWidget::select_item_to_the_west()
@@ -240,6 +240,7 @@ void UDFLInventoryWidget::select_item_to_the_west()
         UDFLInventoryItemWidget *item = item_widget_array[ current_item_selected_index ];
         item->FrameSelector->SetOpacity(1.0f);
     }
+    UE_LOG(LogTemp, Warning, TEXT("select_item_to_the_west: %d"), current_item_selected_index);
 }
 
 void UDFLInventoryWidget::select_item_to_the_north()
@@ -287,11 +288,10 @@ void UDFLInventoryWidget::execute_action_menu_command()
 
 UDFLInventoryItemWidget *UDFLInventoryWidget::get_current_item_widget_selected()
 {
-    int item_widget_array_size = item_widget_array.Num();
+    int item_widget_array_size{ item_widget_array.Num() };
 
-    if(item_widget_array_size > 0)
+    if(item_widget_array_size > 0 && current_item_selected_index >= 0 && current_item_selected_index < item_widget_array_size)
     {
-        current_item_selected_index = 0;
         UDFLInventoryItemWidget *item = item_widget_array[ current_item_selected_index ];
 
         if(item)

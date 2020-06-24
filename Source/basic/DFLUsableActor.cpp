@@ -50,10 +50,10 @@ void ADFLUsableActor::OnUsed(APawn *)
     if(general_widget && general_widget->IsA(UDFLInventoryItemWidget::StaticClass()))
     {
         inventory_item_widget = Cast<UDFLInventoryItemWidget>(general_widget);
-        inventory_item_widget->parent_actor = this;
 
         if(inventory_item_widget)
         {
+            inventory_item_widget->parent_actor = this;
             inventory_item_widget->Thumbnail->SetBrushFromTexture(this->thumbnail_image);
             inventory_item_widget->ItemName->SetText(this->item_widget_display_name);
             inventory_item_widget->FrameSelector->SetOpacity(0.0f);
@@ -66,15 +66,17 @@ void ADFLUsableActor::OnUsed(APawn *)
 void ADFLUsableActor::rotate_actor()
 {
     control_rotation = GetWorld()->GetFirstPlayerController()->GetControlRotation();
-    SetActorRotation(FQuat(control_rotation));
+//    SetActorRotation(FQuat(control_rotation));
+    SetActorRelativeRotation(FQuat(control_rotation));
 }
 
 void ADFLUsableActor::reset_actor_rotation(const FRotator &new_rotation)
 {
     control_rotation = GetWorld()->GetFirstPlayerController()->GetControlRotation();
+//    UE_LOG(LogTemp, Warning, TEXT("control_rotation %s"), *control_rotation.ToString());
     GetWorld()->GetFirstPlayerController()->SetControlRotation(FMath::Lerp(control_rotation, new_rotation, 0.15f));
-    control_rotation = GetWorld()->GetFirstPlayerController()->GetControlRotation();
-    SetActorRotation(control_rotation);
+//    SetActorRotation(FMath::Lerp(control_rotation, new_rotation, 0.15f));
+    SetActorRelativeRotation(FMath::Lerp(control_rotation, new_rotation, 0.15f));
 }
 
 

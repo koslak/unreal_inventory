@@ -17,6 +17,9 @@
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/PlayerInput.h"
+
+#include "DFLGameState.h"
 
 // Sets default values
 ADFLCharacter::ADFLCharacter()
@@ -47,12 +50,15 @@ ADFLCharacter::ADFLCharacter()
     ConstructorHelpers::FClassFinder<UDFLItem> UDFLItemBP(TEXT("/Game/Blueprints/Items/Food_Item_BP"));
     UDFLItemClass = UDFLItemBP.Class;
 
+    // use CreateDefaultSubobject only inside a constructor, use NewObject everywhere else Tick, BeginPlay, etc.
+    game_state = CreateDefaultSubobject<UDFLGameState>(TEXT("GameState"));
 }
 
 // Called when the game starts or when spawned
 void ADFLCharacter::BeginPlay()
 {
     Super::BeginPlay();
+
 
     UUserWidget *general_widget{ nullptr };
     general_widget = CreateWidget<UUserWidget>(GetWorld(), DFLInventory_widget_class);
@@ -134,10 +140,18 @@ void ADFLCharacter::Tick(float DeltaTime)
 
             if(is_reset_examine_rotation)
             {
-                current_item_widget_actor->reset_actor_rotation(FRotator{ 0.0f, 0.0f, 0.0f });
+                FRotator control_rotation = GetWorld()->GetFirstPlayerController()->GetControlRotation();
+                UE_LOG(LogTemp, Warning, TEXT("world_rotation %s"), *control_rotation.ToString());
+
+                FRotator new_rotation{ 0.0f, 0.0f, 0.0f };
+                current_item_widget_actor->reset_actor_rotation(new_rotation);
 
                 float tolerance_for_nearly_zero_calculations{ 2.0f };
-                if(current_item_widget_actor->GetActorRotation().IsNearlyZero(tolerance_for_nearly_zero_calculations))
+//                if(current_item_widget_actor->GetActorRotation().IsNearlyZero(tolerance_for_nearly_zero_calculations))
+
+                UE_LOG(LogTemp, Warning, TEXT("actor rotation %s"), *current_item_widget_actor->GetActorRotation().ToString());
+//                if(current_item_widget_actor->GetActorRotation().Equals(new_rotation, tolerance_for_nearly_zero_calculations))
+                if(control_rotation.Equals(new_rotation, tolerance_for_nearly_zero_calculations))
                 {
                     is_reset_examine_rotation = !is_reset_examine_rotation;
                 }
@@ -181,7 +195,10 @@ void ADFLCharacter::move_right(float value)
 {
     if(player_can_move())
     {
-        AddMovementInput(GetActorRightVector() * value);
+        if(!is_actor_to_be_examined)
+        {
+            AddMovementInput(GetActorRightVector() * value);
+        }
     }
 }
 
@@ -316,7 +333,6 @@ void ADFLCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
     PlayerInputComponent->BindAxis("Turn", this, &ADFLCharacter::turn);
 
     PlayerInputComponent->BindAction("Use", IE_Pressed, this, &ADFLCharacter::use_actor);
-
     PlayerInputComponent->BindAction("Inventory", IE_Pressed, this, &ADFLCharacter::process_inventory_visualization);
     PlayerInputComponent->BindAction("WidgetLeft", IE_Pressed, this, &ADFLCharacter::move_widget_left);
     PlayerInputComponent->BindAction("WidgetRight", IE_Pressed, this, &ADFLCharacter::move_widget_right);
@@ -324,6 +340,26 @@ void ADFLCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
     PlayerInputComponent->BindAction("WidgetDown", IE_Pressed, this, &ADFLCharacter::move_widget_down);
     PlayerInputComponent->BindAction("Action", IE_Pressed, this, &ADFLCharacter::menu_action);
     PlayerInputComponent->BindAction("EscapeCurrentState", IE_Pressed, this, &ADFLCharacter::escape_current_state);
+
+    PlayerInputComponent->BindAction("AnyKey", IE_Pressed, this, &ADFLCharacter::handle_keyboard_input);
+}
+
+void ADFLCharacter::handle_keyboard_input(FKey key)
+{
+
+//    UE_LOG(LogTemp, Warning, TEXT("Key pressed: %s"), *key.ToString());
+//    FString key_string = key.ToString();
+
+    if(game_state)
+    {
+        if(game_state->handle_keyboard_input(this, key))
+        {
+            game_state->enter_state(this);
+        }
+    }else{
+        UE_LOG(LogTemp, Error, TEXT("Error: GameState instance has not been created"));
+    }
+
 }
 
 void ADFLCharacter::action_menu_delegate_slot(int action_menu_index)
@@ -364,7 +400,7 @@ void ADFLCharacter::use_item(UDFLItem *item)
     item->on_use(this); // This is the Blueprint event.
 }
 
-void ADFLCharacter::use_actor()
+void ADFLCharacter::use_actor(FKey key)
 {
     if(!is_actor_to_be_examined)
     {

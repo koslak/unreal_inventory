@@ -46,6 +46,8 @@ public:
     UFUNCTION()
     void action_menu_delegate_slot(int action_menu_index);
 
+    void handle_keyboard_input(FKey key);
+
     //************************************************************************
     //  Inventory                                                            *
     //************************************************************************
@@ -63,13 +65,27 @@ public:
     //************************************************************************
 
     /* Use the usable actor currently in focus, if any */
-    virtual void use_actor();
+    virtual void use_actor(FKey key);
 
     class ADFLUsableActor* get_usable_actor_in_view();
 
     /*Max distance to use/focus on actors. */
     UPROPERTY(EditInstanceOnly, Category = "ObjectInteraction")
     float max_use_distance{ 200 };
+
+
+    //************************************************************************
+    //  Game States
+    //************************************************************************
+
+    friend class UDFLGameState;
+
+    // Because UE4 wants to handle memory management of UObjects, you will also need to add a UPROPERTY() macro above it
+    // If you don't add the UPROPERTY() macro above the UObject to be used, you are in for a special bounding experience with your debugger.
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+    class UDFLGameState *game_state{ nullptr };
+
+    //************************************************************************
 
     /* True only in first frame when focused on a new usable actor. */
     bool is_usable_actor_has_new_focus{ true };
