@@ -3,6 +3,7 @@ CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 CONFIG += c++17
+QMAKE_CXXFLAGS += -std=c++17
 
 # All the defines of your project will go in this file
 # You can put this file on your repository, but you will need to remake it once you upgrade the engine.
@@ -20,7 +21,9 @@ HEADERS +=  ../../Source/basic/basic.h \
     ../../Source/basic/item/DFLInventoryItem.h \
     ../../Source/basic/inventory/DFLInventoryWidget.h \
     ../../Source/basic/inventory/DFLInventoryItemWidget.h \
-    ../../Source/basic/DFLGameState.h
+    ../../Source/basic/DFLGameState.h \
+    ../../Source/basic/DFLShowInventoryGameState.h \
+    ../../Source/basic/DFLHideInventoryGameState.h
 
 SOURCES +=  ../../Source/basic/basic.cpp \
     ../../Source/basic/basicGameModeBase.cpp \
@@ -34,7 +37,9 @@ SOURCES +=  ../../Source/basic/basic.cpp \
     ../../Source/basic/item/DFLInventoryItem.cpp \
     ../../Source/basic/inventory/DFLInventoryWidget.cpp \
     ../../Source/basic/inventory/DFLInventoryItemWidget.cpp \
-    ../../Source/basic/DFLGameState.cpp
+    ../../Source/basic/DFLGameState.cpp \
+    ../../Source/basic/DFLShowInventoryGameState.cpp \
+    ../../Source/basic/DFLHideInventoryGameState.cpp
 
 # All your generated includes will go in this file
 # You can not put this on the repository as this contains hardcoded paths

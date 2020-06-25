@@ -78,12 +78,15 @@ public:
     //  Game States
     //************************************************************************
 
-    friend class UDFLGameState;
-
     // Because UE4 wants to handle memory management of UObjects, you will also need to add a UPROPERTY() macro above it
     // If you don't add the UPROPERTY() macro above the UObject to be used, you are in for a special bounding experience with your debugger.
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-    class UDFLGameState *game_state{ nullptr };
+    UPROPERTY(EditDefaultsOnly)
+    class UDFLGameState *current_game_state;
+//    TSubclassOf<class UDFLGameState> game_state;
+
+//    UPROPERTY(EditDefaultsOnly)
+//    class UDFLShowInventoryGameState *inventory_game_state;
+//    TSubclassOf<class UDFLGameState> inventory_game_state;
 
     //************************************************************************
 
@@ -100,6 +103,7 @@ public:
 
     class UDFLInventoryWidget *inventory_widget{ nullptr };
     bool is_inventory_widget_displayed{ false };
+    bool is_player_can_move{ true };
     bool is_action_menu_displayed{ false };
     bool is_actor_to_be_examined{ false };
     bool is_game_paused{ false };

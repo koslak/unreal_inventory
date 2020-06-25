@@ -20,6 +20,7 @@
 #include "GameFramework/PlayerInput.h"
 
 #include "DFLGameState.h"
+#include "DFLShowInventoryGameState.h"
 
 // Sets default values
 ADFLCharacter::ADFLCharacter()
@@ -51,7 +52,8 @@ ADFLCharacter::ADFLCharacter()
     UDFLItemClass = UDFLItemBP.Class;
 
     // use CreateDefaultSubobject only inside a constructor, use NewObject everywhere else Tick, BeginPlay, etc.
-    game_state = CreateDefaultSubobject<UDFLGameState>(TEXT("GameState"));
+    current_game_state = CreateDefaultSubobject<UDFLGameState>(TEXT("GameState"));
+//    inventory_game_state = CreateDefaultSubobject<UDFLShowInventoryGameState>(TEXT("InventoryGameState"));
 }
 
 // Called when the game starts or when spawned
@@ -59,6 +61,12 @@ void ADFLCharacter::BeginPlay()
 {
     Super::BeginPlay();
 
+//    game_state = NewObject<UDFLGameState>((UObject*)GetTransientPackage(), UDFLGameState::StaticClass());
+//    if(inventory_game_state)
+//    {
+//        UE_LOG(LogTemp, Warning, TEXT("wwwwwwwwwwwwwwwwwwwwww"));
+//        current_game_state = inventory_game_state;
+//    }
 
     UUserWidget *general_widget{ nullptr };
     general_widget = CreateWidget<UUserWidget>(GetWorld(), DFLInventory_widget_class);
@@ -318,10 +326,10 @@ void ADFLCharacter::pause_game(bool pause_game)
 
 bool ADFLCharacter::player_can_move()
 {
-    return !is_inventory_widget_displayed;
+//    return !is_inventory_widget_displayed;
+    return is_player_can_move;
 }
 
-// Called to bind functionality to input
 void ADFLCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -333,28 +341,27 @@ void ADFLCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
     PlayerInputComponent->BindAxis("Turn", this, &ADFLCharacter::turn);
 
     PlayerInputComponent->BindAction("Use", IE_Pressed, this, &ADFLCharacter::use_actor);
-    PlayerInputComponent->BindAction("Inventory", IE_Pressed, this, &ADFLCharacter::process_inventory_visualization);
+//    PlayerInputComponent->BindAction("Inventory", IE_Pressed, this, &ADFLCharacter::process_inventory_visualization);
     PlayerInputComponent->BindAction("WidgetLeft", IE_Pressed, this, &ADFLCharacter::move_widget_left);
     PlayerInputComponent->BindAction("WidgetRight", IE_Pressed, this, &ADFLCharacter::move_widget_right);
     PlayerInputComponent->BindAction("WidgetUp", IE_Pressed, this, &ADFLCharacter::move_widget_up);
     PlayerInputComponent->BindAction("WidgetDown", IE_Pressed, this, &ADFLCharacter::move_widget_down);
     PlayerInputComponent->BindAction("Action", IE_Pressed, this, &ADFLCharacter::menu_action);
-    PlayerInputComponent->BindAction("EscapeCurrentState", IE_Pressed, this, &ADFLCharacter::escape_current_state);
+//    PlayerInputComponent->BindAction("EscapeCurrentState", IE_Pressed, this, &ADFLCharacter::escape_current_state);
 
     PlayerInputComponent->BindAction("AnyKey", IE_Pressed, this, &ADFLCharacter::handle_keyboard_input);
 }
 
 void ADFLCharacter::handle_keyboard_input(FKey key)
 {
-
-//    UE_LOG(LogTemp, Warning, TEXT("Key pressed: %s"), *key.ToString());
-//    FString key_string = key.ToString();
-
-    if(game_state)
+    if(current_game_state)
     {
-        if(game_state->handle_keyboard_input(this, key))
+        UDFLGameState *next_game_state = current_game_state->handle_keyboard_input(this, key);
+        if(next_game_state)
         {
-            game_state->enter_state(this);
+            UE_LOG(LogTemp, Warning, TEXT("Next Game State Entered"));
+            current_game_state = next_game_state;
+            next_game_state->enter_state(this);
         }
     }else{
         UE_LOG(LogTemp, Error, TEXT("Error: GameState instance has not been created"));

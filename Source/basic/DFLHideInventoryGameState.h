@@ -1,12 +1,13 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
-#include "Tickable.h"
-#include "DFLGameState.generated.h"
+#include "DFLGameState.h"
+#include "DFLHideInventoryGameState.generated.h"
 
 UCLASS()
-class BASIC_API UDFLGameState : public UObject, public FTickableGameObject
+class BASIC_API UDFLHideInventoryGameState : public UDFLGameState
 {
 	GENERATED_BODY()
 	
@@ -20,12 +21,12 @@ public:
     TStatId GetStatId() const override;
     UWorld* GetWorld() const override;
 
-    virtual UDFLGameState* handle_keyboard_input(class ADFLCharacter *character, const struct FKey &key);
-    virtual void enter_state(class ADFLCharacter *character);
+    virtual UDFLGameState *handle_keyboard_input(class ADFLCharacter *character, const struct FKey &key) override;
+    virtual void enter_state(class ADFLCharacter *character) override;
 
 private:
     UPROPERTY(EditDefaultsOnly)
-    UDFLGameState *show_inventory_state{ nullptr };
+    UDFLGameState *hide_inventory_state_{ nullptr };
 
     float TestCounter;
     FString key_pressed;

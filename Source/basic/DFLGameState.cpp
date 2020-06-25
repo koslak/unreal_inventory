@@ -5,6 +5,7 @@
 #include "InputCoreTypes.h"
 
 #include "inventory/DFLInventoryWidget.h"
+#include "DFLShowInventoryGameState.h"
 
 void UDFLGameState::Tick(float DeltaTime)
 {
@@ -40,35 +41,29 @@ UWorld* UDFLGameState::GetWorld() const
     return GetOuter()->GetWorld();
 }
 
-bool UDFLGameState::handle_keyboard_input(class ADFLCharacter *character, const FKey &key)
+UDFLGameState *UDFLGameState::next_state_instance()
 {
-    if(key == EKeys::N)
+    if(!show_inventory_state) // || !state_instance->IsValidLowLevelFast())
+    {
+        show_inventory_state = NewObject<UDFLShowInventoryGameState>((UObject*)GetTransientPackage(), UDFLShowInventoryGameState::StaticClass());
+    }
+    return show_inventory_state;
+}
+
+UDFLGameState *UDFLGameState::handle_keyboard_input(class ADFLCharacter *character, const FKey &key)
+{
+    if(key == EKeys::Q)
     {
         key_pressed = key.ToString();
         UE_LOG(LogTemp, Warning, TEXT("UDFLGameState::handle_keyboard_input %s"), *key_pressed);
 
-        return true;
+        return next_state_instance();
     }
 
-    return false;
+    return nullptr;
 }
 
 void UDFLGameState::enter_state(ADFLCharacter *character)
 {
-    if(character)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("UDFLGameState::enter_state"));
-        if(character->inventory_widget)
-        {
-            APlayerController* player_controller = static_cast<APlayerController*>(character->GetController());
-            if(player_controller)
-            {
-                character->inventory_widget->show_inventory();
-            }else{
-                UE_LOG(LogTemp, Error, TEXT("player_controller variable is null"));
-            }
-        }else{
-            UE_LOG(LogTemp, Error, TEXT("Inventory_widget variable is null"));
-        }
-    }
+    // Initial game state
 }

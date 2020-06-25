@@ -21,6 +21,7 @@ public:
 
     bool add_item(class UDFLInventoryItemWidget *item);
 
+    bool is_action_menu_can_be_displayed();
     void show_inventory();
     void hide_inventory();
     void show_action_menu();

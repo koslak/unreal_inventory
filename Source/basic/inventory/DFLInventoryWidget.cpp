@@ -95,6 +95,16 @@ bool UDFLInventoryWidget::add_item(UDFLInventoryItemWidget *item)
     return true;
 }
 
+bool UDFLInventoryWidget::is_action_menu_can_be_displayed()
+{
+    if(item_widget_array.Num() > 0)
+    {
+        return true;
+    }
+
+    return false;
+}
+
 void UDFLInventoryWidget::show_inventory()
 {
     this->SetVisibility(ESlateVisibility::Visible);
