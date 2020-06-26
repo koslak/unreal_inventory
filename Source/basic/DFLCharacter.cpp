@@ -19,6 +19,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerInput.h"
 
+#include "DFLGameStates.h"
 #include "DFLGameState.h"
 #include "DFLShowInventoryGameState.h"
 
@@ -52,14 +53,25 @@ ADFLCharacter::ADFLCharacter()
     UDFLItemClass = UDFLItemBP.Class;
 
     // use CreateDefaultSubobject only inside a constructor, use NewObject everywhere else Tick, BeginPlay, etc.
-    current_game_state = CreateDefaultSubobject<UDFLGameState>(TEXT("GameState"));
 //    inventory_game_state = CreateDefaultSubobject<UDFLShowInventoryGameState>(TEXT("InventoryGameState"));
+
+    game_states = CreateDefaultSubobject<UDFLGameStates>(TEXT("GameStates"));
+    current_game_state = CreateDefaultSubobject<UDFLGameState>(TEXT("GameState"));
 }
 
 // Called when the game starts or when spawned
 void ADFLCharacter::BeginPlay()
 {
     Super::BeginPlay();
+
+    // Creating game states
+    if(game_states)
+    {
+        game_states->create_game_states();
+        UE_LOG(LogTemp, Warning, TEXT("ADFLCharacter::BeginPlay Game states created successfully"));
+    }else{
+        UE_LOG(LogTemp, Error, TEXT("ADFLCharacter::BeginPlay Error creating game states"));
+    }
 
 //    game_state = NewObject<UDFLGameState>((UObject*)GetTransientPackage(), UDFLGameState::StaticClass());
 //    if(inventory_game_state)
@@ -359,7 +371,6 @@ void ADFLCharacter::handle_keyboard_input(FKey key)
         UDFLGameState *next_game_state = current_game_state->handle_keyboard_input(this, key);
         if(next_game_state)
         {
-            UE_LOG(LogTemp, Warning, TEXT("Next Game State Entered"));
             current_game_state = next_game_state;
             next_game_state->enter_state(this);
         }

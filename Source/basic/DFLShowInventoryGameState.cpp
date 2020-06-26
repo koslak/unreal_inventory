@@ -81,8 +81,8 @@ void UDFLShowInventoryGameState::enter_state(ADFLCharacter *character)
             APlayerController* player_controller = static_cast<APlayerController*>(character->GetController());
             if(player_controller)
             {
-                character->is_player_can_move = true;
-                character->inventory_widget->hide_inventory();
+                character->is_player_can_move = false;
+                character->inventory_widget->show_inventory();
             }else{
                 UE_LOG(LogTemp, Error, TEXT("player_controller variable is null"));
             }

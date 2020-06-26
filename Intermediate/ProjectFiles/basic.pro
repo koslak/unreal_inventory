@@ -21,6 +21,7 @@ HEADERS +=  ../../Source/basic/basic.h \
     ../../Source/basic/item/DFLInventoryItem.h \
     ../../Source/basic/inventory/DFLInventoryWidget.h \
     ../../Source/basic/inventory/DFLInventoryItemWidget.h \
+    ../../Source/basic/DFLGameStates.h \
     ../../Source/basic/DFLGameState.h \
     ../../Source/basic/DFLShowInventoryGameState.h \
     ../../Source/basic/DFLHideInventoryGameState.h
@@ -38,6 +39,7 @@ SOURCES +=  ../../Source/basic/basic.cpp \
     ../../Source/basic/inventory/DFLInventoryWidget.cpp \
     ../../Source/basic/inventory/DFLInventoryItemWidget.cpp \
     ../../Source/basic/DFLGameState.cpp \
+    ../../Source/basic/DFLGameStates.cpp \
     ../../Source/basic/DFLShowInventoryGameState.cpp \
     ../../Source/basic/DFLHideInventoryGameState.cpp
 

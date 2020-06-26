@@ -88,6 +88,9 @@ public:
 //    class UDFLShowInventoryGameState *inventory_game_state;
 //    TSubclassOf<class UDFLGameState> inventory_game_state;
 
+    UPROPERTY(EditDefaultsOnly)
+    class UDFLGameStates *game_states;
+
     //************************************************************************
 
     /* True only in first frame when focused on a new usable actor. */

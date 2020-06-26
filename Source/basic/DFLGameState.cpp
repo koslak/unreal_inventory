@@ -7,6 +7,8 @@
 #include "inventory/DFLInventoryWidget.h"
 #include "DFLShowInventoryGameState.h"
 
+#include "DFLGameStates.h"
+
 void UDFLGameState::Tick(float DeltaTime)
 {
     TestCounter += DeltaTime;
@@ -52,12 +54,19 @@ UDFLGameState *UDFLGameState::next_state_instance()
 
 UDFLGameState *UDFLGameState::handle_keyboard_input(class ADFLCharacter *character, const FKey &key)
 {
-    if(key == EKeys::Q)
+    if(character)
     {
-        key_pressed = key.ToString();
-        UE_LOG(LogTemp, Warning, TEXT("UDFLGameState::handle_keyboard_input %s"), *key_pressed);
+        if(key == EKeys::Q)
+        {
+            key_pressed = key.ToString();
+            UE_LOG(LogTemp, Warning, TEXT("UDFLGameState::handle_keyboard_input %s"), *key_pressed);
 
-        return next_state_instance();
+            UDFLGameStates *game_states_instance = character->game_states;
+            if(game_states_instance)
+            {
+                return game_states_instance->get_game_state(Game_State::Show_Inventory);
+            }
+        }
     }
 
     return nullptr;

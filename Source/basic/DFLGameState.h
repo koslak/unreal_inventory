@@ -5,6 +5,7 @@
 #include "Tickable.h"
 #include "DFLGameState.generated.h"
 
+// TODO: This class should be called "InitialGameState"
 UCLASS()
 class BASIC_API UDFLGameState : public UObject, public FTickableGameObject
 {
