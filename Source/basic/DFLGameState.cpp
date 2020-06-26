@@ -5,7 +5,6 @@
 #include "InputCoreTypes.h"
 
 #include "inventory/DFLInventoryWidget.h"
-#include "DFLShowInventoryGameState.h"
 
 #include "DFLGameStates.h"
 
@@ -20,7 +19,7 @@ void UDFLGameState::Tick(float DeltaTime)
 
 bool UDFLGameState::IsTickable() const
 {
-    return true;
+return true;
 }
 
 bool UDFLGameState::IsTickableInEditor() const
@@ -41,15 +40,6 @@ TStatId UDFLGameState::GetStatId() const
 UWorld* UDFLGameState::GetWorld() const
 {
     return GetOuter()->GetWorld();
-}
-
-UDFLGameState *UDFLGameState::next_state_instance()
-{
-    if(!show_inventory_state) // || !state_instance->IsValidLowLevelFast())
-    {
-        show_inventory_state = NewObject<UDFLShowInventoryGameState>((UObject*)GetTransientPackage(), UDFLShowInventoryGameState::StaticClass());
-    }
-    return show_inventory_state;
 }
 
 UDFLGameState *UDFLGameState::handle_keyboard_input(class ADFLCharacter *character, const FKey &key)

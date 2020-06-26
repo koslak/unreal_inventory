@@ -1,4 +1,4 @@
-#include "DFLHideInventoryGameState.h"
+#include "DFLShowActionMenuGameState.h"
 
 #include "DFLCharacter.h"
 #include "Engine.h"
@@ -7,7 +7,7 @@
 #include "inventory/DFLInventoryWidget.h"
 #include "DFLGameStates.h"
 
-void UDFLHideInventoryGameState::Tick(float DeltaTime)
+void UDFLShowActionMenuGameState::Tick(float DeltaTime)
 {
     TestCounter += DeltaTime;
 
@@ -15,64 +15,68 @@ void UDFLHideInventoryGameState::Tick(float DeltaTime)
     GEngine->AddOnScreenDebugMessage(1, 0, FColor::Green, *key_pressed);
 }
 
-bool UDFLHideInventoryGameState::IsTickable() const
+bool UDFLShowActionMenuGameState::IsTickable() const
 {
     return true;
 }
 
-bool UDFLHideInventoryGameState::IsTickableInEditor() const
+bool UDFLShowActionMenuGameState::IsTickableInEditor() const
 {
     return false;
 }
 
-bool UDFLHideInventoryGameState::IsTickableWhenPaused() const
+bool UDFLShowActionMenuGameState::IsTickableWhenPaused() const
 {
     return false;
 }
 
-TStatId UDFLHideInventoryGameState::GetStatId() const
+TStatId UDFLShowActionMenuGameState::GetStatId() const
 {
     return TStatId();
 }
 
-UWorld* UDFLHideInventoryGameState::GetWorld() const
+UWorld* UDFLShowActionMenuGameState::GetWorld() const
 {
     return GetOuter()->GetWorld();
 }
 
-UDFLGameState *UDFLHideInventoryGameState::handle_keyboard_input(class ADFLCharacter *character, const FKey &key)
+UDFLGameState *UDFLShowActionMenuGameState::handle_keyboard_input(class ADFLCharacter *character, const FKey &key)
 {
     if(character)
     {
-        if(key == EKeys::Q)
+        if(key == EKeys::Escape)
         {
             key_pressed = key.ToString();
-            UE_LOG(LogTemp, Warning, TEXT("UDFLHideInventoryGameState::handle_keyboard_input %s"), *key_pressed);
+            UE_LOG(LogTemp, Warning, TEXT("UDFLShowActionMenuGameState::handle_keyboard_input %s"), *key_pressed);
 
             UDFLGameStates *game_states_instance = character->game_states;
             if(game_states_instance)
             {
-                return game_states_instance->get_game_state(Game_State::Show_Inventory);
+                return game_states_instance->get_game_state(Game_State::Hide_Action_Menu);
             }
+
+        }else if(key == EKeys::SpaceBar)
+        {
+            // Execute selected action menu action
         }
     }
 
     return nullptr;
 }
 
-void UDFLHideInventoryGameState::enter_state(ADFLCharacter *character)
+void UDFLShowActionMenuGameState::enter_state(ADFLCharacter *character)
 {
     if(character)
     {
-        UE_LOG(LogTemp, Warning, TEXT("UDFLHideInventoryGameState::enter_state"));
+        UE_LOG(LogTemp, Warning, TEXT("UDFLShowActionMenuGameState::enter_state"));
         if(character->inventory_widget)
         {
             APlayerController* player_controller = static_cast<APlayerController*>(character->GetController());
             if(player_controller)
             {
-                character->inventory_widget->hide_inventory();
-                character->is_player_can_move = true;
-                character->is_inventory_widget_displayed = false;
+                character->inventory_widget->show_action_menu();
+                character->is_action_menu_displayed = true;
+
             }else{
                 UE_LOG(LogTemp, Error, TEXT("player_controller variable is null"));
             }

@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "DFLGameState.h"
-#include "DFLHideInventoryGameState.generated.h"
+#include "DFLShowActionMenuGameState.generated.h"
 
 UCLASS()
-class BASIC_API UDFLHideInventoryGameState : public UDFLGameState
+class BASIC_API UDFLShowActionMenuGameState : public UDFLGameState
 {
 	GENERATED_BODY()
 	

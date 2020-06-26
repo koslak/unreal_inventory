@@ -358,7 +358,7 @@ void ADFLCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
     PlayerInputComponent->BindAction("WidgetRight", IE_Pressed, this, &ADFLCharacter::move_widget_right);
     PlayerInputComponent->BindAction("WidgetUp", IE_Pressed, this, &ADFLCharacter::move_widget_up);
     PlayerInputComponent->BindAction("WidgetDown", IE_Pressed, this, &ADFLCharacter::move_widget_down);
-    PlayerInputComponent->BindAction("Action", IE_Pressed, this, &ADFLCharacter::menu_action);
+//    PlayerInputComponent->BindAction("Action", IE_Pressed, this, &ADFLCharacter::menu_action);
 //    PlayerInputComponent->BindAction("EscapeCurrentState", IE_Pressed, this, &ADFLCharacter::escape_current_state);
 
     PlayerInputComponent->BindAction("AnyKey", IE_Pressed, this, &ADFLCharacter::handle_keyboard_input);

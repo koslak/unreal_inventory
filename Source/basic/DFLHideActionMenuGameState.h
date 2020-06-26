@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "DFLGameState.h"
-#include "DFLHideInventoryGameState.generated.h"
+#include "DFLHideActionMenuGameState.generated.h"
 
 UCLASS()
-class BASIC_API UDFLHideInventoryGameState : public UDFLGameState
+class BASIC_API UDFLHideActionMenuGameState : public UDFLGameState
 {
 	GENERATED_BODY()
-	
+
 public:
     void Tick(float DeltaTime) override;
     bool IsTickable() const override;

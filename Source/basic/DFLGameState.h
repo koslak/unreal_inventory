@@ -12,8 +12,6 @@ class BASIC_API UDFLGameState : public UObject, public FTickableGameObject
 	GENERATED_BODY()
 	
 public:
-    UDFLGameState *next_state_instance();
-
     void Tick(float DeltaTime) override;
     bool IsTickable() const override;
     bool IsTickableInEditor() const override;
@@ -25,9 +23,6 @@ public:
     virtual void enter_state(class ADFLCharacter *character);
 
 private:
-    UPROPERTY(EditDefaultsOnly)
-    UDFLGameState *show_inventory_state{ nullptr };
-
     float TestCounter;
     FString key_pressed;
 };

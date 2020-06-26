@@ -5,6 +5,8 @@
 #include "DFLGameState.h"
 #include "DFLShowInventoryGameState.h"
 #include "DFLHideInventoryGameState.h"
+#include "DFLShowActionMenuGameState.h"
+#include "DFLHideActionMenuGameState.h"
 
 void UDFLGameStates::create_game_states()
 {
@@ -21,6 +23,16 @@ void UDFLGameStates::create_game_states()
     if(!hide_inventory_game_state) // || !state_instance->IsValidLowLevelFast())
     {
         hide_inventory_game_state = NewObject<UDFLHideInventoryGameState>((UObject*)GetTransientPackage(), UDFLHideInventoryGameState::StaticClass());
+    }
+
+    if(!show_action_menu_game_state) // || !state_instance->IsValidLowLevelFast())
+    {
+        show_action_menu_game_state = NewObject<UDFLShowActionMenuGameState>((UObject*)GetTransientPackage(), UDFLShowActionMenuGameState::StaticClass());
+    }
+
+    if(!hide_action_menu_game_state) // || !state_instance->IsValidLowLevelFast())
+    {
+        hide_action_menu_game_state = NewObject<UDFLHideActionMenuGameState>((UObject*)GetTransientPackage(), UDFLHideActionMenuGameState::StaticClass());
     }
 
     is_game_states_created = true;
@@ -48,9 +60,16 @@ UDFLGameState *UDFLGameStates::get_game_state(Game_State game_state)
             return hide_inventory_game_state;
         break;
 
+        case Game_State::Show_Action_Menu:
+            return show_action_menu_game_state;
+        break;
+
+        case Game_State::Hide_Action_Menu:
+            return hide_action_menu_game_state;
+        break;
+
         default:
             return nullptr;
         break;
     }
-
 }

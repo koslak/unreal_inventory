@@ -24,6 +24,8 @@ HEADERS +=  ../../Source/basic/basic.h \
     ../../Source/basic/DFLGameStates.h \
     ../../Source/basic/DFLGameState.h \
     ../../Source/basic/DFLShowInventoryGameState.h \
+    ../../Source/basic/DFLShowActionMenuGameState.h \
+    ../../Source/basic/DFLHideActionMenuGameState.h \
     ../../Source/basic/DFLHideInventoryGameState.h
 
 SOURCES +=  ../../Source/basic/basic.cpp \
@@ -41,6 +43,8 @@ SOURCES +=  ../../Source/basic/basic.cpp \
     ../../Source/basic/DFLGameState.cpp \
     ../../Source/basic/DFLGameStates.cpp \
     ../../Source/basic/DFLShowInventoryGameState.cpp \
+    ../../Source/basic/DFLShowActionMenuGameState.cpp \
+    ../../Source/basic/DFLHideActionMenuGameState.cpp \
     ../../Source/basic/DFLHideInventoryGameState.cpp
 
 # All your generated includes will go in this file
