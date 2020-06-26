@@ -6,6 +6,7 @@
 
 #include "inventory/DFLInventoryWidget.h"
 #include "DFLGameStates.h"
+#include "DFLUsableActor.h"
 
 void UDFLShowInventoryGameState::Tick(float DeltaTime)
 {
@@ -79,15 +80,26 @@ void UDFLShowInventoryGameState::enter_state(ADFLCharacter *character)
         UE_LOG(LogTemp, Warning, TEXT("UDFLShowInventoryGameState::enter_state"));
         if(character->inventory_widget)
         {
-            APlayerController* player_controller = static_cast<APlayerController*>(character->GetController());
-            if(player_controller)
+            if(character->is_actor_to_be_examined)
             {
-                character->inventory_widget->show_inventory();
-                character->is_player_can_move = false;
-                character->is_inventory_widget_displayed = true;
-            }else{
-                UE_LOG(LogTemp, Error, TEXT("player_controller variable is null"));
+                character->UWidget_examine->SetVisibility(ESlateVisibility::Hidden);
+
+                if(character->examined_actor)
+                {
+                    UStaticMeshComponent *actor_mesh_component = character->examined_actor->get_mesh_component();
+                    actor_mesh_component->SetVisibility(false);
+
+                    character->is_actor_to_be_examined = !character->is_actor_to_be_examined;
+                    character->Controller->SetControlRotation(character->camera_last_rotation);
+                    character->camera_component->bUsePawnControlRotation = !character->camera_component->bUsePawnControlRotation;
+                    character->bUseControllerRotationYaw = !character->bUseControllerRotationYaw;
+                }
             }
+
+            character->inventory_widget->show_inventory();
+            character->is_player_can_move = false;
+            character->is_inventory_widget_displayed = true;
+
         }else{
             UE_LOG(LogTemp, Error, TEXT("Inventory_widget variable is null"));
         }

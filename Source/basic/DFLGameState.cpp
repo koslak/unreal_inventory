@@ -46,6 +46,8 @@ UDFLGameState *UDFLGameState::handle_keyboard_input(class ADFLCharacter *charact
 {
     if(character)
     {
+        // TODO: Don't hardcode keyboard input. Have a class as a wrapper for keyboard keys
+        // so end user will have the option to change keyboard input shortcuts.
         if(key == EKeys::Q)
         {
             key_pressed = key.ToString();

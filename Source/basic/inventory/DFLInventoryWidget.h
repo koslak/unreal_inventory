@@ -34,6 +34,7 @@ public:
     void select_action_menu_down();
     void execute_action_menu_command();
     UDFLInventoryItemWidget *get_current_item_widget_selected();
+    int get_current_action_menu_index() const;
 
 private:
     FVector2D get_inventory_item_widget_position();

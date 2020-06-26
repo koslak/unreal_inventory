@@ -1,4 +1,4 @@
-#include "DFLHideActionMenuGameState.h"
+#include "DFLExecuteActionMenuGameState.h"
 
 #include "DFLCharacter.h"
 #include "Engine.h"
@@ -7,7 +7,7 @@
 #include "inventory/DFLInventoryWidget.h"
 #include "DFLGameStates.h"
 
-void UDFLHideActionMenuGameState::Tick(float DeltaTime)
+void UDFLExecuteActionMenuGameState::Tick(float DeltaTime)
 {
     TestCounter += DeltaTime;
 
@@ -15,39 +15,39 @@ void UDFLHideActionMenuGameState::Tick(float DeltaTime)
     GEngine->AddOnScreenDebugMessage(1, 0, FColor::Green, *key_pressed);
 }
 
-bool UDFLHideActionMenuGameState::IsTickable() const
+bool UDFLExecuteActionMenuGameState::IsTickable() const
 {
     return true;
 }
 
-bool UDFLHideActionMenuGameState::IsTickableInEditor() const
+bool UDFLExecuteActionMenuGameState::IsTickableInEditor() const
 {
     return false;
 }
 
-bool UDFLHideActionMenuGameState::IsTickableWhenPaused() const
+bool UDFLExecuteActionMenuGameState::IsTickableWhenPaused() const
 {
     return false;
 }
 
-TStatId UDFLHideActionMenuGameState::GetStatId() const
+TStatId UDFLExecuteActionMenuGameState::GetStatId() const
 {
     return TStatId();
 }
 
-UWorld* UDFLHideActionMenuGameState::GetWorld() const
+UWorld* UDFLExecuteActionMenuGameState::GetWorld() const
 {
     return GetOuter()->GetWorld();
 }
 
-UDFLGameState *UDFLHideActionMenuGameState::handle_keyboard_input(class ADFLCharacter *character, const FKey &key)
+UDFLGameState *UDFLExecuteActionMenuGameState::handle_keyboard_input(class ADFLCharacter *character, const FKey &key)
 {
     if(character)
     {
         if(key == EKeys::Escape)
         {
             key_pressed = key.ToString();
-            UE_LOG(LogTemp, Warning, TEXT("UDFLHideActionMenuGameState::handle_keyboard_input %s"), *key_pressed);
+            UE_LOG(LogTemp, Warning, TEXT("UDFLExecuteActionMenuGameState::handle_keyboard_input %s"), *key_pressed);
 
             UDFLGameStates *game_states_instance = character->game_states;
             if(game_states_instance)
@@ -68,13 +68,16 @@ UDFLGameState *UDFLHideActionMenuGameState::handle_keyboard_input(class ADFLChar
     return nullptr;
 }
 
-void UDFLHideActionMenuGameState::enter_state(ADFLCharacter *character)
+void UDFLExecuteActionMenuGameState::enter_state(ADFLCharacter *character)
 {
     if(character)
     {
-        UE_LOG(LogTemp, Warning, TEXT("UDFLHideActionMenuGameState::enter_state"));
+        UE_LOG(LogTemp, Warning, TEXT("UDFLExecuteActionMenuGameState::enter_state"));
         if(character->inventory_widget)
         {
+            // TODO: Add code here to perform the usage of the specific inventory item selected.
+
+            // After executing use action, hide the action menu
             character->inventory_widget->hide_action_menu();
             character->is_action_menu_displayed = false;
 

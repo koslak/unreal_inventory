@@ -46,8 +46,7 @@ UDFLGameState *UDFLShowActionMenuGameState::handle_keyboard_input(class ADFLChar
     {
         if(key == EKeys::Escape)
         {
-            key_pressed = key.ToString();
-            UE_LOG(LogTemp, Warning, TEXT("UDFLShowActionMenuGameState::handle_keyboard_input %s"), *key_pressed);
+            UE_LOG(LogTemp, Warning, TEXT("UDFLShowActionMenuGameState::handle_keyboard_input %s"), *key.ToString());
 
             UDFLGameStates *game_states_instance = character->game_states;
             if(game_states_instance)
@@ -57,7 +56,27 @@ UDFLGameState *UDFLShowActionMenuGameState::handle_keyboard_input(class ADFLChar
 
         }else if(key == EKeys::SpaceBar)
         {
+            UE_LOG(LogTemp, Warning, TEXT("UDFLShowActionMenuGameState::handle_keyboard_input %s"), *key.ToString());
+
             // Execute selected action menu action
+            UDFLGameStates *game_states_instance = character->game_states;
+            if(game_states_instance)
+            {
+                switch(character->inventory_widget->get_current_action_menu_index())
+                {
+                    case 0: // Use menu
+                    {
+                        return game_states_instance->get_game_state(Game_State::Execute_Action_Menu);
+                    }
+                    break;
+
+                    case 1: // Examine menu
+                    {
+                        return game_states_instance->get_game_state(Game_State::Examine_Action_Menu);
+                    }
+                    break;
+                }
+            }
         }
     }
 
@@ -71,15 +90,13 @@ void UDFLShowActionMenuGameState::enter_state(ADFLCharacter *character)
         UE_LOG(LogTemp, Warning, TEXT("UDFLShowActionMenuGameState::enter_state"));
         if(character->inventory_widget)
         {
-            APlayerController* player_controller = static_cast<APlayerController*>(character->GetController());
-            if(player_controller)
-            {
-                character->inventory_widget->show_action_menu();
-                character->is_action_menu_displayed = true;
+            // Save last camera rotation in case the current inventory item is about to be examined
+            // we don't lose the current camera position.
+            character->camera_last_rotation = character->Controller->GetControlRotation();
 
-            }else{
-                UE_LOG(LogTemp, Error, TEXT("player_controller variable is null"));
-            }
+            character->inventory_widget->show_action_menu();
+            character->is_action_menu_displayed = true;
+
         }else{
             UE_LOG(LogTemp, Error, TEXT("Inventory_widget variable is null"));
         }

@@ -293,7 +293,7 @@ void UDFLInventoryWidget::select_action_menu_down()
 
 void UDFLInventoryWidget::execute_action_menu_command()
 {
-    action_menu_delegate.ExecuteIfBound(action_menu_index);
+//    action_menu_delegate.ExecuteIfBound(action_menu_index);
 }
 
 UDFLInventoryItemWidget *UDFLInventoryWidget::get_current_item_widget_selected()
@@ -311,6 +311,11 @@ UDFLInventoryItemWidget *UDFLInventoryWidget::get_current_item_widget_selected()
     }
 
     return nullptr;
+}
+
+int UDFLInventoryWidget::get_current_action_menu_index() const
+{
+    return action_menu_index;
 }
 
 FVector2D UDFLInventoryWidget::get_inventory_item_widget_position()

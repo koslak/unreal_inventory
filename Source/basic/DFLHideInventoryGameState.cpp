@@ -40,6 +40,7 @@ UWorld* UDFLHideInventoryGameState::GetWorld() const
     return GetOuter()->GetWorld();
 }
 
+// TODO: This state shouldn't exist, From the ShowInventoryGameState, when pressing Esc, it should go to the initial game state
 UDFLGameState *UDFLHideInventoryGameState::handle_keyboard_input(class ADFLCharacter *character, const FKey &key)
 {
     if(character)
@@ -67,15 +68,9 @@ void UDFLHideInventoryGameState::enter_state(ADFLCharacter *character)
         UE_LOG(LogTemp, Warning, TEXT("UDFLHideInventoryGameState::enter_state"));
         if(character->inventory_widget)
         {
-            APlayerController* player_controller = static_cast<APlayerController*>(character->GetController());
-            if(player_controller)
-            {
-                character->inventory_widget->hide_inventory();
-                character->is_player_can_move = true;
-                character->is_inventory_widget_displayed = false;
-            }else{
-                UE_LOG(LogTemp, Error, TEXT("player_controller variable is null"));
-            }
+            character->inventory_widget->hide_inventory();
+            character->is_player_can_move = true;
+            character->is_inventory_widget_displayed = false;
         }else{
             UE_LOG(LogTemp, Error, TEXT("Inventory_widget variable is null"));
         }

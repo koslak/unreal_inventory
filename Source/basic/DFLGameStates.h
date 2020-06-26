@@ -13,7 +13,9 @@ enum Game_State
     Show_Inventory   UMETA(DisplayName = "Show_Inventory"),
     Hide_Inventory   UMETA(DisplayName = "Hide_Inventory"),
     Show_Action_Menu   UMETA(DisplayName = "Show_Action_Menu"),
-    Hide_Action_Menu   UMETA(DisplayName = "Hide_Action_Menu")
+    Hide_Action_Menu   UMETA(DisplayName = "Hide_Action_Menu"),
+    Execute_Action_Menu   UMETA(DisplayName = "Execute_Action_Menu"),
+    Examine_Action_Menu   UMETA(DisplayName = "Examine_Action_Menu")
 };
 
 UCLASS()
@@ -39,6 +41,12 @@ public:
 
     UPROPERTY(EditDefaultsOnly)
     class UDFLHideActionMenuGameState *hide_action_menu_game_state{ nullptr };
+
+    UPROPERTY(EditDefaultsOnly)
+    class UDFLExecuteActionMenuGameState *execute_action_menu_game_state{ nullptr };
+
+    UPROPERTY(EditDefaultsOnly)
+    class UDFLExamineActionMenuGameState *examine_action_menu_game_state{ nullptr };
 
 private:
     bool is_game_states_created{ false };
