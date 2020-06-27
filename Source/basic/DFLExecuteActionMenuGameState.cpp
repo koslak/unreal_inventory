@@ -9,6 +9,8 @@
 
 void UDFLExecuteActionMenuGameState::Tick(float DeltaTime)
 {
+    Super::Tick(DeltaTime);
+
     TestCounter += DeltaTime;
 
     GEngine->AddOnScreenDebugMessage(0, 0, FColor::Green, FString::SanitizeFloat(TestCounter));

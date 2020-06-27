@@ -9,6 +9,8 @@
 
 void UDFLHideInventoryGameState::Tick(float DeltaTime)
 {
+    Super::Tick(DeltaTime);
+
     TestCounter += DeltaTime;
 
     /*
