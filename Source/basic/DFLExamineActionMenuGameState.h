@@ -19,11 +19,14 @@ public:
     TStatId GetStatId() const override;
     UWorld* GetWorld() const override;
 
-    virtual UDFLGameState *handle_keyboard_input(class ADFLCharacter *character, const struct FKey &key) override;
-    virtual void enter_state(class ADFLCharacter *character) override;
+    virtual UDFLGameState *handle_keyboard_input(class ADFLCharacter *acharacter, const struct FKey &key) override;
+    virtual void enter_state(class ADFLCharacter *acharacter) override;
 
 private:
     float TestCounter;
     FString key_pressed;
+
+    UPROPERTY(EditDefaultsOnly)
+    class ADFLCharacter *character;
 
 };

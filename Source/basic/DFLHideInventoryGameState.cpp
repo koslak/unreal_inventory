@@ -11,8 +11,11 @@ void UDFLHideInventoryGameState::Tick(float DeltaTime)
 {
     TestCounter += DeltaTime;
 
-    GEngine->AddOnScreenDebugMessage(0, 0, FColor::Green, FString::SanitizeFloat(TestCounter));
-    GEngine->AddOnScreenDebugMessage(1, 0, FColor::Green, *key_pressed);
+    /*
+    GEngine->AddOnScreenDebugMessage(3, 0, FColor::Blue, FString::SanitizeFloat(TestCounter));
+    GEngine->AddOnScreenDebugMessage(4, 0, FColor::Blue, *key_pressed);
+    GEngine->AddOnScreenDebugMessage(5, 0, FColor::Blue, TEXT("UDFLHideInventoryGameState::Tick"));
+    */
 }
 
 bool UDFLHideInventoryGameState::IsTickable() const

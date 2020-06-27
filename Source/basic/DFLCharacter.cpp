@@ -139,6 +139,7 @@ void ADFLCharacter::Tick(float DeltaTime)
         }
     }
 
+    /*
     if(is_actor_to_be_examined)
     {
         UDFLInventoryItemWidget *current_item_widget_selected = inventory_widget->get_current_item_widget_selected();
@@ -183,6 +184,7 @@ void ADFLCharacter::Tick(float DeltaTime)
             UE_LOG(LogTemp, Error, TEXT("ADFLCharacter::menu_action -> current_item_widget_selected is null"));
         }
     }
+    */
 }
 
 void ADFLCharacter::move_forward(float value)
@@ -377,7 +379,6 @@ void ADFLCharacter::handle_keyboard_input(FKey key)
     }else{
         UE_LOG(LogTemp, Error, TEXT("Error: GameState instance has not been created"));
     }
-
 }
 
 void ADFLCharacter::action_menu_delegate_slot(int action_menu_index)
