@@ -65,18 +65,31 @@ void ADFLUsableActor::OnUsed(APawn *)
 
 void ADFLUsableActor::rotate_actor()
 {
-    control_rotation = GetWorld()->GetFirstPlayerController()->GetControlRotation();
-//    SetActorRotation(FQuat(control_rotation));
-    SetActorRelativeRotation(FQuat(control_rotation));
+    UWorld *world = GetWorld();
+    if(world)
+    {
+        APlayerController* player_controller = world->GetFirstPlayerController();
+        if(player_controller)
+        {
+            control_rotation = player_controller->GetControlRotation();
+            SetActorRelativeRotation(FQuat(control_rotation));
+        }
+    }
 }
 
 void ADFLUsableActor::reset_actor_rotation(const FRotator &new_rotation)
 {
-    control_rotation = GetWorld()->GetFirstPlayerController()->GetControlRotation();
-//    UE_LOG(LogTemp, Warning, TEXT("control_rotation %s"), *control_rotation.ToString());
-    GetWorld()->GetFirstPlayerController()->SetControlRotation(FMath::Lerp(control_rotation, new_rotation, 0.15f));
-//    SetActorRotation(FMath::Lerp(control_rotation, new_rotation, 0.15f));
-    SetActorRelativeRotation(FMath::Lerp(control_rotation, new_rotation, 0.15f));
+    UWorld *world = GetWorld();
+    if(world)
+    {
+        APlayerController* player_controller = world->GetFirstPlayerController();
+        if(player_controller)
+        {
+            control_rotation = player_controller->GetControlRotation();
+            player_controller->SetControlRotation(FMath::Lerp(control_rotation, new_rotation, 0.15f));
+            SetActorRelativeRotation(FMath::Lerp(control_rotation, new_rotation, 0.15f));
+        }
+    }
 }
 
 
