@@ -11,10 +11,7 @@
 
 void UDFLExamineActionMenuGameState::Tick(float DeltaTime)
 {
-    TestCounter += DeltaTime;
-
-    GEngine->AddOnScreenDebugMessage(10, 0, FColor::Cyan, FString::SanitizeFloat(TestCounter));
-    GEngine->AddOnScreenDebugMessage(11, 0, FColor::Cyan, *key_pressed);
+    Super::Tick(DeltaTime);
 
     if(this->character)
     {
@@ -23,8 +20,6 @@ void UDFLExamineActionMenuGameState::Tick(float DeltaTime)
             UDFLInventoryItemWidget *current_item_widget_selected = this->character->inventory_widget->get_current_item_widget_selected();
             if(current_item_widget_selected)
             {
-                UE_LOG(LogTemp, Warning, TEXT("UDFLExamineActionMenuGameState::Tick inside is_actor_to_be_examined"));
-
                 ADFLUsableActor *current_item_widget_actor = current_item_widget_selected->parent_actor;
                 this->character->examined_actor = current_item_widget_actor;
 
@@ -40,14 +35,22 @@ void UDFLExamineActionMenuGameState::Tick(float DeltaTime)
 
                 if(this->character->is_reset_examine_rotation)
                 {
-                    FRotator control_rotation = GetWorld()->GetFirstPlayerController()->GetControlRotation();
-                    FRotator new_rotation{ 0.0f, 0.0f, 0.0f };
-                    current_item_widget_actor->reset_actor_rotation(new_rotation);
-                    float tolerance_for_nearly_zero_calculations{ 2.0f };
-
-                    if(control_rotation.Equals(new_rotation, tolerance_for_nearly_zero_calculations))
+                    UWorld* world = GetWorld();
+                    if(world)
                     {
-                        this->character->is_reset_examine_rotation = !this->character->is_reset_examine_rotation;
+                        APlayerController* player_controller = world->GetFirstPlayerController();
+                        if(player_controller)
+                        {
+                            FRotator control_rotation = player_controller->GetControlRotation();
+                            FRotator new_rotation{ 0.0f, 0.0f, 0.0f };
+                            current_item_widget_actor->reset_actor_rotation(new_rotation);
+                            float tolerance_for_nearly_zero_calculations{ 2.0f };
+
+                            if(control_rotation.Equals(new_rotation, tolerance_for_nearly_zero_calculations))
+                            {
+                                this->character->is_reset_examine_rotation = !this->character->is_reset_examine_rotation;
+                            }
+                        }
                     }
                 }else{
                     current_item_widget_actor->rotate_actor();
@@ -81,7 +84,13 @@ TStatId UDFLExamineActionMenuGameState::GetStatId() const
 
 UWorld* UDFLExamineActionMenuGameState::GetWorld() const
 {
-    return GetOuter()->GetWorld();
+    UObject *outer_object = GetOuter(); // GetOuter: returns the UObject this object resides in.
+    if(outer_object)
+    {
+        return outer_object->GetWorld();
+    }
+
+    return nullptr;
 }
 
 UDFLGameState *UDFLExamineActionMenuGameState::handle_keyboard_input(class ADFLCharacter *acharacter, const FKey &key)
@@ -90,9 +99,6 @@ UDFLGameState *UDFLExamineActionMenuGameState::handle_keyboard_input(class ADFLC
     {
         if(key == EKeys::Escape)
         {
-            key_pressed = key.ToString();
-            UE_LOG(LogTemp, Warning, TEXT("UDFLExamineActionMenuGameState::handle_keyboard_input %s"), *key_pressed);
-
             UDFLGameStates *game_states_instance = acharacter->game_states;
             if(game_states_instance)
             {

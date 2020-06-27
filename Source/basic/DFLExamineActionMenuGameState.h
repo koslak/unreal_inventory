@@ -23,9 +23,6 @@ public:
     virtual void enter_state(class ADFLCharacter *acharacter) override;
 
 private:
-    float TestCounter;
-    FString key_pressed;
-
     UPROPERTY(EditDefaultsOnly)
     class ADFLCharacter *character;
 

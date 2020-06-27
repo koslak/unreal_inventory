@@ -138,53 +138,6 @@ void ADFLCharacter::Tick(float DeltaTime)
             }
         }
     }
-
-    /*
-    if(is_actor_to_be_examined)
-    {
-        UDFLInventoryItemWidget *current_item_widget_selected = inventory_widget->get_current_item_widget_selected();
-
-        if(current_item_widget_selected)
-        {
-            ADFLUsableActor *current_item_widget_actor = current_item_widget_selected->parent_actor;
-            examined_actor = current_item_widget_actor;
-
-            UStaticMeshComponent *actor_mesh_component = current_item_widget_actor->get_mesh_component();
-            actor_mesh_component->SetVisibility(true);
-            current_item_widget_actor->AttachToComponent(GetCapsuleComponent(), FAttachmentTransformRules::KeepWorldTransform);
-
-            FVector Start = camera_component->GetComponentLocation();
-            FVector ForwardVector = camera_component->GetForwardVector();
-            FVector End = ((ForwardVector * actor_examined_distance) + Start);
-
-            current_item_widget_actor->SetActorLocation(End);
-
-            if(is_reset_examine_rotation)
-            {
-                FRotator control_rotation = GetWorld()->GetFirstPlayerController()->GetControlRotation();
-                UE_LOG(LogTemp, Warning, TEXT("world_rotation %s"), *control_rotation.ToString());
-
-                FRotator new_rotation{ 0.0f, 0.0f, 0.0f };
-                current_item_widget_actor->reset_actor_rotation(new_rotation);
-
-                float tolerance_for_nearly_zero_calculations{ 2.0f };
-//                if(current_item_widget_actor->GetActorRotation().IsNearlyZero(tolerance_for_nearly_zero_calculations))
-
-                UE_LOG(LogTemp, Warning, TEXT("actor rotation %s"), *current_item_widget_actor->GetActorRotation().ToString());
-//                if(current_item_widget_actor->GetActorRotation().Equals(new_rotation, tolerance_for_nearly_zero_calculations))
-                if(control_rotation.Equals(new_rotation, tolerance_for_nearly_zero_calculations))
-                {
-                    is_reset_examine_rotation = !is_reset_examine_rotation;
-                }
-            }else{
-                current_item_widget_actor->rotate_actor();
-            }
-
-        }else{
-            UE_LOG(LogTemp, Error, TEXT("ADFLCharacter::menu_action -> current_item_widget_selected is null"));
-        }
-    }
-    */
 }
 
 void ADFLCharacter::move_forward(float value)

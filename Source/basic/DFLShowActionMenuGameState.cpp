@@ -90,9 +90,12 @@ void UDFLShowActionMenuGameState::enter_state(ADFLCharacter *character)
         UE_LOG(LogTemp, Warning, TEXT("UDFLShowActionMenuGameState::enter_state"));
         if(character->inventory_widget)
         {
-            // Save last camera rotation in case the current inventory item is about to be examined
-            // we don't lose the current camera position.
-            character->camera_last_rotation = character->Controller->GetControlRotation();
+            // Save last camera rotation in case the current inventory item is about to be examined, so we don't lose the current camera position.
+            AController* controller = character->Controller;
+            if(controller)
+            {
+                character->camera_last_rotation = controller->GetControlRotation();
+            }
 
             character->inventory_widget->show_action_menu();
             character->is_action_menu_displayed = true;
