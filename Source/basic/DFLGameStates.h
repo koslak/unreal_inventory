@@ -15,7 +15,8 @@ enum Game_State
     Show_Action_Menu   UMETA(DisplayName = "Show_Action_Menu"),
     Hide_Action_Menu   UMETA(DisplayName = "Hide_Action_Menu"),
     Execute_Action_Menu   UMETA(DisplayName = "Execute_Action_Menu"),
-    Examine_Action_Menu   UMETA(DisplayName = "Examine_Action_Menu")
+    Examine_Action_Menu   UMETA(DisplayName = "Examine_Action_Menu"),
+    Reset_Rotation   UMETA(DisplayName = "Reset_Rotation")
 };
 
 UCLASS()
@@ -47,6 +48,9 @@ public:
 
     UPROPERTY(EditDefaultsOnly)
     class UDFLExamineActionMenuGameState *examine_action_menu_game_state{ nullptr };
+
+    UPROPERTY(EditDefaultsOnly)
+    class UDFLResetExamineGameState *reset_rotation_game_state{ nullptr };
 
 private:
     bool is_game_states_created{ false };

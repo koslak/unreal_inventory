@@ -78,6 +78,9 @@ void UDFLExecuteActionMenuGameState::enter_state(ADFLCharacter *character)
         if(character->inventory_widget)
         {
             // TODO: Add code here to perform the usage of the specific inventory item selected.
+            // for the moment just hide the inventory item.
+            bool is_item_removed = character->inventory_widget->remove_current_selected_item();
+            UE_LOG(LogTemp, Warning, TEXT("UDFLExecuteActionMenuGameState::enter_state -> current item removed: %s"), is_item_removed ? TEXT("true") : TEXT("false"));
 
             // After executing use action, hide the action menu
             character->inventory_widget->hide_action_menu();

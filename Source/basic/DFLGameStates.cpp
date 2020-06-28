@@ -9,6 +9,7 @@
 #include "DFLHideActionMenuGameState.h"
 #include "DFLExecuteActionMenuGameState.h"
 #include "DFLExamineActionMenuGameState.h"
+#include "DFLResetExamineGameState.h"
 
 void UDFLGameStates::create_game_states()
 {
@@ -45,6 +46,11 @@ void UDFLGameStates::create_game_states()
     if(!examine_action_menu_game_state) // || !state_instance->IsValidLowLevelFast())
     {
         examine_action_menu_game_state = NewObject<UDFLExamineActionMenuGameState>((UObject*)GetTransientPackage(), UDFLExamineActionMenuGameState::StaticClass());
+    }
+    
+    if(!reset_rotation_game_state) // || !state_instance->IsValidLowLevelFast())
+    {
+        reset_rotation_game_state = NewObject<UDFLResetExamineGameState>((UObject*)GetTransientPackage(), UDFLResetExamineGameState::StaticClass());
     }
 
     is_game_states_created = true;
@@ -86,6 +92,10 @@ UDFLGameState *UDFLGameStates::get_game_state(Game_State game_state)
 
         case Game_State::Examine_Action_Menu:
             return examine_action_menu_game_state;
+        break;
+
+        case Game_State::Reset_Rotation:
+            return reset_rotation_game_state;
         break;
 
         default:

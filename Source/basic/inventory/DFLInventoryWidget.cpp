@@ -1,6 +1,7 @@
 #include "DFLInventoryWidget.h"
 
 #include "DFLInventoryItemWidget.h"
+#include "../DFLUsableActor.h"
 #include "Components/Button.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Components/TextBlock.h"
@@ -95,6 +96,24 @@ bool UDFLInventoryWidget::add_item(UDFLInventoryItemWidget *item)
     return true;
 }
 
+bool UDFLInventoryWidget::remove_current_selected_item()
+{
+    UDFLInventoryItemWidget *current_selected_item = get_current_item_widget_selected();
+    if(current_selected_item)
+    {
+        item_widget_array.Remove(current_selected_item);
+
+        if(InventoryBox)
+        {
+            InventoryBox->RemoveChild(current_selected_item);
+            select_item_to_the_west();
+            return true;
+        }
+    }
+
+    return false;
+}
+
 bool UDFLInventoryWidget::is_action_menu_can_be_displayed()
 {
     if(item_widget_array.Num() > 0)
@@ -114,7 +133,9 @@ void UDFLInventoryWidget::show_inventory()
     {
         current_item_selected_index = 0;
         UDFLInventoryItemWidget *item = item_widget_array[ current_item_selected_index ];
+
         item->FrameSelector->SetOpacity(1.0f);
+        update_item_text_title_and_description();
     }
 
     VerticalBox_Menu->SetVisibility(ESlateVisibility::Hidden);
@@ -223,6 +244,8 @@ void UDFLInventoryWidget::select_item_to_the_east()
         item->FrameSelector->SetOpacity(1.0f);
     }
     UE_LOG(LogTemp, Warning, TEXT("select_item_to_the_east: %d"), current_item_selected_index);
+
+    update_item_text_title_and_description();
 }
 
 void UDFLInventoryWidget::select_item_to_the_west()
@@ -251,6 +274,8 @@ void UDFLInventoryWidget::select_item_to_the_west()
         item->FrameSelector->SetOpacity(1.0f);
     }
     UE_LOG(LogTemp, Warning, TEXT("select_item_to_the_west: %d"), current_item_selected_index);
+
+    update_item_text_title_and_description();
 }
 
 void UDFLInventoryWidget::select_item_to_the_north()
@@ -316,6 +341,20 @@ UDFLInventoryItemWidget *UDFLInventoryWidget::get_current_item_widget_selected()
 int UDFLInventoryWidget::get_current_action_menu_index() const
 {
     return action_menu_index;
+}
+
+void UDFLInventoryWidget::update_item_text_title_and_description()
+{
+    UDFLInventoryItemWidget *current_item_widget_selected = get_current_item_widget_selected();
+    if(current_item_widget_selected)
+    {
+        ADFLUsableActor *current_item_widget_actor = current_item_widget_selected->parent_actor;
+        if(current_item_widget_actor)
+        {
+            ItemTitle->SetText(current_item_widget_actor->item_widget_display_name);
+            ItemDescription->SetText(current_item_widget_actor->item_widget_description_text);
+        }
+    }
 }
 
 FVector2D UDFLInventoryWidget::get_inventory_item_widget_position()

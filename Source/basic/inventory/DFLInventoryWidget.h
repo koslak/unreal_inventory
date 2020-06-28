@@ -20,6 +20,7 @@ public:
     FParamDelegateSignature action_menu_delegate;
 
     bool add_item(class UDFLInventoryItemWidget *item);
+    bool remove_current_selected_item();
 
     bool is_action_menu_can_be_displayed();
     void show_inventory();
@@ -35,6 +36,7 @@ public:
     void execute_action_menu_command();
     UDFLInventoryItemWidget *get_current_item_widget_selected();
     int get_current_action_menu_index() const;
+    void update_item_text_title_and_description();
 
 private:
     FVector2D get_inventory_item_widget_position();
@@ -54,6 +56,12 @@ private:
 
     UPROPERTY(meta = (BindWidget))
     class UImage *Image_Frame_2;
+
+    UPROPERTY(meta = (BindWidget))
+    class UTextBlock *ItemTitle;
+
+    UPROPERTY(meta = (BindWidget))
+    class UTextBlock *ItemDescription;
 
     UFUNCTION()
     void close_inventory();

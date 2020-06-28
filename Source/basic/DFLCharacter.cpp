@@ -374,8 +374,8 @@ void ADFLCharacter::use_item(UDFLItem *item)
 
 void ADFLCharacter::use_actor(FKey key)
 {
-    if(!is_actor_to_be_examined)
-    {
+    //if(!is_actor_to_be_examined)
+    //{
         ADFLUsableActor* usable_actor = get_usable_actor_in_view();
         if (usable_actor)
         {
@@ -387,9 +387,9 @@ void ADFLCharacter::use_actor(FKey key)
                 inventory_widget->add_item(item);
             }
         }
-    }else{
-        is_reset_examine_rotation = !is_reset_examine_rotation;
-    }
+    //}else{
+        //is_reset_examine_rotation = !is_reset_examine_rotation;
+    //}
 }
 
 ADFLUsableActor *ADFLCharacter::get_usable_actor_in_view()

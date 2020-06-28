@@ -44,7 +44,7 @@ public:
         return inventory_item_widget;
     }
 
-protected:
+//protected:
 
     UPROPERTY(VisibleAnywhere, Category = "Mesh")
     UStaticMeshComponent* mesh_component;
@@ -60,6 +60,9 @@ protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widget Configuration")
     FText item_widget_display_name;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widget Configuration", meta = (MultiLine = "true"))
+    FText item_widget_description_text;
 
     class UDFLInventoryItemWidget *inventory_item_widget;
 
