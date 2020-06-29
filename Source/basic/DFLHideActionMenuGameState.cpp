@@ -9,12 +9,7 @@
 
 void UDFLHideActionMenuGameState::Tick(float DeltaTime)
 {
-    Super::Tick(DeltaTime);
-
     TestCounter += DeltaTime;
-
-    GEngine->AddOnScreenDebugMessage(0, 0, FColor::Green, FString::SanitizeFloat(TestCounter));
-    GEngine->AddOnScreenDebugMessage(1, 0, FColor::Green, *key_pressed);
 }
 
 bool UDFLHideActionMenuGameState::IsTickable() const

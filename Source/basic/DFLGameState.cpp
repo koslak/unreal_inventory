@@ -11,10 +11,6 @@
 void UDFLGameState::Tick(float DeltaTime)
 {
     TestCounter += DeltaTime;
-
-    GEngine->AddOnScreenDebugMessage(0, 0, FColor::Green, FString::SanitizeFloat(TestCounter));
-    GEngine->AddOnScreenDebugMessage(1, 0, FColor::Green, *key_pressed);
-
 }
 
 bool UDFLGameState::IsTickable() const
