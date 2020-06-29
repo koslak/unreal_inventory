@@ -16,3 +16,5 @@ Intermediate/TargetInfo.json
 Intermediate/ReimportCache/
 *.xcodeproj
 *.xcworkspace
+*.exe
+Intermediate/Staging/basic.upluginmanifest
