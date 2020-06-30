@@ -135,9 +135,9 @@ void UDFLInventoryWidget::show_inventory()
         UDFLInventoryItemWidget *item = item_widget_array[ current_item_selected_index ];
 
         item->FrameSelector->SetOpacity(1.0f);
-        update_item_text_title_and_description();
     }
 
+    update_item_text_title_and_description();
     VerticalBox_Menu->SetVisibility(ESlateVisibility::Hidden);
 }
 
@@ -345,14 +345,21 @@ int UDFLInventoryWidget::get_current_action_menu_index() const
 
 void UDFLInventoryWidget::update_item_text_title_and_description()
 {
-    UDFLInventoryItemWidget *current_item_widget_selected = get_current_item_widget_selected();
-    if(current_item_widget_selected)
+    if(item_widget_array.Num() == 0)
     {
-        ADFLUsableActor *current_item_widget_actor = current_item_widget_selected->parent_actor;
-        if(current_item_widget_actor)
+        ItemTitle->SetText(FText::FromString(""));
+        ItemDescription->SetText(FText::FromString(""));
+    }
+    else {
+        UDFLInventoryItemWidget *current_item_widget_selected = get_current_item_widget_selected();
+        if(current_item_widget_selected)
         {
-            ItemTitle->SetText(current_item_widget_actor->item_widget_display_name);
-            ItemDescription->SetText(current_item_widget_actor->item_widget_description_text);
+            ADFLUsableActor *current_item_widget_actor = current_item_widget_selected->parent_actor;
+            if(current_item_widget_actor)
+            {
+                ItemTitle->SetText(current_item_widget_actor->item_widget_display_name);
+                ItemDescription->SetText(current_item_widget_actor->item_widget_description_text);
+            }
         }
     }
 }
