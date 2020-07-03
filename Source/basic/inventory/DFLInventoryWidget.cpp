@@ -9,6 +9,8 @@
 #include "Components/Image.h"
 #include "Components/VerticalBox.h"
 #include "Components/CanvasPanelSlot.h"
+#include "Components/GridSlot.h"
+#include "Components/GridPanel.h"
 
 UDFLInventoryWidget::UDFLInventoryWidget(const FObjectInitializer &ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -28,6 +30,8 @@ bool UDFLInventoryWidget::Initialize()
         return false;
     }
 
+    item_widget_array_2D.initialize();
+
     /*
    if(CloseButton)
    {
@@ -46,6 +50,7 @@ bool UDFLInventoryWidget::Initialize()
     return true;
 }
 
+/*
 void UDFLInventoryWidget::close_inventory()
 {
     UE_LOG(LogTemp, Warning, TEXT("close inventory function called"));
@@ -75,6 +80,7 @@ void UDFLInventoryWidget::close_inventory()
         }
     }
 }
+*/
 
 bool UDFLInventoryWidget::add_item(UDFLInventoryItemWidget *item)
 {
@@ -83,15 +89,43 @@ bool UDFLInventoryWidget::add_item(UDFLInventoryItemWidget *item)
         return false;
     }
 
-    item_widget_array.Add(item);
+    TPair<int, int> index_pair = item_widget_array_2D.Add(item);
 
+    int row = index_pair.Key;
+    int col = index_pair.Value;
+
+    UE_LOG(LogTemp, Warning, TEXT("Row: %d, Col: %d"), row, col);
+
+    if(InventoryGridPanel)
+    {
+        UGridSlot *grid_slot = InventoryGridPanel->AddChildToGrid(item, row, col);
+        if(grid_slot)
+        {
+            /*
+            UE_LOG(LogTemp, Warning, TEXT("Grid Row: %d, Grid Col: %d"), grid_slot->Row, grid_slot->Column);
+            grid_slot->SetHorizontalAlignment(EHorizontalAlignment::HAlign_Center);
+            grid_slot->SetVerticalAlignment(EVerticalAlignment::VAlign_Center);
+            grid_slot->SetRow(row);
+            grid_slot->SetColumn(col);
+            */
+        }
+        else {
+            return false;
+        }
+    }
+    else {
+        return false;
+    }
+
+    /*
     if(InventoryBox)
     {
         InventoryBox->AddChildToWrapBox(item);
 
-    }else{
-        return false;
     }
+    else {
+        return false;
+    }*/
 
     return true;
 }
@@ -124,11 +158,11 @@ bool UDFLInventoryWidget::is_action_menu_can_be_displayed()
     return false;
 }
 
-void UDFLInventoryWidget::show_inventory()
+void UDFLInventoryWidget::set_initial_highlighted_item()
 {
-    this->SetVisibility(ESlateVisibility::Visible);
-
-    // Highlight the first inventory item
+    // This method defines what is going to be the item that will be highlighted when displaying the inventory.
+    
+    // If there are no previous rules about what is the item to be highlighted, just highlight the first inventory item
     if(item_widget_array.Num() > 0)
     {
         current_item_selected_index = 0;
@@ -136,6 +170,13 @@ void UDFLInventoryWidget::show_inventory()
 
         item->FrameSelector->SetOpacity(1.0f);
     }
+}
+
+void UDFLInventoryWidget::show_inventory()
+{
+    this->SetVisibility(ESlateVisibility::Visible);
+
+    set_initial_highlighted_item();
 
     update_item_text_title_and_description();
     VerticalBox_Menu->SetVisibility(ESlateVisibility::Hidden);

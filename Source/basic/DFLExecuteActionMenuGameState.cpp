@@ -54,10 +54,13 @@ UDFLGameState *UDFLExecuteActionMenuGameState::handle_keyboard_input(class ADFLC
 
         }else if(key == EKeys::SpaceBar)
         {
-            UDFLGameStates *game_states_instance = character->game_states;
-            if(game_states_instance)
+            if(character->inventory_widget && character->inventory_widget->is_action_menu_can_be_displayed())
             {
-                return game_states_instance->get_game_state(Game_State::Show_Action_Menu);
+                UDFLGameStates *game_states_instance = character->game_states;
+                if(game_states_instance)
+                {
+                    return game_states_instance->get_game_state(Game_State::Show_Action_Menu);
+                }
             }
         }
     }
