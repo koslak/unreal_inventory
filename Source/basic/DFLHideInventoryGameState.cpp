@@ -68,6 +68,8 @@ void UDFLHideInventoryGameState::enter_state(ADFLCharacter *character)
             character->inventory_widget->hide_inventory();
             character->is_player_can_move = true;
             character->is_inventory_widget_displayed = false;
+            character->inventory_widget->is_item_widget_being_examined = false;
+
         }else{
             UE_LOG(LogTemp, Error, TEXT("Inventory_widget variable is null"));
         }

@@ -87,6 +87,8 @@ public:
     void update_item_text_title_and_description();
     void set_initial_highlighted_item();
 
+    bool is_item_widget_being_examined{ false };
+
 private:
     FVector2D get_inventory_item_widget_position();
     void update_action_menu_selection(int action_menu_index_value);
@@ -136,7 +138,6 @@ private:
     int action_menu_index{ 0 };
 
     bool is_action_menu_displayed{ false };
-    bool is_item_widget_being_examined{ false };
 
 protected:
 

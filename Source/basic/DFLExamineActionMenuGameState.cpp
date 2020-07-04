@@ -115,6 +115,7 @@ void UDFLExamineActionMenuGameState::enter_state(ADFLCharacter *acharacter)
             // After executing specific action, hide the Action menu
             acharacter->inventory_widget->hide_action_menu();
             acharacter->is_action_menu_displayed = false;
+            acharacter->inventory_widget->is_item_widget_being_examined = true;
 
             // Hide the Inventory menu
             acharacter->inventory_widget->hide_inventory();

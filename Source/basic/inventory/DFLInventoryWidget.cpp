@@ -189,19 +189,25 @@ bool UDFLInventoryWidget::is_action_menu_can_be_displayed()
 
 void UDFLInventoryWidget::set_initial_highlighted_item()
 {
-    // This method defines what is going to be the item that will be highlighted when displaying the inventory.
-    
     if(!item_widget_array_2D.is_empty())
     {
-        // If the array is not empty, it's safe to access the first row: 0, col: 0, index.
-        current_item_selected_row_index = 0;
-        current_item_selected_column_index = 0;
-
-        UDFLInventoryItemWidget *item = item_widget_array_2D[ current_item_selected_row_index ][ current_item_selected_column_index ];
-
-        if(item)
+        if(!is_item_widget_being_examined)
         {
-            item->FrameSelector->SetOpacity(1.0f);
+            UDFLInventoryItemWidget *current_item_widget_selected = get_current_item_widget_selected();
+            if(current_item_widget_selected)
+            {
+                current_item_widget_selected->FrameSelector->SetOpacity(0.0f);
+            }
+
+            // If the array is not empty, it's safe to access the first row: 0, col: 0, index.
+            current_item_selected_row_index = 0;
+            current_item_selected_column_index = 0;
+
+            UDFLInventoryItemWidget *item = item_widget_array_2D[ current_item_selected_row_index ][ current_item_selected_column_index ];
+            if(item)
+            {
+                item->FrameSelector->SetOpacity(1.0f);
+            }
         }
     }
 }
@@ -293,36 +299,6 @@ void UDFLInventoryWidget::update_action_menu_selection(int action_menu_index_val
 }
 
 void UDFLInventoryWidget::select_item_to_the_east()
-{
-    int item_widget_array_size = item_widget_array.Num();
-
-    // Remove highlight from current inventory item
-    if(current_item_selected_index >= 0 && current_item_selected_index < item_widget_array_size)
-    {
-        UDFLInventoryItemWidget *item = item_widget_array[ current_item_selected_index ];
-        item->FrameSelector->SetOpacity(0.0f);
-    }
-
-    current_item_selected_index++;
-    if(current_item_selected_index >= 0 && current_item_selected_index < item_widget_array_size)
-    {
-        UDFLInventoryItemWidget *item = item_widget_array[ current_item_selected_index ];
-        item->FrameSelector->SetOpacity(1.0f);
-    }
-
-    // If we are in the last item, keep it highlighted.
-    if(item_widget_array_size > 0 && current_item_selected_index == item_widget_array_size)
-    {
-        current_item_selected_index = item_widget_array_size - 1;
-        UDFLInventoryItemWidget *item = item_widget_array[ current_item_selected_index ];
-        item->FrameSelector->SetOpacity(1.0f);
-    }
-    UE_LOG(LogTemp, Warning, TEXT("select_item_to_the_east: %d"), current_item_selected_index);
-
-    update_item_text_title_and_description();
-}
-
-void UDFLInventoryWidget::select_item_to_the_east1()
 {
     /*
      * There are two situations when moving to the right:
@@ -506,28 +482,11 @@ UDFLInventoryItemWidget *UDFLInventoryWidget::get_current_item_widget_selected()
         UE_LOG(LogTemp, Warning, TEXT("UDFLInventoryWidget::get_current_item_widget_selected. current_item_selected_row_index: %d, current_item_selected_column_index: %d"), current_item_selected_row_index, current_item_selected_column_index);
         if(item)
         {
-            UE_LOG(LogTemp, Warning, TEXT("UDFLInventoryWidget::get_current_item_widget_selected. Valid Item"));
             return item;
         }
     }
 
     return nullptr;
-
-    /*
-    int item_widget_array_size{ item_widget_array.Num() };
-
-    if(item_widget_array_size > 0 && current_item_selected_index >= 0 && current_item_selected_index < item_widget_array_size)
-    {
-        UDFLInventoryItemWidget *item = item_widget_array[ current_item_selected_index ];
-
-        if(item)
-        {
-            return item;
-        }
-    }
-
-    return nullptr;
-    */
 }
 
 int UDFLInventoryWidget::get_current_action_menu_index() const

@@ -211,7 +211,7 @@ void ADFLCharacter::move_widget_right()
     {
         if(!is_action_menu_displayed)
         {
-            inventory_widget->select_item_to_the_east1();
+            inventory_widget->select_item_to_the_east();
         }
     }
 }
