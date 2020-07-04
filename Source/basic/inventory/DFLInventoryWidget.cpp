@@ -14,7 +14,9 @@
 
 void FItem_widget_array_2D::initialize()
 {
-    for(int i = 0; i < MAX_NUMBER_OF_INVENTORY_ROWS; ++i)
+    int number_of_rows{ this->get_rows_number() };
+
+    for(int i = 0; i < number_of_rows; ++i)
     {
         item_widget_array.Add(FItem_widget_array());
     }
@@ -24,20 +26,31 @@ void FItem_widget_array_2D::initialize()
 
 TPair<int, int> FItem_widget_array_2D::add_item(class UDFLInventoryItemWidget *item)
 {
-    if(is_struct_initialized && item)
+    if(!is_struct_initialized)
     {
+        UE_LOG(LogTemp, Error, TEXT("FItem_widget_array_2D::add_item -> The FItem_widget_array struct has not been initialized. Call the method: FItem_widget_array_2D::initialize first"));
+        return TPair<int, int>{ 0, 0 };
+    }
+
+    if(item)
+    {
+        int number_of_rows{ this->get_rows_number() };
+        int number_of_columns{ this->get_columns_number() };
+
         item_widget_array[ current_row_index ].insert_item(item);
         TPair<int, int> index_coordinate{ current_row_index, current_column_index };
 
-        if(current_column_index < MAX_NUMBER_OF_INVENTORY_COLUMNS - 1)
+        if(current_column_index < number_of_columns - 1)
         {
             current_column_index++;
+
         }else{
             current_column_index = 0;
             current_row_index++;
-            if(current_row_index >= MAX_NUMBER_OF_INVENTORY_ROWS)
+
+            if(current_row_index >= number_of_rows)
             {
-                current_row_index = MAX_NUMBER_OF_INVENTORY_ROWS - 1;
+                current_row_index = number_of_rows - 1;
             }
         }
 
@@ -314,59 +327,96 @@ void UDFLInventoryWidget::select_item_to_the_east1()
     /*
      * There are two situations when moving to the right:
      *
-     *  - Case 1: The current position (x0, y0) and next position (x1, y1) reside in the same row. This means y0 == y1.
-     *  - Case 2: The next position (x1, y1) is in a different row than the current position (x0, y0). This means x1 = x0 + 1.
-     *
+     *  - Case 1: The current position (x0, y0) and next position (x1, y1) reside in the same row. This means: x0 == x1.
+     *  - Case 2: The next position (x1, y1) is in a different row than the current position (x0, y0). This means: y1 = y0 + 1.
      */
 
-    // Case 1:
+    // Common variables to both cases:
+    int number_of_rows{ item_widget_array_2D.get_rows_number() };
+    int number_of_columns{ item_widget_array_2D.get_columns_number() };
+    x0 = current_item_selected_row_index;
+    y0 = current_item_selected_column_index;
 
-    // Current position:
-    int x0{ current_item_selected_row_index };
-    int y0{ current_item_selected_column_index };
+    UE_LOG(LogTemp, Warning, TEXT("UDFLInventoryWidget::select_item_to_the_east1: {current_item_selected_row_index = %d, current_item_selected_column_index = %d}"), current_item_selected_row_index, current_item_selected_column_index);
 
-    // Next position
-    int x1{ x0 + 1 };
-    int y1{ y0 };
-
-    current_item_selected_column_index--;
-    if(current_item_selected_column_index >= 0)
+    // We need to validate which case we are facing
+    if(y0 == number_of_columns - 1)  // This means we are in the last column. Note: y0 will never be equal to the number_of_columns
     {
-//        if(current_item_selected_row_index >= 0 && current_item_selected_row_index <= number_of_rows && current_item_selected_column_index >= 0 && current_item_selected_column_index <= number_of_columns)
+        // This is Case 2.
+        x1 = x0 + 1;
+        y1 = 0;
+
+        // We need to validate if we are in the last row
+        if(x1 == number_of_rows)
         {
-            UDFLInventoryItemWidget *item_to_be_removed = item_widget_array_2D[ current_item_selected_row_index ][ current_item_selected_column_index ];
+            x1 = number_of_rows - 1;
         }
     }else{
-        current_item_selected_column_index = 0;
+        // This is Case 1.
+        x1 = x0;
+        y1 = y0 + 1;
+
+        // We need to validate if we are in the last column
+        if(y1 == number_of_columns)
+        {
+            y1 = number_of_columns - 1;
+        }
     }
+
+    change_item_selection();
+    update_item_text_title_and_description();
 }
 
 void UDFLInventoryWidget::select_item_to_the_west()
 {
-    int item_widget_array_size = item_widget_array.Num();
+    /*
+     * There are two situations when moving to the right:
+     *
+     *  - Case 1: The current position (x0, y0) and next position (x1, y1) reside in the same row. This means: x0 == x1.
+     *  - Case 2: The next position (x1, y1) is in a different row than the current position (x0, y0). This means: y1 = number_of_columns - 1.
+     */
 
-    // Remove highlight from current inventory item
-    if(current_item_selected_index >= 0 && current_item_selected_index < item_widget_array_size)
-    {
-        UDFLInventoryItemWidget *item = item_widget_array[ current_item_selected_index ];
-        item->FrameSelector->SetOpacity(0.0f);
-    }
+    int number_of_columns{ item_widget_array_2D.get_columns_number() };
+    x0 = current_item_selected_row_index;
+    y0 = current_item_selected_column_index;
 
-    current_item_selected_index--;
-    if(current_item_selected_index >= 0 && current_item_selected_index < item_widget_array_size)
-    {
-        UDFLInventoryItemWidget *item = item_widget_array[ current_item_selected_index ];
-        item->FrameSelector->SetOpacity(1.0f);
-    }
+    UE_LOG(LogTemp, Warning, TEXT("UDFLInventoryWidget::select_item_to_the_east1: {current_item_selected_row_index = %d, current_item_selected_column_index = %d}"), current_item_selected_row_index, current_item_selected_column_index);
 
-    // If we are in the first item, keep it highlighted
-    if(item_widget_array_size > 0 && current_item_selected_index < 0)
+    if(x0 == 0 && y0 == 0)
     {
-        current_item_selected_index = 0;
-        UDFLInventoryItemWidget *item = item_widget_array[ current_item_selected_index ];
-        item->FrameSelector->SetOpacity(1.0f);
+        x1 = x0;
+        y1 = y0;
+
+        current_item_selected_row_index = x1;
+        current_item_selected_column_index = y1;
     }
-    UE_LOG(LogTemp, Warning, TEXT("select_item_to_the_west: %d"), current_item_selected_index);
+    else{
+        // We need to validate which case we are facing
+        if(y0 == 0)  // This means we are in the first column.
+        {
+            // This is Case 2.
+            x1 = x0 - 1;
+            y1 = number_of_columns - 1;
+
+            // We need to validate if we are behind the first row
+            if(x1 < 0)
+            {
+                x1 = 0;
+            }
+        }else{
+            // This is Case 1.
+            x1 = x0;
+            y1 = y0 - 1;
+
+            // We need to validate if we are in the first column
+            if(y1 < 0)
+            {
+                y1 = 0;
+            }
+        }
+
+        change_item_selection();
+    }
 
     update_item_text_title_and_description();
 }
@@ -379,6 +429,30 @@ void UDFLInventoryWidget::select_item_to_the_north()
 void UDFLInventoryWidget::select_item_to_the_south()
 {
 
+}
+
+void UDFLInventoryWidget::change_item_selection()
+{
+    int number_of_rows{ item_widget_array_2D.get_rows_number() };
+    int number_of_columns{ item_widget_array_2D.get_columns_number() };
+
+    UE_LOG(LogTemp, Warning, TEXT("UDFLInventoryWidget::select_item_to_the_east1: {x0 = %d, y0 = %d}, {x1 = %d, y1 = %d}"), x0, y0, x1, y1);
+
+    if(x0 >= 0 && x0 < number_of_rows    && x1 >= 0 && x1 < number_of_rows &&
+       y0 >= 0 && y0 < number_of_columns && y1 >= 0 && y1 < number_of_columns)
+    {
+        UDFLInventoryItemWidget *current_item = item_widget_array_2D[ x0 ][ y0 ];
+        UDFLInventoryItemWidget *next_item = item_widget_array_2D[ x1 ][ y1 ];
+
+        if(current_item && next_item)
+        {
+            current_item_selected_row_index = x1;
+            current_item_selected_column_index = y1;
+
+            current_item->FrameSelector->SetOpacity(0.0f);
+            next_item->FrameSelector->SetOpacity(1.0f);
+        }
+    }
 }
 
 void UDFLInventoryWidget::select_action_menu_up()
@@ -416,8 +490,8 @@ void UDFLInventoryWidget::execute_action_menu_command()
 
 UDFLInventoryItemWidget *UDFLInventoryWidget::get_current_item_widget_selected()
 {
-    int number_of_rows = item_widget_array_2D.get_rows_number();
-    int number_of_columns = item_widget_array_2D.get_columns_number();
+    int number_of_rows{ item_widget_array_2D.get_rows_number() };
+    int number_of_columns{ item_widget_array_2D.get_columns_number() };
 
     UE_LOG(LogTemp, Warning, TEXT("UDFLInventoryWidget::get_current_item_widget_selected. number_of_rows: %d, number_of_columns: %d"), number_of_rows, number_of_columns);
 
@@ -463,7 +537,7 @@ int UDFLInventoryWidget::get_current_action_menu_index() const
 
 void UDFLInventoryWidget::update_item_text_title_and_description()
 {
-    if(item_widget_array.Num() == 0)
+    if(item_widget_array_2D.is_empty())
     {
         ItemTitle->SetText(FText::FromString(""));
         ItemDescription->SetText(FText::FromString(""));

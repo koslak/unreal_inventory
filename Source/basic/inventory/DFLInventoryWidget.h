@@ -77,6 +77,7 @@ public:
     void select_item_to_the_west();
     void select_item_to_the_north();
     void select_item_to_the_south();
+    void change_item_selection();
 
     void select_action_menu_up();
     void select_action_menu_down();
@@ -127,6 +128,11 @@ private:
 
     int current_item_selected_row_index{ 0 };
     int current_item_selected_column_index{ 0 };
+    int x0{ current_item_selected_row_index };
+    int y0{ current_item_selected_column_index };
+    int x1{ x0 };
+    int y1{ y0 };
+
     int action_menu_index{ 0 };
 
     bool is_action_menu_displayed{ false };
