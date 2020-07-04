@@ -370,7 +370,7 @@ void UDFLInventoryWidget::select_item_to_the_west()
         // We need to validate which case we are facing
         if(y0 == 0)  // This means we are in the first column.
         {
-            // This is Case 2.
+            // This is Case 2
             x1 = x0 - 1;
             y1 = number_of_columns - 1;
 
@@ -380,7 +380,7 @@ void UDFLInventoryWidget::select_item_to_the_west()
                 x1 = 0;
             }
         }else{
-            // This is Case 1.
+            // This is Case 1
             x1 = x0;
             y1 = y0 - 1;
 
@@ -399,12 +399,97 @@ void UDFLInventoryWidget::select_item_to_the_west()
 
 void UDFLInventoryWidget::select_item_to_the_north()
 {
+    /*
+     * There are two situations when moving to the right:
+     *
+     *  - Case 1: The current position (x0, y0) and next position (x1, y1) reside in the same column. This means: y0 == y1.
+     *  - Case 2: The next position (x1, y1) is in a different column than the current position (x0, y0). This means: x1 = number_of_columns - 1.
+     */
 
+    int number_of_rows{ item_widget_array_2D.get_rows_number() };
+    x0 = current_item_selected_row_index;
+    y0 = current_item_selected_column_index;
+
+    UE_LOG(LogTemp, Warning, TEXT("UDFLInventoryWidget::select_item_to_the_east1: {current_item_selected_row_index = %d, current_item_selected_column_index = %d}"), current_item_selected_row_index, current_item_selected_column_index);
+
+    if(x0 == 0 && y0 == 0)
+    {
+        x1 = x0;
+        y1 = y0;
+
+        current_item_selected_row_index = x1;
+        current_item_selected_column_index = y1;
+    }
+    else{
+        // We need to validate which case we are facing
+        if(x0 == 0)  // This means we are in the first row
+        {
+            // This is Case 2
+            y1 = y0 - 1;
+            x0 = number_of_rows - 1;
+
+            // We need to validate if we are behind the first column
+            if(y1 < 0)
+            {
+                y1 = 0;
+            }
+        }else{
+            // This is Case 1
+            y1 = y0;
+            x1 = x0 - 1;
+
+            // We need to validate if we are behind the first row
+            if(x1 < 0)
+            {
+                x1 = 0;
+            }
+        }
+
+        change_item_selection();
+    }
+
+    update_item_text_title_and_description();
 }
 
 void UDFLInventoryWidget::select_item_to_the_south()
 {
+    /*
+     * There are two situations when moving to the right:
+     *
+     *  - Case 1: The current position (x0, y0) and next position (x1, y1) reside in the same column. This means: y0 == y1
+     *  - Case 2: The next position (x1, y1) is in a different column than the current position (x0, y0). This means: y1 = y0 + 1
+     */
 
+    int number_of_rows{ item_widget_array_2D.get_rows_number() };
+    int number_of_columns{ item_widget_array_2D.get_columns_number() };
+    x0 = current_item_selected_row_index;
+    y0 = current_item_selected_column_index;
+
+    UE_LOG(LogTemp, Warning, TEXT("UDFLInventoryWidget::select_item_to_the_east1: {current_item_selected_row_index = %d, current_item_selected_column_index = %d}"), current_item_selected_row_index, current_item_selected_column_index);
+
+    if(x0 == number_of_rows - 1)
+    {
+        // This is Case 2
+        x1 = 0;
+        y1 = y0 + 1;
+
+        if(y1 == number_of_columns)
+        {
+            y1 = number_of_columns - 1;
+        }
+    }else{
+        // This is Case 1
+        y1 = y0;
+        x1 = x0 + 1;
+
+        if(x1 == number_of_rows)
+        {
+            x1 = number_of_rows - 1;
+        }
+    }
+
+    change_item_selection();
+    update_item_text_title_and_description();
 }
 
 void UDFLInventoryWidget::change_item_selection()
