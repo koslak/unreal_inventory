@@ -12,6 +12,83 @@
 #include "Components/GridSlot.h"
 #include "Components/GridPanel.h"
 
+void FItem_widget_array_2D::initialize()
+{
+    for(int i = 0; i < MAX_NUMBER_OF_INVENTORY_ROWS; ++i)
+    {
+        item_widget_array.Add(FItem_widget_array());
+    }
+
+    is_struct_initialized = true;
+}
+
+TPair<int, int> FItem_widget_array_2D::add_item(class UDFLInventoryItemWidget *item)
+{
+    if(is_struct_initialized && item)
+    {
+        item_widget_array[ current_row_index ].insert_item(item);
+        TPair<int, int> index_coordinate{ current_row_index, current_column_index };
+
+        if(current_column_index < MAX_NUMBER_OF_INVENTORY_COLUMNS - 1)
+        {
+            current_column_index++;
+        }else{
+            current_column_index = 0;
+            current_row_index++;
+            if(current_row_index >= MAX_NUMBER_OF_INVENTORY_ROWS)
+            {
+                current_row_index = MAX_NUMBER_OF_INVENTORY_ROWS - 1;
+            }
+        }
+
+        return index_coordinate;
+    }
+
+    return TPair<int, int>{ 0, 0 };
+}
+
+bool FItem_widget_array_2D::remove_item(int row, int column)
+{
+    if(row >= 0 && row <= current_row_index && column >= 0 && column <= current_column_index)
+    {
+        UDFLInventoryItemWidget *item_to_be_removed = item_widget_array[ row ][ column ];
+        if(item_to_be_removed)
+        {
+            item_widget_array[ row ].remove_item(item_to_be_removed);
+
+            return true;
+        }
+    }
+
+    return false;
+}
+
+FItem_widget_array &FItem_widget_array_2D::operator[](int32 i)
+{
+    check(i >= 0 && i < item_widget_array.Num());
+
+    return item_widget_array[ i ];
+}
+
+void FItem_widget_array_2D::remove_item(class UDFLInventoryItemWidget *item)
+{
+}
+
+int FItem_widget_array_2D::get_rows_number()
+{
+    return MAX_NUMBER_OF_INVENTORY_ROWS;
+}
+
+int FItem_widget_array_2D::get_columns_number()
+{
+    return MAX_NUMBER_OF_INVENTORY_COLUMNS;
+}
+
+bool FItem_widget_array_2D::is_empty()
+{
+    return  item_widget_array.Num() == 0 ? true : false;
+}
+
 UDFLInventoryWidget::UDFLInventoryWidget(const FObjectInitializer &ObjectInitializer) : Super(ObjectInitializer)
 {
     ConstructorHelpers::FClassFinder<UDFLInventoryItemWidget> DFLInventory_item_widget_BP(TEXT("/Game/Blueprints/inventory/inventory_item_WBP"));
@@ -32,16 +109,6 @@ bool UDFLInventoryWidget::Initialize()
 
     item_widget_array_2D.initialize();
 
-    /*
-   if(CloseButton)
-   {
-       CloseButton->OnClicked.AddDynamic(this, &UDFLInventoryWidget::close_inventory);
-
-   } else {
-       return false;
-   }
-   */
-
    if(VerticalBox_Menu)
    {
        VerticalBox_Menu->SetVisibility(ESlateVisibility::Hidden);
@@ -50,38 +117,6 @@ bool UDFLInventoryWidget::Initialize()
     return true;
 }
 
-/*
-void UDFLInventoryWidget::close_inventory()
-{
-    UE_LOG(LogTemp, Warning, TEXT("close inventory function called"));
-
-    UUserWidget *general_widget{ nullptr };
-    general_widget = CreateWidget<UUserWidget>(GetWorld(), DFLInventory_item_widget_class);
-
-    if(general_widget && general_widget->IsA(UDFLInventoryItemWidget::StaticClass()))
-    {
-        UE_LOG(LogTemp, Warning, TEXT("Widget is a UDFLInventoryItemWidget"));
-
-        UDFLInventoryItemWidget *inventoryItemWidget = Cast<UDFLInventoryItemWidget>(general_widget);
-
-        if(inventoryItemWidget)
-        {
-            item_widget_array.Add(inventoryItemWidget);
-
-            UE_LOG(LogTemp, Warning, TEXT("Cast successful"));
-            inventoryItemWidget->ItemName->SetText(FText::FromString("Case Blue"));
-
-            if(InventoryBox)
-            {
-                UE_LOG(LogTemp, Warning, TEXT("Inventory Box exists!"));
-                InventoryBox->AddChildToWrapBox(inventoryItemWidget);
-            }
-
-        }
-    }
-}
-*/
-
 bool UDFLInventoryWidget::add_item(UDFLInventoryItemWidget *item)
 {
     if(!item)
@@ -89,43 +124,20 @@ bool UDFLInventoryWidget::add_item(UDFLInventoryItemWidget *item)
         return false;
     }
 
-    TPair<int, int> index_pair = item_widget_array_2D.Add(item);
+    TPair<int, int> index_pair = item_widget_array_2D.add_item(item);
 
-    int row = index_pair.Key;
-    int col = index_pair.Value;
+    int row{ index_pair.Key };
+    int column{ index_pair.Value };
 
-    UE_LOG(LogTemp, Warning, TEXT("Row: %d, Col: %d"), row, col);
+    UE_LOG(LogTemp, Warning, TEXT("Row: %d, Col: %d"), row, column);
 
     if(InventoryGridPanel)
     {
-        UGridSlot *grid_slot = InventoryGridPanel->AddChildToGrid(item, row, col);
-        if(grid_slot)
-        {
-            /*
-            UE_LOG(LogTemp, Warning, TEXT("Grid Row: %d, Grid Col: %d"), grid_slot->Row, grid_slot->Column);
-            grid_slot->SetHorizontalAlignment(EHorizontalAlignment::HAlign_Center);
-            grid_slot->SetVerticalAlignment(EVerticalAlignment::VAlign_Center);
-            grid_slot->SetRow(row);
-            grid_slot->SetColumn(col);
-            */
-        }
-        else {
-            return false;
-        }
+        InventoryGridPanel->AddChildToGrid(item, row, column);
     }
     else {
         return false;
     }
-
-    /*
-    if(InventoryBox)
-    {
-        InventoryBox->AddChildToWrapBox(item);
-
-    }
-    else {
-        return false;
-    }*/
 
     return true;
 }
@@ -136,12 +148,16 @@ bool UDFLInventoryWidget::remove_current_selected_item()
     if(current_selected_item)
     {
         item_widget_array.Remove(current_selected_item);
+        item_widget_array_2D.remove_item(current_item_selected_row_index, current_item_selected_column_index);
 
-        if(InventoryBox)
+        if(InventoryGridPanel)
         {
-            InventoryBox->RemoveChild(current_selected_item);
-            select_item_to_the_west();
-            return true;
+            if(InventoryGridPanel->RemoveChild(current_selected_item))
+            {
+                select_item_to_the_west();
+
+                return true;
+            }
         }
     }
 
@@ -150,7 +166,7 @@ bool UDFLInventoryWidget::remove_current_selected_item()
 
 bool UDFLInventoryWidget::is_action_menu_can_be_displayed()
 {
-    if(item_widget_array.Num() > 0)
+    if(!item_widget_array_2D.is_empty())
     {
         return true;
     }
@@ -162,13 +178,18 @@ void UDFLInventoryWidget::set_initial_highlighted_item()
 {
     // This method defines what is going to be the item that will be highlighted when displaying the inventory.
     
-    // If there are no previous rules about what is the item to be highlighted, just highlight the first inventory item
-    if(item_widget_array.Num() > 0)
+    if(!item_widget_array_2D.is_empty())
     {
-        current_item_selected_index = 0;
-        UDFLInventoryItemWidget *item = item_widget_array[ current_item_selected_index ];
+        // If the array is not empty, it's safe to access the first row: 0, col: 0, index.
+        current_item_selected_row_index = 0;
+        current_item_selected_column_index = 0;
 
-        item->FrameSelector->SetOpacity(1.0f);
+        UDFLInventoryItemWidget *item = item_widget_array_2D[ current_item_selected_row_index ][ current_item_selected_column_index ];
+
+        if(item)
+        {
+            item->FrameSelector->SetOpacity(1.0f);
+        }
     }
 }
 
@@ -195,9 +216,9 @@ void UDFLInventoryWidget::hide_inventory()
 
 void UDFLInventoryWidget::show_action_menu()
 {
-   if(VerticalBox_Menu)
-   {
-       UPanelSlot *slot = VerticalBox_Menu->Slot;
+if(VerticalBox_Menu)
+{
+   UPanelSlot *slot = VerticalBox_Menu->Slot;
        if(slot)
        {
            UCanvasPanelSlot *vertical_box_canvas_panel_slot = Cast<UCanvasPanelSlot>(slot);
@@ -261,7 +282,6 @@ void UDFLInventoryWidget::update_action_menu_selection(int action_menu_index_val
 void UDFLInventoryWidget::select_item_to_the_east()
 {
     int item_widget_array_size = item_widget_array.Num();
-//    UE_LOG(LogTemp, Warning, TEXT("Right: current: %d, Array Size: %d"), current_item_selected_index, item_widget_array_size);
 
     // Remove highlight from current inventory item
     if(current_item_selected_index >= 0 && current_item_selected_index < item_widget_array_size)
@@ -287,6 +307,38 @@ void UDFLInventoryWidget::select_item_to_the_east()
     UE_LOG(LogTemp, Warning, TEXT("select_item_to_the_east: %d"), current_item_selected_index);
 
     update_item_text_title_and_description();
+}
+
+void UDFLInventoryWidget::select_item_to_the_east1()
+{
+    /*
+     * There are two situations when moving to the right:
+     *
+     *  - Case 1: The current position (x0, y0) and next position (x1, y1) reside in the same row. This means y0 == y1.
+     *  - Case 2: The next position (x1, y1) is in a different row than the current position (x0, y0). This means x1 = x0 + 1.
+     *
+     */
+
+    // Case 1:
+
+    // Current position:
+    int x0{ current_item_selected_row_index };
+    int y0{ current_item_selected_column_index };
+
+    // Next position
+    int x1{ x0 + 1 };
+    int y1{ y0 };
+
+    current_item_selected_column_index--;
+    if(current_item_selected_column_index >= 0)
+    {
+//        if(current_item_selected_row_index >= 0 && current_item_selected_row_index <= number_of_rows && current_item_selected_column_index >= 0 && current_item_selected_column_index <= number_of_columns)
+        {
+            UDFLInventoryItemWidget *item_to_be_removed = item_widget_array_2D[ current_item_selected_row_index ][ current_item_selected_column_index ];
+        }
+    }else{
+        current_item_selected_column_index = 0;
+    }
 }
 
 void UDFLInventoryWidget::select_item_to_the_west()
@@ -364,6 +416,30 @@ void UDFLInventoryWidget::execute_action_menu_command()
 
 UDFLInventoryItemWidget *UDFLInventoryWidget::get_current_item_widget_selected()
 {
+    int number_of_rows = item_widget_array_2D.get_rows_number();
+    int number_of_columns = item_widget_array_2D.get_columns_number();
+
+    UE_LOG(LogTemp, Warning, TEXT("UDFLInventoryWidget::get_current_item_widget_selected. number_of_rows: %d, number_of_columns: %d"), number_of_rows, number_of_columns);
+
+    if(!item_widget_array_2D.is_empty() &&
+       current_item_selected_row_index >= 0 &&
+       current_item_selected_row_index < number_of_rows &&
+       current_item_selected_column_index >= 0 &&
+       current_item_selected_column_index < number_of_columns)
+    {
+        UDFLInventoryItemWidget *item = item_widget_array_2D[ current_item_selected_row_index ][ current_item_selected_column_index ];
+
+        UE_LOG(LogTemp, Warning, TEXT("UDFLInventoryWidget::get_current_item_widget_selected. current_item_selected_row_index: %d, current_item_selected_column_index: %d"), current_item_selected_row_index, current_item_selected_column_index);
+        if(item)
+        {
+            UE_LOG(LogTemp, Warning, TEXT("UDFLInventoryWidget::get_current_item_widget_selected. Valid Item"));
+            return item;
+        }
+    }
+
+    return nullptr;
+
+    /*
     int item_widget_array_size{ item_widget_array.Num() };
 
     if(item_widget_array_size > 0 && current_item_selected_index >= 0 && current_item_selected_index < item_widget_array_size)
@@ -377,6 +453,7 @@ UDFLInventoryItemWidget *UDFLInventoryWidget::get_current_item_widget_selected()
     }
 
     return nullptr;
+    */
 }
 
 int UDFLInventoryWidget::get_current_action_menu_index() const
@@ -407,18 +484,17 @@ void UDFLInventoryWidget::update_item_text_title_and_description()
 
 FVector2D UDFLInventoryWidget::get_inventory_item_widget_position()
 {
-    int item_widget_array_size = item_widget_array.Num();
-
-    if(item_widget_array_size > 0 && current_item_selected_index >= 0 && current_item_selected_index < item_widget_array_size)
+    UDFLInventoryItemWidget *item = get_current_item_widget_selected();
+    if(item)
     {
-        UDFLInventoryItemWidget *item = item_widget_array[ current_item_selected_index ];
-
         UPanelWidget* panel_widget_parent = VerticalBox_Menu->GetParent();
         if(panel_widget_parent)
         {
-            FVector2D Position1 = panel_widget_parent->GetCachedGeometry().AbsoluteToLocal(item->VerticalBox_Item->GetCachedGeometry().GetAbsolutePosition()); // / 2.0f;
-            Position1.X = Position1.X + item->VerticalBox_Item->GetCachedGeometry().GetLocalSize().X + 10;
-            return Position1;
+            const int distance_between_selected_item_and_action_menu{ 10 };
+            FVector2D position = panel_widget_parent->GetCachedGeometry().AbsoluteToLocal(item->VerticalBox_Item->GetCachedGeometry().GetAbsolutePosition());
+            position.X = position.X + item->VerticalBox_Item->GetCachedGeometry().GetLocalSize().X + distance_between_selected_item_and_action_menu;
+
+            return position;
         }
     }
 

@@ -13,30 +13,11 @@ struct FItem_widget_array
     GENERATED_BODY()
 
 public:
-    /*
-    class UDFLInventoryItemWidget *operator[] (int32 i) 
-    {
-        if(i >= 0 && i < items_array.Num())
-        {
-            return items_array[ i ];
-        }
+    void insert_item(class UDFLInventoryItemWidget *item) { if(item) { items_array.Add(item); }}
+    void remove_item(class UDFLInventoryItemWidget *item) { if(item) { items_array.Remove(item); }}
+    class UDFLInventoryItemWidget *operator[] (int32 i)  { if(i >= 0 && i < items_array.Num()) { return items_array[ i ]; }  return nullptr; }
 
-        return nullptr;
-    }
-    */
-
-    void insert_item(class UDFLInventoryItemWidget *item)
-    {
-        if(item)
-        {
-            items_array.Add(item);
-        }
-    }
-
-    int get_number_items()
-    {
-        return items_array.Num();
-    }
+    int get_number_items() { return items_array.Num(); }
 
 private:
     UPROPERTY(EditDefaultsOnly)
@@ -49,49 +30,14 @@ struct FItem_widget_array_2D
     GENERATED_BODY()
 
 public:
-    void initialize()
-    {
-        for(int i = 0; i < MAX_NUMBER_OF_INVENTORY_ROWS; ++i)
-        {
-            item_widget_array.Add(FItem_widget_array());
-        }
-
-        is_struct_initialized = true;
-    }
-
-    TPair<int, int> Add(class UDFLInventoryItemWidget *item)
-    {
-        if(is_struct_initialized && item)
-        {
-            item_widget_array[ current_row_index ].insert_item(item);
-            TPair<int, int> index_coordinate{ current_row_index, current_column_index };
-
-            current_column_index++;
-            if(current_column_index == MAX_NUMBER_OF_INVENTORY_ROWS)
-            {
-                current_column_index = 0;
-                current_row_index++;
-                if(current_row_index >= item_widget_array.Num())
-                {
-                    current_row_index = item_widget_array.Num() - 1;
-                }
-            }
-
-            return index_coordinate;
-        }
-
-        return TPair<int, int>{ 0, 0 };
-    }
-
-    int get_rows_number()
-    {
-        return current_row_index;
-    }
-
-    int get_columns_number()
-    {
-        return current_column_index;
-    }
+    void initialize();
+    TPair<int, int> add_item(class UDFLInventoryItemWidget *item);
+    void remove_item(class UDFLInventoryItemWidget *item);
+    bool remove_item(int row, int column);
+    FItem_widget_array &operator[] (int32 i);
+    int get_rows_number();
+    int get_columns_number();
+    bool is_empty();
 
 private:
     UPROPERTY(EditDefaultsOnly)
@@ -101,6 +47,7 @@ private:
     int current_row_index{ 0 };
     int current_column_index{ 0 };
     int MAX_NUMBER_OF_INVENTORY_ROWS{ 5 };
+    int MAX_NUMBER_OF_INVENTORY_COLUMNS{ 5 };
 };
 
 DECLARE_DELEGATE_OneParam(FParamDelegateSignature, int)
@@ -124,10 +71,13 @@ public:
     void hide_inventory();
     void show_action_menu();
     void hide_action_menu();
+
     void select_item_to_the_east();
+    void select_item_to_the_east1();
     void select_item_to_the_west();
     void select_item_to_the_north();
     void select_item_to_the_south();
+
     void select_action_menu_up();
     void select_action_menu_down();
     void execute_action_menu_command();
@@ -139,9 +89,6 @@ public:
 private:
     FVector2D get_inventory_item_widget_position();
     void update_action_menu_selection(int action_menu_index_value);
-
-    UPROPERTY(meta = (BindWidget))
-    class UWrapBox *InventoryBox;
 
     UPROPERTY(meta = (BindWidget))
     class UVerticalBox *VerticalBox_Menu;
@@ -175,10 +122,11 @@ private:
     UPROPERTY(EditDefaultsOnly)
     FItem_widget_array_2D item_widget_array_2D;
 
-    int index_row{ 0 };
-    int index_column{ 0 };
-
+    // TODO: To be deleted when not used
     int current_item_selected_index{ 0 };
+
+    int current_item_selected_row_index{ 0 };
+    int current_item_selected_column_index{ 0 };
     int action_menu_index{ 0 };
 
     bool is_action_menu_displayed{ false };
