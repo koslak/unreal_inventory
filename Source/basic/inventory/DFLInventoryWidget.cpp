@@ -318,6 +318,7 @@ void UDFLInventoryWidget::select_item_to_the_east()
     // We need to validate which case we are facing
     if(y0 == number_of_columns - 1)  // This means we are in the last column. Note: y0 will never be equal to the number_of_columns
     {
+        /*
         // This is Case 2.
         x1 = x0 + 1;
         y1 = 0;
@@ -327,6 +328,7 @@ void UDFLInventoryWidget::select_item_to_the_east()
         {
             x1 = number_of_rows - 1;
         }
+        */
     }else{
         // This is Case 1.
         x1 = x0;
@@ -370,6 +372,7 @@ void UDFLInventoryWidget::select_item_to_the_west()
         // We need to validate which case we are facing
         if(y0 == 0)  // This means we are in the first column.
         {
+            /*
             // This is Case 2
             x1 = x0 - 1;
             y1 = number_of_columns - 1;
@@ -379,6 +382,7 @@ void UDFLInventoryWidget::select_item_to_the_west()
             {
                 x1 = 0;
             }
+            */
         }else{
             // This is Case 1
             x1 = x0;
@@ -424,15 +428,17 @@ void UDFLInventoryWidget::select_item_to_the_north()
         // We need to validate which case we are facing
         if(x0 == 0)  // This means we are in the first row
         {
+            /*
             // This is Case 2
             y1 = y0 - 1;
-            x0 = number_of_rows - 1;
+            x1 = number_of_rows - 1;
 
             // We need to validate if we are behind the first column
             if(y1 < 0)
             {
                 y1 = 0;
             }
+            */
         }else{
             // This is Case 1
             y1 = y0;
