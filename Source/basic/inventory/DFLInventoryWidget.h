@@ -71,6 +71,7 @@ private:
 
     int current_item_selected_index{ 0 };
     int action_menu_index{ 0 };
+    int MAX_NUMBER_OF_COLUMNS{ 5 };
 
     bool is_action_menu_displayed{ false };
     bool is_item_widget_being_examined{ false };

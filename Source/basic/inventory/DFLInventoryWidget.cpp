@@ -280,11 +280,62 @@ void UDFLInventoryWidget::select_item_to_the_west()
 
 void UDFLInventoryWidget::select_item_to_the_north()
 {
+    int item_widget_array_size = item_widget_array.Num();
 
+    // Remove highlight from current inventory item
+    if(current_item_selected_index >= 0 && current_item_selected_index < item_widget_array_size)
+    {
+        UDFLInventoryItemWidget *item = item_widget_array[ current_item_selected_index ];
+        item->FrameSelector->SetOpacity(0.0f);
+    }
+
+    current_item_selected_index -= MAX_NUMBER_OF_COLUMNS;
+    if(current_item_selected_index >= 0 && current_item_selected_index < item_widget_array_size)
+    {
+        UDFLInventoryItemWidget *item = item_widget_array[ current_item_selected_index ];
+        item->FrameSelector->SetOpacity(1.0f);
+    }
+
+    // If we are in the last item, keep it highlighted.
+    if(item_widget_array_size > 0 && current_item_selected_index < 0)
+    {
+        current_item_selected_index = 0;
+        UDFLInventoryItemWidget *item = item_widget_array[ current_item_selected_index ];
+        item->FrameSelector->SetOpacity(1.0f);
+    }
+    UE_LOG(LogTemp, Warning, TEXT("select_item_to_the_north: %d"), current_item_selected_index);
+
+    update_item_text_title_and_description();
 }
 
 void UDFLInventoryWidget::select_item_to_the_south()
 {
+    int item_widget_array_size = item_widget_array.Num();
+
+    // Remove highlight from current inventory item
+    if(current_item_selected_index >= 0 && current_item_selected_index < item_widget_array_size)
+    {
+        UDFLInventoryItemWidget *item = item_widget_array[ current_item_selected_index ];
+        item->FrameSelector->SetOpacity(0.0f);
+    }
+
+    current_item_selected_index += MAX_NUMBER_OF_COLUMNS;
+    if(current_item_selected_index >= 0 && current_item_selected_index < item_widget_array_size)
+    {
+        UDFLInventoryItemWidget *item = item_widget_array[ current_item_selected_index ];
+        item->FrameSelector->SetOpacity(1.0f);
+    }
+
+    // If we are in the last item, keep it highlighted.
+    if(item_widget_array_size > 0 && current_item_selected_index >= item_widget_array_size)
+    {
+        current_item_selected_index = item_widget_array_size - 1;
+        UDFLInventoryItemWidget *item = item_widget_array[ current_item_selected_index ];
+        item->FrameSelector->SetOpacity(1.0f);
+    }
+    UE_LOG(LogTemp, Warning, TEXT("select_item_to_the_south: %d"), current_item_selected_index);
+
+    update_item_text_title_and_description();
 
 }
 
