@@ -23,6 +23,7 @@ public:
     bool remove_current_selected_item();
 
     bool is_action_menu_can_be_displayed();
+    void set_initial_highlighted_item();
     void show_inventory();
     void hide_inventory();
     void show_action_menu();
@@ -37,6 +38,8 @@ public:
     UDFLInventoryItemWidget *get_current_item_widget_selected();
     int get_current_action_menu_index() const;
     void update_item_text_title_and_description();
+
+    bool is_item_widget_being_examined{ false };
 
 private:
     FVector2D get_inventory_item_widget_position();
@@ -74,7 +77,6 @@ private:
     int MAX_NUMBER_OF_COLUMNS{ 5 };
 
     bool is_action_menu_displayed{ false };
-    bool is_item_widget_being_examined{ false };
 
 protected:
 

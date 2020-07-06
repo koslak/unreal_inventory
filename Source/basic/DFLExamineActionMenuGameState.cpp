@@ -126,6 +126,7 @@ void UDFLExamineActionMenuGameState::enter_state(ADFLCharacter *acharacter)
             acharacter->is_actor_to_be_examined = true;
             acharacter->camera_component->bUsePawnControlRotation = !acharacter->camera_component->bUsePawnControlRotation;
             acharacter->bUseControllerRotationYaw = !acharacter->bUseControllerRotationYaw;
+            acharacter->inventory_widget->is_item_widget_being_examined = true;
         }
         else {
             UE_LOG(LogTemp, Error, TEXT("Inventory_widget variable is null"));

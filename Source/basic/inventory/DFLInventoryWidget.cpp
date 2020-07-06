@@ -124,20 +124,42 @@ bool UDFLInventoryWidget::is_action_menu_can_be_displayed()
     return false;
 }
 
+void UDFLInventoryWidget::set_initial_highlighted_item()
+{
+    if(item_widget_array.Num() > 0)
+    {
+        UDFLInventoryItemWidget *current_item_widget_selected = get_current_item_widget_selected();
+
+        if(!is_item_widget_being_examined)
+        {
+            if(current_item_widget_selected)
+            {
+                current_item_widget_selected->FrameSelector->SetOpacity(0.0f);
+            }
+
+             // If the array is not empty, it's safe to access the first item
+            current_item_selected_index = 0;
+            UDFLInventoryItemWidget *item = item_widget_array[ current_item_selected_index ];
+
+            item->FrameSelector->SetOpacity(1.0f);
+        }
+        else{
+            if(current_item_widget_selected)
+            {
+                current_item_widget_selected->FrameSelector->SetOpacity(1.0f);
+            }
+        }
+    }
+
+}
+
 void UDFLInventoryWidget::show_inventory()
 {
     this->SetVisibility(ESlateVisibility::Visible);
 
-    // Highlight the first inventory item
-    if(item_widget_array.Num() > 0)
-    {
-        current_item_selected_index = 0;
-        UDFLInventoryItemWidget *item = item_widget_array[ current_item_selected_index ];
-
-        item->FrameSelector->SetOpacity(1.0f);
-    }
-
+    set_initial_highlighted_item();
     update_item_text_title_and_description();
+
     VerticalBox_Menu->SetVisibility(ESlateVisibility::Hidden);
 }
 
