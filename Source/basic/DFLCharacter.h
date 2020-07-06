@@ -113,9 +113,9 @@ public:
     bool is_reset_examine_rotation{ false };
 
     FRotator camera_last_rotation{ 0.0f, 0.0f, 0.0f };
-    float actor_examined_distance{ 70.0f };
-    const float MAX_ACTOR_EXAMINED_DISTANCE{ 90.0f };
-    const float MIN_ACTOR_EXAMINED_DISTANCE{ 50.0f };
+    float actor_examined_distance{ 90.0f };
+    const float MAX_ACTOR_EXAMINED_DISTANCE{ 110.0f };
+    const float MIN_ACTOR_EXAMINED_DISTANCE{ 70.0f };
 
     void process_inventory_visualization();
     void show_inventory();

@@ -95,6 +95,7 @@ void UDFLShowInventoryGameState::enter_state(ADFLCharacter *character)
             character->inventory_widget->show_inventory();
             character->is_player_can_move = false;
             character->is_inventory_widget_displayed = true;
+            character->actor_examined_distance = 90;
 
         }else{
             UE_LOG(LogTemp, Error, TEXT("Inventory_widget variable is null"));
