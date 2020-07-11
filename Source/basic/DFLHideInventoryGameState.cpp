@@ -5,6 +5,7 @@
 #include "InputCoreTypes.h"
 
 #include "inventory/DFLInventoryWidget.h"
+#include "inventory/DFLSpyInventoryWidget.h"
 #include "DFLGameStates.h"
 
 void UDFLHideInventoryGameState::Tick(float DeltaTime)
@@ -53,6 +54,17 @@ UDFLGameState *UDFLHideInventoryGameState::handle_keyboard_input(class ADFLChara
                 return game_states_instance->get_game_state(Game_State::Show_Inventory);
             }
         }
+        else if(key == EKeys::U)
+        {
+            key_pressed = key.ToString();
+            UE_LOG(LogTemp, Warning, TEXT("UDFLGameState::handle_keyboard_input %s"), *key_pressed);
+
+            UDFLGameStates *game_states_instance = character->game_states;
+            if(game_states_instance)
+            {
+                return game_states_instance->get_game_state(Game_State::Spy_Inventory);
+            }
+        }
     }
 
     return nullptr;
@@ -70,6 +82,7 @@ void UDFLHideInventoryGameState::enter_state(ADFLCharacter *character)
             character->is_inventory_widget_displayed = false;
             character->inventory_widget->is_item_widget_being_examined = false;
             character->actor_examined_distance = 90;
+            character->spy_inventory_widget->SetVisibility(ESlateVisibility::Hidden);
 
         }else{
             UE_LOG(LogTemp, Error, TEXT("Inventory_widget variable is null"));

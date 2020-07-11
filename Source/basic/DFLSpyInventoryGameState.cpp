@@ -5,6 +5,7 @@
 #include "InputCoreTypes.h"
 
 #include "inventory/DFLInventoryWidget.h"
+#include "inventory/DFLSpyInventoryWidget.h"
 #include "DFLGameStates.h"
 #include "DFLUsableActor.h"
 
@@ -74,6 +75,6 @@ void UDFLSpyInventoryGameState::enter_state(ADFLCharacter *character)
     if(character)
     {
         UE_LOG(LogTemp, Warning, TEXT("UDFLSpyInventoryGameState::enter_state"));
-        character->spy_cam_inventory_widget->SetVisibility(ESlateVisibility::Visible);
+        character->spy_inventory_widget->SetVisibility(ESlateVisibility::Visible);
     }
 }

@@ -22,7 +22,9 @@
 #include "DFLGameStates.h"
 #include "DFLGameState.h"
 #include "DFLShowInventoryGameState.h"
+#include "inventory/DFLSpyInventoryWidget.h"
 #include "Components/SceneCaptureComponent2D.h"
+#include "Engine/TextureRenderTarget2D.h"
 
 // Sets default values
 ADFLCharacter::ADFLCharacter()
@@ -38,22 +40,25 @@ ADFLCharacter::ADFLCharacter()
     inventory_component = CreateDefaultSubobject<UDFLInventoryComponent>("Inventory");
     inventory_component->capacity = 20;
 
+    in_game_camera_1 = CreateDefaultSubobject<USceneCaptureComponent2D>("in_game_camera_1");
+    in_game_camera_1->SetWorldLocation(FVector(50.0f, 50.0f, 50.0f));
+
     ConstructorHelpers::FClassFinder<UDFLInventoryWidget> DFLInventory_widget_BP(TEXT("/Game/Blueprints/inventory/inventory_WBP"));
     if(DFLInventory_widget_BP.Class)
     {
         DFLInventory_widget_class = DFLInventory_widget_BP.Class;
     }
 
+    ConstructorHelpers::FClassFinder<UDFLSpyInventoryWidget> DFLSpy_inventory_widget_BP(TEXT("/Game/Blueprints/inventory/spy_inventory_WBP"));
+    if(DFLSpy_inventory_widget_BP.Class)
+    {
+        DFLSpy_Cam_Inventory_BP_class = DFLSpy_inventory_widget_BP.Class;
+    }
+
     ConstructorHelpers::FClassFinder<UUserWidget> UWidget_Examined_BP(TEXT("/Game/Blueprints/inventory/examine_WBP"));
     if(UWidget_Examined_BP.Class)
     {
         UWidget_Examined_BP_class = UWidget_Examined_BP.Class;
-    }
-
-    ConstructorHelpers::FClassFinder<UUserWidget> Spy_Cam_Inventory_BP(TEXT("/Game/Blueprints/inventory/spy_inventory_WBP"));
-    if(Spy_Cam_Inventory_BP.Class)
-    {
-        Spy_Cam_Inventory_BP_class = Spy_Cam_Inventory_BP.Class;
     }
 
     ConstructorHelpers::FClassFinder<UDFLItem> UDFLItemBP(TEXT("/Game/Blueprints/Items/Food_Item_BP"));
@@ -111,12 +116,17 @@ void ADFLCharacter::BeginPlay()
         UWidget_examine->AddToViewport();
     }
 
-    spy_cam_inventory_widget = CreateWidget<UUserWidget>(GetWorld(), Spy_Cam_Inventory_BP_class);
-    if(spy_cam_inventory_widget)
+    UUserWidget *general_widget_1{ nullptr };
+    general_widget_1 = CreateWidget<UUserWidget>(GetWorld(), DFLSpy_Cam_Inventory_BP_class);
+    if(general_widget_1 && general_widget_1->IsA(UDFLSpyInventoryWidget::StaticClass()))
     {
-        UE_LOG(LogTemp, Warning, TEXT("spy_cam_inventory_widget Widget Created Successfully"));
-        spy_cam_inventory_widget->SetVisibility(ESlateVisibility::Hidden);
-        spy_cam_inventory_widget->AddToViewport();
+        spy_inventory_widget = Cast<UDFLSpyInventoryWidget>(general_widget_1);
+        if(spy_inventory_widget)
+        {
+            UE_LOG(LogTemp, Warning, TEXT("spy_inventory_widget Widget Created Successfully"));
+            spy_inventory_widget->SetVisibility(ESlateVisibility::Hidden);
+            spy_inventory_widget->AddToViewport();
+        }
     }
 }
 
@@ -336,12 +346,12 @@ void ADFLCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 void ADFLCharacter::handle_keyboard_input(FKey key)
 {
-    UE_LOG(LogTemp, Warning, TEXT("BBBBBBBBBBBBBBBBBBBBBB -- AA"));
     if(key == EKeys::B)
     {
+        spy_inventory_widget->hide_camera_3();
         UE_LOG(LogTemp, Warning, TEXT("BBBBBBBBBBBBBBBBBBBBBB -- B"));
         TArray<UObject*> array_x;
-        GetWorld()->GetDefaultSubobjects(array_x);
+        GetDefaultSubobjects(array_x);
         for(auto &object : array_x)
         {
             if(object)
@@ -349,14 +359,7 @@ void ADFLCharacter::handle_keyboard_input(FKey key)
                 UE_LOG(LogTemp, Warning, TEXT("Object Name: %s"), *object->GetName());
             }
         }
-
-        USceneCaptureComponent2D* camera_2D = Cast<USceneCaptureComponent2D>(GetWorld()->GetDefaultSubobjectByName(TEXT("SceneCapture2D_2")));
-        if(camera_2D)
-        {
-            UE_LOG(LogTemp, Warning, TEXT("BBBBBBBBBBBBBBBBBBBBBB -- 1"));
-        }
     }
-
 
     if(current_game_state)
     {
