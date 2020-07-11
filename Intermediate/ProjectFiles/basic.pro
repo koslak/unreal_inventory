@@ -29,7 +29,8 @@ HEADERS +=  ../../Source/basic/basic.h \
     ../../Source/basic/DFLHideInventoryGameState.h \
     ../../Source/basic/DFLExecuteActionMenuGameState.h \
     ../../Source/basic/DFLExamineActionMenuGameState.h \
-    ../../Source/basic/DFLResetExamineGameState.h
+    ../../Source/basic/DFLResetExamineGameState.h \
+    ../../Source/basic/DFLSpyInventoryGameState.h
 
 SOURCES +=  ../../Source/basic/basic.cpp \
     ../../Source/basic/basicGameModeBase.cpp \
@@ -51,7 +52,8 @@ SOURCES +=  ../../Source/basic/basic.cpp \
     ../../Source/basic/DFLHideInventoryGameState.cpp \
     ../../Source/basic/DFLExecuteActionMenuGameState.cpp \
     ../../Source/basic/DFLExamineActionMenuGameState.cpp \
-    ../../Source/basic/DFLResetExamineGameState.cpp
+    ../../Source/basic/DFLResetExamineGameState.cpp \
+    ../../Source/basic/DFLSpyInventoryGameState.cpp
 
 # All your generated includes will go in this file
 # You can not put this on the repository as this contains hardcoded paths

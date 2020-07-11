@@ -22,6 +22,7 @@
 #include "DFLGameStates.h"
 #include "DFLGameState.h"
 #include "DFLShowInventoryGameState.h"
+#include "Components/SceneCaptureComponent2D.h"
 
 // Sets default values
 ADFLCharacter::ADFLCharacter()
@@ -47,6 +48,12 @@ ADFLCharacter::ADFLCharacter()
     if(UWidget_Examined_BP.Class)
     {
         UWidget_Examined_BP_class = UWidget_Examined_BP.Class;
+    }
+
+    ConstructorHelpers::FClassFinder<UUserWidget> Spy_Cam_Inventory_BP(TEXT("/Game/Blueprints/inventory/spy_inventory_WBP"));
+    if(Spy_Cam_Inventory_BP.Class)
+    {
+        Spy_Cam_Inventory_BP_class = Spy_Cam_Inventory_BP.Class;
     }
 
     ConstructorHelpers::FClassFinder<UDFLItem> UDFLItemBP(TEXT("/Game/Blueprints/Items/Food_Item_BP"));
@@ -102,6 +109,14 @@ void ADFLCharacter::BeginPlay()
         UE_LOG(LogTemp, Warning, TEXT("UWidget_examine Widget Created Successfully"));
         UWidget_examine->SetVisibility(ESlateVisibility::Hidden);
         UWidget_examine->AddToViewport();
+    }
+
+    spy_cam_inventory_widget = CreateWidget<UUserWidget>(GetWorld(), Spy_Cam_Inventory_BP_class);
+    if(spy_cam_inventory_widget)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("spy_cam_inventory_widget Widget Created Successfully"));
+        spy_cam_inventory_widget->SetVisibility(ESlateVisibility::Hidden);
+        spy_cam_inventory_widget->AddToViewport();
     }
 }
 
@@ -321,6 +336,28 @@ void ADFLCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 void ADFLCharacter::handle_keyboard_input(FKey key)
 {
+    UE_LOG(LogTemp, Warning, TEXT("BBBBBBBBBBBBBBBBBBBBBB -- AA"));
+    if(key == EKeys::B)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("BBBBBBBBBBBBBBBBBBBBBB -- B"));
+        TArray<UObject*> array_x;
+        GetWorld()->GetDefaultSubobjects(array_x);
+        for(auto &object : array_x)
+        {
+            if(object)
+            {
+                UE_LOG(LogTemp, Warning, TEXT("Object Name: %s"), *object->GetName());
+            }
+        }
+
+        USceneCaptureComponent2D* camera_2D = Cast<USceneCaptureComponent2D>(GetWorld()->GetDefaultSubobjectByName(TEXT("SceneCapture2D_2")));
+        if(camera_2D)
+        {
+            UE_LOG(LogTemp, Warning, TEXT("BBBBBBBBBBBBBBBBBBBBBB -- 1"));
+        }
+    }
+
+
     if(current_game_state)
     {
         UDFLGameState *next_game_state = current_game_state->handle_keyboard_input(this, key);

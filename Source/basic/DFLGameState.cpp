@@ -55,6 +55,17 @@ UDFLGameState *UDFLGameState::handle_keyboard_input(class ADFLCharacter *charact
                 return game_states_instance->get_game_state(Game_State::Show_Inventory);
             }
         }
+        else if(key == EKeys::U)
+        {
+            key_pressed = key.ToString();
+            UE_LOG(LogTemp, Warning, TEXT("UDFLGameState::handle_keyboard_input %s"), *key_pressed);
+
+            UDFLGameStates *game_states_instance = character->game_states;
+            if(game_states_instance)
+            {
+                return game_states_instance->get_game_state(Game_State::Spy_Inventory);
+            }
+        }
     }
 
     return nullptr;

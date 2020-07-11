@@ -10,6 +10,7 @@
 #include "DFLExecuteActionMenuGameState.h"
 #include "DFLExamineActionMenuGameState.h"
 #include "DFLResetExamineGameState.h"
+#include "DFLSpyInventoryGameState.h"
 
 void UDFLGameStates::create_game_states()
 {
@@ -51,6 +52,11 @@ void UDFLGameStates::create_game_states()
     if(!reset_rotation_game_state) // || !state_instance->IsValidLowLevelFast())
     {
         reset_rotation_game_state = NewObject<UDFLResetExamineGameState>((UObject*)GetTransientPackage(), UDFLResetExamineGameState::StaticClass());
+    }
+
+    if(!spy_inventory_game_state) // || !state_instance->IsValidLowLevelFast())
+    {
+        spy_inventory_game_state = NewObject<UDFLSpyInventoryGameState>((UObject*)GetTransientPackage(), UDFLSpyInventoryGameState::StaticClass());
     }
 
     is_game_states_created = true;
@@ -96,6 +102,10 @@ UDFLGameState *UDFLGameStates::get_game_state(Game_State game_state)
 
         case Game_State::Reset_Rotation:
             return reset_rotation_game_state;
+        break;
+
+        case Game_State::Spy_Inventory:
+            return spy_inventory_game_state;
         break;
 
         default:
