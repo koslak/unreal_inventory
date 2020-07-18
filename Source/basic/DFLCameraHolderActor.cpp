@@ -50,7 +50,7 @@ void ADFLCameraHolderActor::OnUsed(APawn *)
     UGameplayStatics::PlaySoundAtLocation(this, pickup_sound, GetActorLocation());
 }
 
-void ADFLCameraHolderActor::set_camera(USceneCaptureComponent2D *in_game_camera)
+void ADFLCameraHolderActor::attach_camera(USceneCaptureComponent2D *in_game_camera)
 {
     camera = in_game_camera;
 
@@ -62,13 +62,17 @@ void ADFLCameraHolderActor::set_camera(USceneCaptureComponent2D *in_game_camera)
     }
 }
 
-void ADFLCameraHolderActor::remove_camera()
+USceneCaptureComponent2D *ADFLCameraHolderActor::detach_camera()
 {
     if(camera)
     {
         camera->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
         camera_label_widget->set_text(FText::FromString(TEXT("Attach Camera")));
+
+        return camera;
     }
+
+    return nullptr;
 }
 
 

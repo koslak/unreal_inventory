@@ -26,6 +26,7 @@
 #include "Components/SceneCaptureComponent2D.h"
 #include "Engine/TextureRenderTarget2D.h"
 #include "DFLCameraHolderActor.h"
+#include "DFLCameraDirector.h"
 
 // Sets default values
 ADFLCharacter::ADFLCharacter()
@@ -40,18 +41,6 @@ ADFLCharacter::ADFLCharacter()
 
     inventory_component = CreateDefaultSubobject<UDFLInventoryComponent>("Inventory");
     inventory_component->capacity = 20;
-
-//    in_game_camera_1 = CreateDefaultSubobject<USceneCaptureComponent2D>("in_game_camera_1");
-
-    for(int i = 0; i < 5; ++i)
-    {
-        FString camera_string(TEXT("in_game_camera_N"));
-        camera_string.Append(FString::FromInt(i));
-        FName camera_name(camera_string);
-
-        in_games_camera_array.Add(CreateDefaultSubobject<USceneCaptureComponent2D>(camera_name));
-    }
-//    in_game_camera_1->SetWorldLocation(FVector(50.0f, 50.0f, 50.0f));
 
     ConstructorHelpers::FClassFinder<UDFLInventoryWidget> DFLInventory_widget_BP(TEXT("/Game/Blueprints/inventory/inventory_WBP"));
     if(DFLInventory_widget_BP.Class)
@@ -74,11 +63,10 @@ ADFLCharacter::ADFLCharacter()
     ConstructorHelpers::FClassFinder<UDFLItem> UDFLItemBP(TEXT("/Game/Blueprints/Items/Food_Item_BP"));
     UDFLItemClass = UDFLItemBP.Class;
 
-    // use CreateDefaultSubobject only inside a constructor, use NewObject everywhere else Tick, BeginPlay, etc.
-//    inventory_game_state = CreateDefaultSubobject<UDFLShowInventoryGameState>(TEXT("InventoryGameState"));
-
     game_states = CreateDefaultSubobject<UDFLGameStates>(TEXT("GameStates"));
     current_game_state = CreateDefaultSubobject<UDFLGameState>(TEXT("GameState"));
+
+    camera_director = CreateDefaultSubobject<UDFLCameraDirector>(TEXT("CameraDirector"));
 }
 
 // Called when the game starts or when spawned
@@ -370,12 +358,6 @@ void ADFLCharacter::handle_keyboard_input(FKey key)
             }
         }
     }
-    if(key == EKeys::X)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("XXXXXXXXXXXXX -- X"));
-
-//        in_game_camera_1->SetRelativeRotation(FRotator{0.0f, 180.0f, 0.0f});
-    }
 
     if(current_game_state)
     {
@@ -435,16 +417,16 @@ void ADFLCharacter::use_actor(FKey key)
 
     camera_holder_actor = Cast<ADFLCameraHolderActor>(usable_actor);
 
-    if(camera_holder_actor)
+    if(camera_holder_actor && camera_director)
     {
-        USceneCaptureComponent2D *camera = in_games_camera_array[ 0 ];
+        USceneCaptureComponent2D *camera = camera_director->get_last_camera_available();
         if(camera)
         {
-            camera_holder_actor->set_camera(camera);
+            camera_holder_actor->attach_camera(camera);
             camera_holder_actor->OnUsed(this);
         }
 
-    }else if (usable_actor)
+    }else if(usable_actor)
     {
         usable_actor->OnUsed(this);
 

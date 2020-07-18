@@ -16,8 +16,8 @@ protected:
 
 public:
     virtual void OnUsed(APawn* InstigatorPawn) override;
-    void set_camera(class USceneCaptureComponent2D *in_game_camera);
-    void remove_camera();
+    void attach_camera(class USceneCaptureComponent2D *in_game_camera);
+    class USceneCaptureComponent2D *detach_camera();
 
     UPROPERTY(EditAnywhere, DisplayName="Pick Up Sound", Category = "Sound")
     class USoundCue* pickup_sound;
