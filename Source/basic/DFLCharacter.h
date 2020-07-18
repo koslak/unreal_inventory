@@ -108,6 +108,9 @@ public:
     UPROPERTY(EditDefaultsOnly)
     class USceneCaptureComponent2D *in_game_camera_1{ nullptr };
 
+    UPROPERTY(EditDefaultsOnly)
+    TArray<class USceneCaptureComponent2D *> in_games_camera_array;
+
     class UDFLInventoryWidget *inventory_widget{ nullptr };
     class UDFLSpyInventoryWidget *spy_inventory_widget{ nullptr };
     bool is_inventory_widget_displayed{ false };
