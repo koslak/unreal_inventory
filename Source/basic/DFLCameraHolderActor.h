@@ -11,24 +11,26 @@ class BASIC_API ADFLCameraHolderActor : public ADFLUsableActor
 	
     void BeginPlay() override;
 
-    UPROPERTY(EditAnywhere, DisplayName="Pick Up Sound", Category = "Sound")
-    class USoundCue* pickup_sound;
-
 protected:
     ADFLCameraHolderActor();
-
-    UPROPERTY(Transient)
-    bool is_active;
 
 public:
     virtual void OnUsed(APawn* InstigatorPawn) override;
     void set_camera(class USceneCaptureComponent2D *in_game_camera);
+    void remove_camera();
 
-    /* Immediately spawn on begin play */
-    UPROPERTY(EditDefaultsOnly, Category = "Pickup")
-    bool is_start_active;
+    UPROPERTY(EditAnywhere, DisplayName="Pick Up Sound", Category = "Sound")
+    class USoundCue* pickup_sound;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widget Configuration")
+    FText widget_text;
 
 private:
+    UPROPERTY(EditDefaultsOnly)
     class USceneCaptureComponent2D *camera{ nullptr };
 
+    UPROPERTY(EditDefaultsOnly)
+    class UDFLCameraLabelWidget *camera_label_widget;
+
+    TSubclassOf<class UUserWidget> DFLCamera_Label_Widget_class;
 };
