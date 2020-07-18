@@ -27,10 +27,7 @@ void ADFLCameraHolderActor::BeginPlay()
 
 void ADFLCameraHolderActor::OnUsed(APawn *InstigatorPawn)
 {
-//    Super::OnUsed(InstigatorPawn);
-
     UGameplayStatics::PlaySoundAtLocation(this, pickup_sound, GetActorLocation());
-
     is_active = false;
 }
 
@@ -41,6 +38,6 @@ void ADFLCameraHolderActor::set_camera(USceneCaptureComponent2D *in_game_camera)
     if(camera && mesh_component)
     {
         camera->AttachToComponent(mesh_component, FAttachmentTransformRules::SnapToTargetIncludingScale);
-        camera->SetRelativeRotation(FRotator{0.0f, 180.0f, 0.0f});
+        camera->SetRelativeRotation(FRotator{-30.0f, 180.0f, 0.0f});
     }
 }
