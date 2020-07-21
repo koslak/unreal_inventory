@@ -17,12 +17,10 @@ UDFLCameraDirector::UDFLCameraDirector()
         }
 
         is_arraty_initialized = true;
-        UE_LOG(LogTemp, Warning, TEXT(",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,"));
     }
 }
 
 USceneCaptureComponent2D *UDFLCameraDirector::get_last_camera_available()
 {
-//    return in_games_camera_array.Pop();
-    return nullptr;
+    return in_games_camera_array[ 0 ];
 }
