@@ -67,6 +67,7 @@ ADFLCharacter::ADFLCharacter()
     current_game_state = CreateDefaultSubobject<UDFLGameState>(TEXT("GameState"));
 
     camera_director = CreateDefaultSubobject<UDFLCameraDirector>(TEXT("CameraDirector"));
+    camera_director->create_cameras(this);
 }
 
 // Called when the game starts or when spawned

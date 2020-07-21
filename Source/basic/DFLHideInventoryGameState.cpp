@@ -54,7 +54,7 @@ UDFLGameState *UDFLHideInventoryGameState::handle_keyboard_input(class ADFLChara
                 return game_states_instance->get_game_state(Game_State::Show_Inventory);
             }
         }
-        else if(key == EKeys::U)
+        else if(key == EKeys::C)
         {
             key_pressed = key.ToString();
             UE_LOG(LogTemp, Warning, TEXT("UDFLGameState::handle_keyboard_input %s"), *key_pressed);
