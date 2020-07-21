@@ -344,21 +344,6 @@ void ADFLCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 void ADFLCharacter::handle_keyboard_input(FKey key)
 {
-    if(key == EKeys::B)
-    {
-        spy_inventory_widget->hide_camera_3();
-        UE_LOG(LogTemp, Warning, TEXT("BBBBBBBBBBBBBBBBBBBBBB -- B"));
-        TArray<UObject*> array_x;
-        GetDefaultSubobjects(array_x);
-        for(auto &object : array_x)
-        {
-            if(object)
-            {
-                UE_LOG(LogTemp, Warning, TEXT("Object Name: %s"), *object->GetName());
-            }
-        }
-    }
-
     if(current_game_state)
     {
         UDFLGameState *next_game_state = current_game_state->handle_keyboard_input(this, key);
@@ -410,7 +395,7 @@ void ADFLCharacter::use_item(UDFLItem *item)
     item->on_use(this); // This is the Blueprint event.
 }
 
-void ADFLCharacter::use_actor(FKey key)
+void ADFLCharacter::use_actor(FKey)
 {
     ADFLUsableActor* usable_actor = get_usable_actor_in_view();
     ADFLCameraHolderActor *camera_holder_actor{ nullptr };
@@ -424,6 +409,9 @@ void ADFLCharacter::use_actor(FKey key)
         {
             camera_holder_actor->attach_camera(camera);
             camera_holder_actor->OnUsed(this);
+
+            // Programmatically launch the Show Inventory State
+            this->handle_keyboard_input(EKeys::Q);
         }
 
     }else if(usable_actor)
