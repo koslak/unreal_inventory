@@ -397,28 +397,34 @@ void ADFLCharacter::use_item(UDFLItem *item)
 
 void ADFLCharacter::use_actor(FKey)
 {
-    ADFLUsableActor* usable_actor = get_usable_actor_in_view();
+    ADFLUsableActor *usable_actor = get_usable_actor_in_view();
     ADFLCameraHolderActor *camera_holder_actor{ nullptr };
 
     camera_holder_actor = Cast<ADFLCameraHolderActor>(usable_actor);
 
-    if(camera_holder_actor && camera_director)
+    if(camera_holder_actor)
     {
-        USceneCaptureComponent2D *camera = camera_director->get_last_camera_available();
-        if(camera)
+        if(!camera_holder_actor->has_camera_attached())
         {
-            camera_holder_actor->attach_camera(camera);
-            camera_holder_actor->OnUsed(this);
-
             // Programmatically launch the Show Inventory State
             this->handle_keyboard_input(EKeys::Q);
         }
+        else
+        {
+            camera_holder_actor->detach_camera();
+            UDFLInventoryItemWidget *camera_item = camera_holder_actor->get_camera_inventory_item_widget();
 
-    }else if(usable_actor)
+            if(camera_item)
+            {
+                inventory_widget->add_item(camera_item);
+            }
+        }
+    }
+    else if(usable_actor)
     {
         usable_actor->OnUsed(this);
-
         UDFLInventoryItemWidget *item = usable_actor->get_inventory_item_widget();
+
         if(item)
         {
             inventory_widget->add_item(item);

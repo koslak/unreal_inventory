@@ -20,7 +20,7 @@ public:
     FParamDelegateSignature action_menu_delegate;
 
     bool add_item(class UDFLInventoryItemWidget *item);
-    bool remove_current_selected_item();
+    UDFLInventoryItemWidget *remove_current_selected_item();
 
     bool is_action_menu_can_be_displayed();
     void set_initial_highlighted_item();

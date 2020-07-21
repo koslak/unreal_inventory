@@ -7,6 +7,7 @@
 #include "Components/SceneCaptureComponent2D.h"
 #include "UObject/ConstructorHelpers.h"
 #include "DFLCameraLabelWidget.h"
+#include "inventory/DFLInventoryItemWidget.h"
 
 ADFLCameraHolderActor::ADFLCameraHolderActor()
 {
@@ -59,6 +60,7 @@ void ADFLCameraHolderActor::attach_camera(USceneCaptureComponent2D *in_game_came
         camera->AttachToComponent(mesh_component, FAttachmentTransformRules::SnapToTargetIncludingScale);
         camera->SetRelativeRotation(FRotator{-30.0f, 180.0f, 0.0f});
         camera_label_widget->set_text(FText::FromString(TEXT("Remove Camera")));
+        is_has_camera_attached = true;
     }
 }
 
@@ -68,11 +70,22 @@ USceneCaptureComponent2D *ADFLCameraHolderActor::detach_camera()
     {
         camera->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
         camera_label_widget->set_text(FText::FromString(TEXT("Attach Camera")));
+        is_has_camera_attached = false;
 
         return camera;
     }
 
     return nullptr;
+}
+
+UDFLInventoryItemWidget *ADFLCameraHolderActor::get_camera_inventory_item_widget()
+{
+    return inventory_item_widget;
+}
+
+void ADFLCameraHolderActor::set_camera_inventory_item_widget(UDFLInventoryItemWidget *camera_item)
+{
+    inventory_item_widget = camera_item;
 }
 
 

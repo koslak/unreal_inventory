@@ -84,6 +84,7 @@ bool UDFLInventoryWidget::add_item(UDFLInventoryItemWidget *item)
     }
 
     item_widget_array.Add(item);
+    item->FrameSelector->SetOpacity(0.0f);
 
     if(InventoryBox)
     {
@@ -96,7 +97,7 @@ bool UDFLInventoryWidget::add_item(UDFLInventoryItemWidget *item)
     return true;
 }
 
-bool UDFLInventoryWidget::remove_current_selected_item()
+UDFLInventoryItemWidget *UDFLInventoryWidget::remove_current_selected_item()
 {
     UDFLInventoryItemWidget *current_selected_item = get_current_item_widget_selected();
     if(current_selected_item)
@@ -107,11 +108,12 @@ bool UDFLInventoryWidget::remove_current_selected_item()
         {
             InventoryBox->RemoveChild(current_selected_item);
             select_item_to_the_west();
-            return true;
+
+            return current_selected_item;
         }
     }
 
-    return false;
+    return nullptr;
 }
 
 bool UDFLInventoryWidget::is_action_menu_can_be_displayed()

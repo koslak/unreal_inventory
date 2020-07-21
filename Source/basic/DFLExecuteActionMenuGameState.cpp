@@ -6,6 +6,10 @@
 
 #include "inventory/DFLInventoryWidget.h"
 #include "DFLGameStates.h"
+#include "DFLCameraHolderActor.h"
+#include "DFLCameraDirector.h"
+#include "inventory/DFLInventoryItemWidget.h"
+#include "Components/TextBlock.h"
 
 void UDFLExecuteActionMenuGameState::Tick(float DeltaTime)
 {
@@ -72,14 +76,40 @@ void UDFLExecuteActionMenuGameState::enter_state(ADFLCharacter *character)
         UE_LOG(LogTemp, Warning, TEXT("UDFLExecuteActionMenuGameState::enter_state"));
         if(character->inventory_widget)
         {
-            // TODO: Add code here to perform the usage of the specific inventory item selected.
-            // for the moment just hide the inventory item.
-            bool is_item_removed = character->inventory_widget->remove_current_selected_item();
-            UE_LOG(LogTemp, Warning, TEXT("UDFLExecuteActionMenuGameState::enter_state -> current item removed: %s"), is_item_removed ? TEXT("true") : TEXT("false"));
+            UDFLInventoryItemWidget *inventory_item_widget = character->inventory_widget->get_current_item_widget_selected();
+            if(inventory_item_widget)
+            {
+                // TODO: Avoid comparison of strings, use an Enum instead.
+                if(inventory_item_widget->ItemName->Text.EqualTo(FText::FromString(TEXT("Spy Camera"))))
+                {
+                    ADFLUsableActor *usable_actor = character->get_usable_actor_in_view();
+                    ADFLCameraHolderActor *camera_holder_actor{ nullptr };
+
+                    camera_holder_actor = Cast<ADFLCameraHolderActor>(usable_actor);
+
+                    if(camera_holder_actor && character->camera_director)
+                    {
+                        USceneCaptureComponent2D *camera = character->camera_director->get_last_camera_available();
+                        if(camera)
+                        {
+                            camera_holder_actor->attach_camera(camera);
+                            camera_holder_actor->set_camera_inventory_item_widget(inventory_item_widget);
+                            camera_holder_actor->OnUsed(character);
+                        }
+                    }
+                }
+            }
+
+            // Remove the current inventory item.
+            character->inventory_widget->remove_current_selected_item();
 
             // After executing use action, hide the action menu
             character->inventory_widget->hide_action_menu();
             character->is_action_menu_displayed = false;
+
+            // And now go to the initial game state where the inventory will be hidden
+            // we do this by triggering the "Esc" key.
+            character->handle_keyboard_input(EKeys::Escape);
 
         }else{
             UE_LOG(LogTemp, Error, TEXT("Inventory_widget variable is null"));
