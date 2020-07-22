@@ -34,7 +34,8 @@ HEADERS +=  ../../Source/basic/basic.h \
     ../../Source/basic/inventory/DFLSpyInventoryWidget.h \
     ../../Source/basic/DFLCameraHolderActor.h \
     ../../Source/basic/DFLCameraLabelWidget.h \
-    ../../Source/basic/DFLCameraDirector.h
+    ../../Source/basic/DFLCameraDirector.h \
+    ../../Source/basic/DFLCameraManager.h
 
 SOURCES +=  ../../Source/basic/basic.cpp \
     ../../Source/basic/basicGameModeBase.cpp \
@@ -61,7 +62,8 @@ SOURCES +=  ../../Source/basic/basic.cpp \
     ../../Source/basic/inventory/DFLSpyInventoryWidget.cpp \
     ../../Source/basic/DFLCameraHolderActor.cpp \
     ../../Source/basic/DFLCameraLabelWidget.cpp \
-    ../../Source/basic/DFLCameraDirector.cpp
+    ../../Source/basic/DFLCameraDirector.cpp \
+    ../../Source/basic/DFLCameraManager.cpp
 
 # All your generated includes will go in this file
 # You can not put this on the repository as this contains hardcoded paths

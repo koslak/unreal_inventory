@@ -26,7 +26,7 @@
 #include "Components/SceneCaptureComponent2D.h"
 #include "Engine/TextureRenderTarget2D.h"
 #include "DFLCameraHolderActor.h"
-#include "DFLCameraDirector.h"
+#include "DFLCameraManager.h"
 
 // Sets default values
 ADFLCharacter::ADFLCharacter()
@@ -69,6 +69,7 @@ ADFLCharacter::ADFLCharacter()
 //    camera_director = CreateDefaultSubobject<ADFLCameraDirector>(TEXT("CameraDirector"));
 //    camera_director->create_cameras(this);
 
+    /*
     FString camera_string(TEXT("in_game_camera_N"));
     FName camera_name(camera_string);
     in_game_camera = CreateDefaultSubobject<USceneCaptureComponent2D>(camera_name);
@@ -77,12 +78,14 @@ ADFLCharacter::ADFLCharacter()
     FName camera_name1(camera_string1);
     in_game_camera_1 = CreateDefaultSubobject<USceneCaptureComponent2D>(camera_name1);
 
-    in_games_camera_array.Add(CreateDefaultSubobject<USceneCaptureComponent2D>("in_game_camera_M0"));
-    in_games_camera_array.Add(CreateDefaultSubobject<USceneCaptureComponent2D>("in_game_camera_M1"));
-    in_games_camera_array.Add(CreateDefaultSubobject<USceneCaptureComponent2D>("in_game_camera_M2"));
-    in_games_camera_array.Add(CreateDefaultSubobject<USceneCaptureComponent2D>("in_game_camera_M3"));
-    in_games_camera_array.Add(CreateDefaultSubobject<USceneCaptureComponent2D>("in_game_camera_M4"));
-    in_games_camera_array.Add(CreateDefaultSubobject<USceneCaptureComponent2D>("in_game_camera_M5"));
+    in_game_camera_array.Add(CreateDefaultSubobject<USceneCaptureComponent2D>("in_game_camera_M0"));
+    in_game_camera_array.Add(CreateDefaultSubobject<USceneCaptureComponent2D>("in_game_camera_M1"));
+    in_game_camera_array.Add(CreateDefaultSubobject<USceneCaptureComponent2D>("in_game_camera_M2"));
+    in_game_camera_array.Add(CreateDefaultSubobject<USceneCaptureComponent2D>("in_game_camera_M3"));
+    in_game_camera_array.Add(CreateDefaultSubobject<USceneCaptureComponent2D>("in_game_camera_M4"));
+    in_game_camera_array.Add(CreateDefaultSubobject<USceneCaptureComponent2D>("in_game_camera_M5"));
+    */
+    camera_manager = CreateDefaultSubobject<ADFLCameraManager>(TEXT("CameraManager"));
 }
 
 // Called when the game starts or when spawned
@@ -133,6 +136,7 @@ void ADFLCharacter::BeginPlay()
             UE_LOG(LogTemp, Warning, TEXT("spy_inventory_widget Widget Created Successfully"));
             spy_inventory_widget->SetVisibility(ESlateVisibility::Hidden);
             spy_inventory_widget->AddToViewport();
+            spy_inventory_widget->disable_all_cameras();
         }
     }
 }

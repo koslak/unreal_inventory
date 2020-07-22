@@ -115,9 +115,8 @@ public:
     class USceneCaptureComponent2D *in_game_camera_1;
 
     UPROPERTY(EditAnywhere)
-    TArray<class USceneCaptureComponent2D *> in_games_camera_array;
-
-    bool is_camera_already_used{ false };
+    class ADFLCameraManager *camera_manager{ nullptr };
+//    TArray<class USceneCaptureComponent2D *> in_game_camera_array;
 
     class UDFLInventoryWidget *inventory_widget{ nullptr };
     class UDFLSpyInventoryWidget *spy_inventory_widget{ nullptr };

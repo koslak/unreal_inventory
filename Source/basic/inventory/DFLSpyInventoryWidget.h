@@ -15,8 +15,14 @@ class BASIC_API UDFLSpyInventoryWidget : public UUserWidget
     UDFLSpyInventoryWidget(const FObjectInitializer& ObjectInitializer);
 
     void hide_camera_3();
+    void enable_camera_by_index(int index);
+    void disable_camera_by_index(int index);
+    void disable_all_cameras();
 
  private:
+    UPROPERTY(meta = (BindWidget))
+    class UImage *image_cam_0;
+
     UPROPERTY(meta = (BindWidget))
     class UImage *image_cam_1;
 
@@ -26,4 +32,27 @@ class BASIC_API UDFLSpyInventoryWidget : public UUserWidget
     UPROPERTY(meta = (BindWidget))
     class UImage *image_cam_3;
 
+    UPROPERTY(meta = (BindWidget))
+    class UImage *image_cam_4;
+
+    UPROPERTY(meta = (BindWidget))
+    class UImage *image_cam_5;
+
+    UPROPERTY(meta = (BindWidget))
+    class UTextBlock *text_cam_0;
+
+    UPROPERTY(meta = (BindWidget))
+    class UTextBlock *text_cam_1;
+
+    UPROPERTY(meta = (BindWidget))
+    class UTextBlock *text_cam_2;
+
+    UPROPERTY(meta = (BindWidget))
+    class UTextBlock *text_cam_3;
+
+    UPROPERTY(meta = (BindWidget))
+    class UTextBlock *text_cam_4;
+
+    UPROPERTY(meta = (BindWidget))
+    class UTextBlock *text_cam_5;
 };

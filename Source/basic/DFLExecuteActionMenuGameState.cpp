@@ -7,9 +7,10 @@
 #include "inventory/DFLInventoryWidget.h"
 #include "DFLGameStates.h"
 #include "DFLCameraHolderActor.h"
-#include "DFLCameraDirector.h"
+#include "DFLCameraManager.h"
 #include "inventory/DFLInventoryItemWidget.h"
 #include "Components/TextBlock.h"
+#include "inventory/DFLSpyInventoryWidget.h"
 
 void UDFLExecuteActionMenuGameState::Tick(float DeltaTime)
 {
@@ -82,23 +83,17 @@ void UDFLExecuteActionMenuGameState::enter_state(ADFLCharacter *character)
                 // TODO: Avoid comparison of strings, use an Enum instead.
                 if(inventory_item_widget->ItemName->Text.EqualTo(FText::FromString(TEXT("Spy Camera"))))
                 {
+                    UE_LOG(LogTemp, Warning, TEXT("UDFLExecuteActionMenuGameState::enter_state A"));
                     ADFLUsableActor *usable_actor = character->get_usable_actor_in_view();
                     ADFLCameraHolderActor *camera_holder_actor{ nullptr };
 
                     camera_holder_actor = Cast<ADFLCameraHolderActor>(usable_actor);
 
-                    if(camera_holder_actor && character->in_game_camera)
+                    if(camera_holder_actor && character->camera_manager)
                     {
-                        USceneCaptureComponent2D *camera{ nullptr };
-                        if(!character->is_camera_already_used)
-                        {
-                            UE_LOG(LogTemp, Warning, TEXT("UDFLExecuteActionMenuGameState::enter_state A"));
-                            camera = character->in_game_camera; //camera_director->get_last_camera_available();
-                            character->is_camera_already_used = true;
-                        }else{
-                            UE_LOG(LogTemp, Warning, TEXT("UDFLExecuteActionMenuGameState::enter_state B"));
-                            camera = character->in_game_camera_1; //camera_director->get_last_camera_available();
-                        }
+                        character->spy_inventory_widget->enable_camera_by_index(character->camera_manager->get_current_camera_index());
+                        USceneCaptureComponent2D *camera = character->camera_manager->get_last_camera_available();
+                        UE_LOG(LogTemp, Warning, TEXT("UDFLExecuteActionMenuGameState::enter_state B"));
 
                         if(camera)
                         {
