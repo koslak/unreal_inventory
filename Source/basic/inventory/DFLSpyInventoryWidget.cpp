@@ -3,6 +3,10 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
+#include "Components/CanvasPanelSlot.h"
+#include "Components/VerticalBoxSlot.h"
+#include "Components/HorizontalBoxSlot.h"
+#include "Components/PanelWidget.h"
 
 UDFLSpyInventoryWidget::UDFLSpyInventoryWidget(const FObjectInitializer &ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -91,4 +95,41 @@ void UDFLSpyInventoryWidget::disable_all_cameras()
     text_cam_3->SetVisibility(ESlateVisibility::Visible);
     text_cam_4->SetVisibility(ESlateVisibility::Visible);
     text_cam_5->SetVisibility(ESlateVisibility::Visible);
+}
+
+void UDFLSpyInventoryWidget::set_camera_marks_position()
+{
+    UPanelSlot *image_slot = image_floor_blueprint->Slot;
+    if(image_slot)
+    {
+        UHorizontalBoxSlot *horizontal_box_slot = Cast<UHorizontalBoxSlot>(image_slot);
+//        horizontal_box_slot->get
+        UE_LOG(LogTemp, Warning, TEXT("UDFLSpyInventoryWidget::set_camera_marks_position ------WWW--%d"), horizontal_box_slot->Size.Value);
+    }
+
+
+    UPanelSlot *slot = marker_on_0->Slot;
+    if(slot)
+    {
+        UCanvasPanelSlot *vertical_box_canvas_panel_slot = Cast<UCanvasPanelSlot>(slot);
+        vertical_box_canvas_panel_slot->GetPosition();
+        if(vertical_box_canvas_panel_slot)
+        {
+            UE_LOG(LogTemp, Warning, TEXT("UDFLSpyInventoryWidget::set_camera_marks_position -------------s"));
+//            FVector2D item_widget_position = get_inventory_item_widget_position();
+            vertical_box_canvas_panel_slot->SetPosition(FVector2D{50.0f, 50.0f});
+        }
+    }
+
+    UPanelWidget* panel_widget_parent = image_floor_blueprint->GetParent();
+    if(panel_widget_parent)
+    {
+        FVector2D Position1 = panel_widget_parent->GetCachedGeometry().AbsoluteToLocal(marker_on_0->GetCachedGeometry().GetAbsolutePosition()); // / 2.0f;
+        UE_LOG(LogTemp, Warning, TEXT("UDFLSpyInventoryWidget::set_camera_marks_position A position: %s"), *marker_on_0->GetCachedGeometry().ToString());
+        UE_LOG(LogTemp, Warning, TEXT("UDFLSpyInventoryWidget::set_camera_marks_position A position: %s"), *panel_widget_parent->GetCachedGeometry().ToString());
+
+        Position1.X = Position1.X + marker_on_0->GetCachedGeometry().GetLocalSize().X + 10;
+
+        UE_LOG(LogTemp, Warning, TEXT("UDFLSpyInventoryWidget::set_camera_marks_position B position: %s"), *Position1.ToString());
+    }
 }

@@ -18,6 +18,7 @@ class BASIC_API UDFLSpyInventoryWidget : public UUserWidget
     void enable_camera_by_index(int index);
     void disable_camera_by_index(int index);
     void disable_all_cameras();
+    void set_camera_marks_position();
 
  private:
     UPROPERTY(meta = (BindWidget))
@@ -55,4 +56,27 @@ class BASIC_API UDFLSpyInventoryWidget : public UUserWidget
 
     UPROPERTY(meta = (BindWidget))
     class UTextBlock *text_cam_5;
+
+    // Camera Markers
+
+    UPROPERTY(meta = (BindWidget))
+    class UImage *image_floor_blueprint;
+
+    UPROPERTY(meta = (BindWidget))
+    class UImage *marker_on_0;
+
+    UPROPERTY(meta = (BindWidget))
+    class UImage *marker_on_1;
+
+    UPROPERTY(meta = (BindWidget))
+    class UImage *marker_on_2;
+
+    UPROPERTY(meta = (BindWidget))
+    class UImage *marker_on_3;
+
+    UPROPERTY(meta = (BindWidget))
+    class UImage *marker_on_4;
+
+    UPROPERTY(meta = (BindWidget))
+    class UImage *marker_on_5;
 };

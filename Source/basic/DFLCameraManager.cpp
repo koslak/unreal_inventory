@@ -43,6 +43,8 @@ void ADFLCameraManager::BeginPlay()
         }
     }
 
+    spy_inventory_widget->set_camera_marks_position();
+
 }
 
 void ADFLCameraManager::Tick(float DeltaTime)
@@ -81,4 +83,3 @@ void ADFLCameraManager::set_spy_inventory_visibility(ESlateVisibility InVisibili
 {
     spy_inventory_widget->SetVisibility(InVisibility);
 }
-
