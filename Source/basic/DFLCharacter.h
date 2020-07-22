@@ -105,8 +105,19 @@ public:
     TSubclassOf<class UUserWidget> DFLSpy_Cam_Inventory_BP_class;
     class UUserWidget *UWidget_examine{ nullptr };
 
-    UPROPERTY(EditDefaultsOnly)
-    class UDFLCameraDirector *camera_director{ nullptr };
+//    UPROPERTY(EditDefaultsOnly)
+//    class ADFLCameraDirector *camera_director{ nullptr };
+
+    UPROPERTY(EditAnywhere)
+    class USceneCaptureComponent2D *in_game_camera;
+
+    UPROPERTY(EditAnywhere)
+    class USceneCaptureComponent2D *in_game_camera_1;
+
+    UPROPERTY(EditAnywhere)
+    TArray<class USceneCaptureComponent2D *> in_games_camera_array;
+
+    bool is_camera_already_used{ false };
 
     class UDFLInventoryWidget *inventory_widget{ nullptr };
     class UDFLSpyInventoryWidget *spy_inventory_widget{ nullptr };

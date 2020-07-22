@@ -87,11 +87,22 @@ void UDFLExecuteActionMenuGameState::enter_state(ADFLCharacter *character)
 
                     camera_holder_actor = Cast<ADFLCameraHolderActor>(usable_actor);
 
-                    if(camera_holder_actor && character->camera_director)
+                    if(camera_holder_actor && character->in_game_camera)
                     {
-                        USceneCaptureComponent2D *camera = character->camera_director->get_last_camera_available();
+                        USceneCaptureComponent2D *camera{ nullptr };
+                        if(!character->is_camera_already_used)
+                        {
+                            UE_LOG(LogTemp, Warning, TEXT("UDFLExecuteActionMenuGameState::enter_state A"));
+                            camera = character->in_game_camera; //camera_director->get_last_camera_available();
+                            character->is_camera_already_used = true;
+                        }else{
+                            UE_LOG(LogTemp, Warning, TEXT("UDFLExecuteActionMenuGameState::enter_state B"));
+                            camera = character->in_game_camera_1; //camera_director->get_last_camera_available();
+                        }
+
                         if(camera)
                         {
+                            UE_LOG(LogTemp, Warning, TEXT("UDFLExecuteActionMenuGameState::enter_state C"));
                             camera_holder_actor->attach_camera(camera);
                             camera_holder_actor->set_camera_inventory_item_widget(inventory_item_widget);
                             camera_holder_actor->OnUsed(character);

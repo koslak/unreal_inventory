@@ -66,8 +66,23 @@ ADFLCharacter::ADFLCharacter()
     game_states = CreateDefaultSubobject<UDFLGameStates>(TEXT("GameStates"));
     current_game_state = CreateDefaultSubobject<UDFLGameState>(TEXT("GameState"));
 
-    camera_director = CreateDefaultSubobject<UDFLCameraDirector>(TEXT("CameraDirector"));
-    camera_director->create_cameras(this);
+//    camera_director = CreateDefaultSubobject<ADFLCameraDirector>(TEXT("CameraDirector"));
+//    camera_director->create_cameras(this);
+
+    FString camera_string(TEXT("in_game_camera_N"));
+    FName camera_name(camera_string);
+    in_game_camera = CreateDefaultSubobject<USceneCaptureComponent2D>(camera_name);
+
+    FString camera_string1(TEXT("in_game_camera_N1"));
+    FName camera_name1(camera_string1);
+    in_game_camera_1 = CreateDefaultSubobject<USceneCaptureComponent2D>(camera_name1);
+
+    in_games_camera_array.Add(CreateDefaultSubobject<USceneCaptureComponent2D>("in_game_camera_M0"));
+    in_games_camera_array.Add(CreateDefaultSubobject<USceneCaptureComponent2D>("in_game_camera_M1"));
+    in_games_camera_array.Add(CreateDefaultSubobject<USceneCaptureComponent2D>("in_game_camera_M2"));
+    in_games_camera_array.Add(CreateDefaultSubobject<USceneCaptureComponent2D>("in_game_camera_M3"));
+    in_games_camera_array.Add(CreateDefaultSubobject<USceneCaptureComponent2D>("in_game_camera_M4"));
+    in_games_camera_array.Add(CreateDefaultSubobject<USceneCaptureComponent2D>("in_game_camera_M5"));
 }
 
 // Called when the game starts or when spawned
@@ -83,13 +98,6 @@ void ADFLCharacter::BeginPlay()
     }else{
         UE_LOG(LogTemp, Error, TEXT("ADFLCharacter::BeginPlay Error creating game states"));
     }
-
-//    game_state = NewObject<UDFLGameState>((UObject*)GetTransientPackage(), UDFLGameState::StaticClass());
-//    if(inventory_game_state)
-//    {
-//        UE_LOG(LogTemp, Warning, TEXT("wwwwwwwwwwwwwwwwwwwwww"));
-//        current_game_state = inventory_game_state;
-//    }
 
     UUserWidget *general_widget{ nullptr };
     general_widget = CreateWidget<UUserWidget>(GetWorld(), DFLInventory_widget_class);
