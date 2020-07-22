@@ -13,6 +13,7 @@ public:
 	ADFLCameraManager();
     class USceneCaptureComponent2D *get_last_camera_available();
     int get_current_camera_index() const { return current_camera_index; };
+    void set_spy_inventory_visibility(ESlateVisibility InVisibility);
 
 protected:
 	virtual void BeginPlay() override;
@@ -23,6 +24,9 @@ public:
 private:
     UPROPERTY(EditAnywhere)
     TArray<class USceneCaptureComponent2D *> in_game_cameras_array;
+
+    TSubclassOf<class UUserWidget> DFLSpy_Cam_Inventory_BP_class;
+    class UDFLSpyInventoryWidget *spy_inventory_widget{ nullptr };
 
     int current_camera_index{ 0 };
 };

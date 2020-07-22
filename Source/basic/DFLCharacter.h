@@ -102,7 +102,7 @@ public:
     TSubclassOf<class UDFLItem> UDFLItemClass;
     TSubclassOf<class UUserWidget> DFLInventory_widget_class;
     TSubclassOf<class UUserWidget> UWidget_Examined_BP_class;
-    TSubclassOf<class UUserWidget> DFLSpy_Cam_Inventory_BP_class;
+//    TSubclassOf<class UUserWidget> DFLSpy_Cam_Inventory_BP_class;
     class UUserWidget *UWidget_examine{ nullptr };
 
 //    UPROPERTY(EditDefaultsOnly)
@@ -119,7 +119,7 @@ public:
 //    TArray<class USceneCaptureComponent2D *> in_game_camera_array;
 
     class UDFLInventoryWidget *inventory_widget{ nullptr };
-    class UDFLSpyInventoryWidget *spy_inventory_widget{ nullptr };
+//    class UDFLSpyInventoryWidget *spy_inventory_widget{ nullptr };
     bool is_inventory_widget_displayed{ false };
     bool is_player_can_move{ true };
     bool is_action_menu_displayed{ false };

@@ -8,6 +8,7 @@
 #include "inventory/DFLSpyInventoryWidget.h"
 #include "DFLGameStates.h"
 #include "DFLUsableActor.h"
+#include "DFLCameraManager.h"
 
 void UDFLSpyInventoryGameState::Tick(float DeltaTime)
 {
@@ -75,6 +76,6 @@ void UDFLSpyInventoryGameState::enter_state(ADFLCharacter *character)
     if(character)
     {
         UE_LOG(LogTemp, Warning, TEXT("UDFLSpyInventoryGameState::enter_state"));
-        character->spy_inventory_widget->SetVisibility(ESlateVisibility::Visible);
+        character->camera_manager->set_spy_inventory_visibility(ESlateVisibility::Visible);
     }
 }

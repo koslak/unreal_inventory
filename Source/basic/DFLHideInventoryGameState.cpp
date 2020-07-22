@@ -7,6 +7,7 @@
 #include "inventory/DFLInventoryWidget.h"
 #include "inventory/DFLSpyInventoryWidget.h"
 #include "DFLGameStates.h"
+#include "DFLCameraManager.h"
 
 void UDFLHideInventoryGameState::Tick(float DeltaTime)
 {
@@ -82,7 +83,7 @@ void UDFLHideInventoryGameState::enter_state(ADFLCharacter *character)
             character->is_inventory_widget_displayed = false;
             character->inventory_widget->is_item_widget_being_examined = false;
             character->actor_examined_distance = 90;
-            character->spy_inventory_widget->SetVisibility(ESlateVisibility::Hidden);
+            character->camera_manager->set_spy_inventory_visibility(ESlateVisibility::Hidden);
 
         }else{
             UE_LOG(LogTemp, Error, TEXT("Inventory_widget variable is null"));

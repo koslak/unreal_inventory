@@ -22,7 +22,6 @@
 #include "DFLGameStates.h"
 #include "DFLGameState.h"
 #include "DFLShowInventoryGameState.h"
-#include "inventory/DFLSpyInventoryWidget.h"
 #include "Components/SceneCaptureComponent2D.h"
 #include "Engine/TextureRenderTarget2D.h"
 #include "DFLCameraHolderActor.h"
@@ -48,11 +47,11 @@ ADFLCharacter::ADFLCharacter()
         DFLInventory_widget_class = DFLInventory_widget_BP.Class;
     }
 
-    ConstructorHelpers::FClassFinder<UDFLSpyInventoryWidget> DFLSpy_inventory_widget_BP(TEXT("/Game/Blueprints/inventory/spy_inventory_WBP"));
-    if(DFLSpy_inventory_widget_BP.Class)
-    {
-        DFLSpy_Cam_Inventory_BP_class = DFLSpy_inventory_widget_BP.Class;
-    }
+//    ConstructorHelpers::FClassFinder<UDFLSpyInventoryWidget> DFLSpy_inventory_widget_BP(TEXT("/Game/Blueprints/inventory/spy_inventory_WBP"));
+//    if(DFLSpy_inventory_widget_BP.Class)
+//    {
+//        DFLSpy_Cam_Inventory_BP_class = DFLSpy_inventory_widget_BP.Class;
+//    }
 
     ConstructorHelpers::FClassFinder<UUserWidget> UWidget_Examined_BP(TEXT("/Game/Blueprints/inventory/examine_WBP"));
     if(UWidget_Examined_BP.Class)
@@ -126,6 +125,7 @@ void ADFLCharacter::BeginPlay()
         UWidget_examine->AddToViewport();
     }
 
+    /*
     UUserWidget *general_widget_1{ nullptr };
     general_widget_1 = CreateWidget<UUserWidget>(GetWorld(), DFLSpy_Cam_Inventory_BP_class);
     if(general_widget_1 && general_widget_1->IsA(UDFLSpyInventoryWidget::StaticClass()))
@@ -139,6 +139,7 @@ void ADFLCharacter::BeginPlay()
             spy_inventory_widget->disable_all_cameras();
         }
     }
+    */
 }
 
 // Called every frame

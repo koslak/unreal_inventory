@@ -91,7 +91,7 @@ void UDFLExecuteActionMenuGameState::enter_state(ADFLCharacter *character)
 
                     if(camera_holder_actor && character->camera_manager)
                     {
-                        character->spy_inventory_widget->enable_camera_by_index(character->camera_manager->get_current_camera_index());
+//                        character->spy_inventory_widget->enable_camera_by_index(character->camera_manager->get_current_camera_index());
                         USceneCaptureComponent2D *camera = character->camera_manager->get_last_camera_available();
                         UE_LOG(LogTemp, Warning, TEXT("UDFLExecuteActionMenuGameState::enter_state B"));
 
