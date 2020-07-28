@@ -103,8 +103,10 @@ void UDFLSpyInventoryWidget::set_camera_marks_position()
     if(image_slot)
     {
         UHorizontalBoxSlot *horizontal_box_slot = Cast<UHorizontalBoxSlot>(image_slot);
-//        horizontal_box_slot->get
-        UE_LOG(LogTemp, Warning, TEXT("UDFLSpyInventoryWidget::set_camera_marks_position ------WWW--%d"), horizontal_box_slot->Size.Value);
+
+//        image_floor_blueprint->Brush.GetMargin().GetDesiredSize().ToString()
+        UE_LOG(LogTemp, Warning, TEXT("UDFLSpyInventoryWidget::set_camera_marks_position ------WWW1--%s"), *image_floor_blueprint->Brush.ImageSize.ToString());
+        UE_LOG(LogTemp, Warning, TEXT("UDFLSpyInventoryWidget::set_camera_marks_position ------WWW2--%s"), *image_floor_blueprint->Brush.GetMargin().GetDesiredSize().ToString());
     }
 
 
