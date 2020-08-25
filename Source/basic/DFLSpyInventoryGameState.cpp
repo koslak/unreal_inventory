@@ -65,6 +65,8 @@ UDFLGameState *UDFLSpyInventoryGameState::handle_keyboard_input(class ADFLCharac
                     return game_states_instance->get_game_state(Game_State::Show_Action_Menu);
                 }
             }
+        }else{
+            character->camera_manager->handle_keyboard_input(key);
         }
     }
 
@@ -76,6 +78,8 @@ void UDFLSpyInventoryGameState::enter_state(ADFLCharacter *character)
     if(character)
     {
         UE_LOG(LogTemp, Warning, TEXT("UDFLSpyInventoryGameState::enter_state"));
+        character->is_inventory_widget_displayed = false;
         character->camera_manager->set_spy_inventory_visibility(ESlateVisibility::Visible);
+        character->is_player_can_move = false;
     }
 }

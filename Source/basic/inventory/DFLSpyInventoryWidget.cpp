@@ -8,9 +8,129 @@
 #include "Components/HorizontalBoxSlot.h"
 #include "Components/PanelWidget.h"
 
+#include <algorithm>
+
 UDFLSpyInventoryWidget::UDFLSpyInventoryWidget(const FObjectInitializer &ObjectInitializer) : Super(ObjectInitializer)
 {
 }
+
+void UDFLSpyInventoryWidget::handle_keyboard_input(const FKey &key)
+{
+    // TODO: Change hardcoded keys here so in case the game's options allows to change keyboard shortcuts.
+    if(key == EKeys::A)
+    {
+        // Move frame selector to left
+        FString key_pressed = key.ToString();
+        UE_LOG(LogTemp, Warning, TEXT("UDFLSpyInventoryWidget::handle_keyboard_input %s"), *key_pressed);
+
+        frame_selectors_visibility_array[ current_camera_selected_index ] = false;
+        current_camera_selected_index--;
+
+        if(current_camera_selected_index < 0)
+        {
+            current_camera_selected_index = 0;
+        }
+
+        frame_selectors_visibility_array[ current_camera_selected_index ] = true;
+
+        update_frame_selectors_visibility();
+    }
+
+    if(key == EKeys::D)
+    {
+        // Move frame selector to right
+        FString key_pressed = key.ToString();
+        UE_LOG(LogTemp, Warning, TEXT("UDFLSpyInventoryWidget::handle_keyboard_input %s"), *key_pressed);
+
+        frame_selectors_visibility_array[ current_camera_selected_index ] = false;
+        current_camera_selected_index++;
+
+        if(current_camera_selected_index >= FRAME_SELECTORS_ARRAY_SIZE)
+        {
+            current_camera_selected_index = FRAME_SELECTORS_ARRAY_SIZE - 1;
+        }
+
+        frame_selectors_visibility_array[ current_camera_selected_index ] = true;
+
+        update_frame_selectors_visibility();
+    }
+
+    if(key == EKeys::W)
+    {
+        // Move frame selector up
+        FString key_pressed = key.ToString();
+        UE_LOG(LogTemp, Warning, TEXT("UDFLSpyInventoryWidget::handle_keyboard_input %s"), *key_pressed);
+
+        // We check that we are in the bottom line of cameras
+        if(current_camera_selected_index >= 3 && current_camera_selected_index <= 5)
+        {
+            frame_selectors_visibility_array[ current_camera_selected_index ] = false;
+            current_camera_selected_index -= (FRAME_SELECTORS_ARRAY_SIZE / 2);
+
+            if(current_camera_selected_index < 0)
+            {
+                current_camera_selected_index = 0;
+            }
+
+            frame_selectors_visibility_array[ current_camera_selected_index ] = true;
+
+            update_frame_selectors_visibility();
+        }
+    }
+
+    if(key == EKeys::S)
+    {
+        // Move frame selector down
+        FString key_pressed = key.ToString();
+        UE_LOG(LogTemp, Warning, TEXT("UDFLSpyInventoryWidget::handle_keyboard_input %s"), *key_pressed);
+
+        // We check that we are in the top line of cameras
+        if(current_camera_selected_index >= 0 && current_camera_selected_index <= 2)
+        {
+            frame_selectors_visibility_array[ current_camera_selected_index ] = false;
+            current_camera_selected_index += (FRAME_SELECTORS_ARRAY_SIZE / 2);
+
+            if(current_camera_selected_index >= FRAME_SELECTORS_ARRAY_SIZE)
+            {
+                current_camera_selected_index = FRAME_SELECTORS_ARRAY_SIZE - 1;
+            }
+
+            frame_selectors_visibility_array[ current_camera_selected_index ] = true;
+
+            update_frame_selectors_visibility();
+        }
+    }
+}
+
+void UDFLSpyInventoryWidget::set_components_initial_visualization()
+{
+    frame_selector_0->SetVisibility(ESlateVisibility::Visible);
+    frame_selector_1->SetVisibility(ESlateVisibility::Hidden);
+    frame_selector_2->SetVisibility(ESlateVisibility::Hidden);
+    frame_selector_3->SetVisibility(ESlateVisibility::Hidden);
+    frame_selector_4->SetVisibility(ESlateVisibility::Hidden);
+    frame_selector_5->SetVisibility(ESlateVisibility::Hidden);
+
+    current_camera_selected_index = 0;
+    std::fill_n(frame_selectors_visibility_array.begin(), FRAME_SELECTORS_ARRAY_SIZE, false);
+}
+
+void UDFLSpyInventoryWidget::update_frame_selectors_visibility()
+{
+    for(int i = 0; i < FRAME_SELECTORS_ARRAY_SIZE; ++i)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("UDFLSpyInventoryWidget::update_frame_selectors_visibility index: [ %d ], %s"), i, frame_selectors_visibility_array[ i ] ? TEXT("true") : TEXT("false"));
+    }
+
+    // Since the array is of a fixed size, we can visit any of its positions without being concern of exceeding limits
+    frame_selector_0->SetVisibility( (frame_selectors_visibility_array[ 0 ] == true) ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+    frame_selector_1->SetVisibility( (frame_selectors_visibility_array[ 1 ] == true) ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+    frame_selector_2->SetVisibility( (frame_selectors_visibility_array[ 2 ] == true) ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+    frame_selector_3->SetVisibility( (frame_selectors_visibility_array[ 3 ] == true) ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+    frame_selector_4->SetVisibility( (frame_selectors_visibility_array[ 4 ] == true) ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+    frame_selector_5->SetVisibility( (frame_selectors_visibility_array[ 5 ] == true) ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+}
+
 
 void UDFLSpyInventoryWidget::hide_camera_3()
 {
@@ -95,6 +215,13 @@ void UDFLSpyInventoryWidget::disable_all_cameras()
     text_cam_3->SetVisibility(ESlateVisibility::Visible);
     text_cam_4->SetVisibility(ESlateVisibility::Visible);
     text_cam_5->SetVisibility(ESlateVisibility::Visible);
+
+    frame_selector_0->SetVisibility(ESlateVisibility::Visible);
+    frame_selector_1->SetVisibility(ESlateVisibility::Hidden);
+    frame_selector_2->SetVisibility(ESlateVisibility::Hidden);
+    frame_selector_3->SetVisibility(ESlateVisibility::Hidden);
+    frame_selector_4->SetVisibility(ESlateVisibility::Hidden);
+    frame_selector_5->SetVisibility(ESlateVisibility::Hidden);
 }
 
 void UDFLSpyInventoryWidget::set_camera_marks_position()

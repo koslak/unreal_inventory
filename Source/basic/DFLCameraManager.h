@@ -15,6 +15,8 @@ public:
     int get_current_camera_index() const { return current_camera_index; };
     void set_spy_inventory_visibility(ESlateVisibility InVisibility);
 
+    void handle_keyboard_input(const struct FKey &key);
+
 protected:
 	virtual void BeginPlay() override;
 

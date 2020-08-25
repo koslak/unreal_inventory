@@ -235,7 +235,7 @@ void ADFLCharacter::move_widget_left()
 {
     if(!player_can_move())
     {
-        if(!is_action_menu_displayed)
+        if(!is_action_menu_displayed && is_inventory_widget_displayed)
         {
             inventory_widget->select_item_to_the_west();
         }
@@ -246,7 +246,7 @@ void ADFLCharacter::move_widget_right()
 {
     if(!player_can_move())
     {
-        if(!is_action_menu_displayed)
+        if(!is_action_menu_displayed && is_inventory_widget_displayed)
         {
             inventory_widget->select_item_to_the_east();
         }
@@ -259,7 +259,10 @@ void ADFLCharacter::move_widget_up()
     {
         if(!is_action_menu_displayed)
         {
-            inventory_widget->select_item_to_the_north();
+            if(is_inventory_widget_displayed)
+            {
+                inventory_widget->select_item_to_the_north();
+            }
         }else{
             // Move action menu options up
             inventory_widget->select_action_menu_up();
@@ -273,7 +276,10 @@ void ADFLCharacter::move_widget_down()
     {
         if(!is_action_menu_displayed)
         {
-            inventory_widget->select_item_to_the_south();
+            if(is_inventory_widget_displayed)
+            {
+                inventory_widget->select_item_to_the_south();
+            }
         }else{
             // Move action menu options down
             inventory_widget->select_action_menu_down();

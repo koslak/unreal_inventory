@@ -82,4 +82,23 @@ USceneCaptureComponent2D *ADFLCameraManager::get_last_camera_available()
 void ADFLCameraManager::set_spy_inventory_visibility(ESlateVisibility InVisibility)
 {
     spy_inventory_widget->SetVisibility(InVisibility);
+    spy_inventory_widget->set_components_initial_visualization();
 }
+
+void ADFLCameraManager::handle_keyboard_input(const FKey &key)
+{
+    spy_inventory_widget->handle_keyboard_input(key);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
